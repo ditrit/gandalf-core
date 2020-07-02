@@ -29,3 +29,9 @@ gandalf-go
 !go.sum
 !Makefile
 !README.md
+
+# ! need to be removed ! #
+libraries/javaclient/.classpath
+libraries/javaclient/.project
+libraries/javaclient/.settings
+libraries/**/*.class
