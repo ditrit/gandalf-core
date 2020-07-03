@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from pyclient.command.ClientCommand import ClientCommand
-from pyclient.event.ClientEvent import ClientEvent
+from command.ClientCommand import ClientCommand
+from event.ClientEvent import ClientEvent
 
 class ClientGandalf(self):
     

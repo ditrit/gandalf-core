@@ -2,51 +2,69 @@
 # coding: utf-8
 
 import grpc
-from pyclient.grpc import *
+import uuid
+import time
+
+from ..grpc.connectorCommand_pb2 import *
+from ..grpc.connectorCommand_pb2_grpc import *
 
 class ClientCommand(self):
     @property
-    def clientCommandConnection(self):
-        return self._clientCommandConnection
-    @clientCommandConnection.setter
-    def clientCommandConnection(self, value):
-        self._clientCommandConnection = value
+    def ClientCommandConnection(self):
+        return self._ClientCommandConnection
+    @ClientCommandConnection.setter
+    def ClientCommandConnection(self, value):
+        self._ClientCommandConnection = value
 
     @property
-    def identity(self):
-        return self._identity
-    @identity.setter
-    def identity(self, value):
-        self._identity = value
+    def Identity(self):
+        return self._Identity
+    @Identity.setter
+    def Identity(self, value):
+        self._Identity = value
 
     @property
-    def channel(self):
-        return self._channel
-    @channel.setter
-    def channel(self, value):
-        self._channel = value
+    def client(self):
+        return self._client
+    @client.setter
+    def client(self, value):
+        self._client = value
 
     def __init__(self, clientCommandConnection: str, identity: str):
         super().__init__()
-        self.clientCommandConnection = clientCommandConnection
-        self.identity = identity
-        connections = self.clientCommandConnection.split(":")
-        self.channel = grpc.insecure_channel(connections[0]+":"+connections[1]) # grpc.insecure_channel(connections) ??? need to be checked
+        self.ClientCommandConnection = clientCommandConnection
+        self.Identity = identity
+        connections = self.ClientCommandConnection.split(":")
+        conn = grpc.insecure_channel(connections[0]+":"+connections[1]) # grpc.insecure_channel(connections) ??? need to be checked
+        self.client = ConnectorCommand(conn)
 
-    def SendCommand(self, context: str, timeout: str, uuid: str, connectorType: str, commandType: str, command: str, payload: str) -> str:
-        stub = connectorCommand_pb2_grpc.ConnectorCommand(self.channel)
-        
+    def SendCommand(self, connectorType: str, command: str,  timeout: str, payload: str) -> CommandMessageUUID:
         commandMessage = CommandMessage()
-        commandMessage.Context = context
         commandMessage.Timeout = timeout
-        commandMessage.UUID = uuid
+        commandMessage.UUID = uuid.uuid4()
         commandMessage.ConnectorType = connectorType
-        commandMessage.CommandType = commandType
         commandMessage.Command = command
         commandMessage.Payload = payload
 
-        commandMessageUUID, _ = stub.sendCommandMessage(commandMessage)
+        commandMessageUUID = self.client.SendCommandMessage(commandMessage)
 
         return commandMessageUUID
 
+    def WaitCommand(self, command: str, idIterator: str, major: int) -> CommandMessage:
+        commandMessageWait = CommandMessageWait()
+        commandMessageWait.WorkerSource = self.Identity
+        commandMessageWait.Value = command
+        commandMessageWait.IteratorId = idIterator
+        commandMessageWait.Major = major
 
+        commandMessage = self.client.WaitCommandMessage(commandMessageWait)
+
+        while commandMessage == None:
+            time.sleep(1)
+
+        return commandMessage
+
+    def CreateIteratorCommand(self) -> IteratorMessage:
+        iteratorMessage = self.client.CreateIteratorCommand()
+
+        return iteratorMessage
