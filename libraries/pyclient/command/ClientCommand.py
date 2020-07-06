@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import grpc
 import uuid
 import time
 
@@ -34,8 +33,8 @@ class ClientCommand(self):
         super().__init__()
         self.ClientCommandConnection = clientCommandConnection
         self.Identity = identity
-        connections = self.ClientCommandConnection.split(":")
-        conn = grpc.insecure_channel(connections[0]+":"+connections[1]) # grpc.insecure_channel(connections) ??? need to be checked
+
+        conn = grpc.insecure_channel(clientCommandConnection)
         self.client = ConnectorCommand(conn)
 
     def SendCommand(self, connectorType: str, command: str,  timeout: str, payload: str) -> CommandMessageUUID:
@@ -46,9 +45,7 @@ class ClientCommand(self):
         commandMessage.Command = command
         commandMessage.Payload = payload
 
-        commandMessageUUID = self.client.SendCommandMessage(commandMessage)
-
-        return commandMessageUUID
+        return self.client.SendCommandMessage(commandMessage)
 
     def WaitCommand(self, command: str, idIterator: str, major: int) -> CommandMessage:
         commandMessageWait = CommandMessageWait()
@@ -65,6 +62,4 @@ class ClientCommand(self):
         return commandMessage
 
     def CreateIteratorCommand(self) -> IteratorMessage:
-        iteratorMessage = self.client.CreateIteratorCommand()
-
-        return iteratorMessage
+        return self.client.CreateIteratorCommand()
