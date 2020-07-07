@@ -10,7 +10,7 @@ from models.Options import Options
 
 DEFAULT_TIMEOUT = "10000"
 
-class ClientGandalf(self):
+class ClientGandalf:
     
     @property
     def Identity(self):

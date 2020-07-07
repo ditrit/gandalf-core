@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-class Options(self):
+class Options:
     @property
     def timeout(self):
         return self._timeout

@@ -4,7 +4,7 @@
 from ..grpc.connector_pb2 import *
 from ..grpc.connector_pb2_grpc import *
 
-class ClientBase(self):
+class ClientBase:
 
     @property
     def ClientBaseConnection(self):
@@ -32,7 +32,7 @@ class ClientBase(self):
         self.ClientBaseConnection = clientBaseConnection
 
         conn = grpc.insecure_channel(clientBaseConnection)
-        self.client = Connector(conn)
+        self.client = ConnectorStub(conn)
     
     def SendCommandList(self, major: int, commands: List[str]) -> Empty:
         commandList = CommandList()

@@ -6,7 +6,7 @@ from event.ClientEvent import ClientEvent
 
 from base.ClientBase import ClientBase
 
-class ClientGrpc(self):
+class ClientGrpc:
 
     @property
     def Identity(self):

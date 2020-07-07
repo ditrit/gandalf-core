@@ -7,7 +7,9 @@ import time
 from ..grpc.connectorCommand_pb2 import *
 from ..grpc.connectorCommand_pb2_grpc import *
 
-class ClientCommand(self):
+from ..grpc.connector_pb2 import IteratorMessage
+
+class ClientCommand:
     @property
     def ClientCommandConnection(self):
         return self._ClientCommandConnection
@@ -35,12 +37,12 @@ class ClientCommand(self):
         self.Identity = identity
 
         conn = grpc.insecure_channel(clientCommandConnection)
-        self.client = ConnectorCommand(conn)
+        self.client = ConnectorCommandStub(conn)
 
     def SendCommand(self, connectorType: str, command: str,  timeout: str, payload: str) -> CommandMessageUUID:
         commandMessage = CommandMessage()
         commandMessage.Timeout = timeout
-        commandMessage.UUID = uuid.uuid4()
+        commandMessage.UUID = str(uuid.uuid4())
         commandMessage.ConnectorType = connectorType
         commandMessage.Command = command
         commandMessage.Payload = payload

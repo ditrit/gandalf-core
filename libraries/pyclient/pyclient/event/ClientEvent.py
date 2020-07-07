@@ -7,7 +7,9 @@ import time
 from ..grpc.connectorEvent_pb2 import *
 from ..grpc.connectorEvent_pb2_grpc import *
 
-class ClientEvent(self):
+from ..grpc.connector_pb2 import IteratorMessage
+
+class ClientEvent:
     @property
     def ClientEventConnection(self):
         return self._ClientEventConnection
@@ -34,13 +36,13 @@ class ClientEvent(self):
         self.ClientEventConnection = clientEventConnection
 
         conn = grpc.insecure_channel(clientEventConnection)
-        self.client = ConnectorEvent(conn)
+        self.client = ConnectorEventStub(conn)
     
     def SendEvent(self, topic, event, referenceUUID, timeout, payload: str) -> Empty:
         eventMessage = EventMessage()
         eventMessage.Topic = topic
         eventMessage.Timeout = timeout
-        eventMessage.UUID = uuid.uuid4()
+        eventMessage.UUID = str(uuid.uuid4())
         eventMessage.Event = event
         eventMessage.Payload = payload
         eventMessage.ReferenceUUID = referenceUUID

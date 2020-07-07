@@ -2,8 +2,8 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import connectorEvent_pb2 as connectorEvent__pb2
-import connector_pb2 as connector__pb2
+from . import connectorEvent_pb2 as connectorEvent__pb2
+from . import connector_pb2 as connector__pb2
 
 
 class ConnectorEventStub(object):

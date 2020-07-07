@@ -3,7 +3,7 @@
 
 import json
 
-class ClientConfiguration(self):
+class ClientConfiguration:
 
     @property
     def ClientCommandConnection(self):
