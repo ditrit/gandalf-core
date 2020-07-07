@@ -36,7 +36,7 @@ class ClientCommand:
     def client(self, value):
         self._client = value
 
-    def __init__(self, clientCommandConnection: str, identity: str):
+    def __init__(self, identity: str, clientCommandConnection: str):
         super().__init__()
         self.ClientCommandConnection = clientCommandConnection
         self.Identity = identity

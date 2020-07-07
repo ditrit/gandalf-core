@@ -15,6 +15,7 @@ from pyclient.grpc.connector_pb2 import IteratorMessage
 from threading import Thread
 from time import sleep
 
+TEST_IDENTITY = "TestClientCommand"
 DEFAULT_PORT = "50150"
 SERVER_TEST_TIME = 0.5
 
@@ -97,7 +98,7 @@ class TestClientCommand(unittest.TestCase):
 thread = Thread(target=serve)
 thread.start()
 
-client = ClientCommand('localhost:'+DEFAULT_PORT, "test")
+client = ClientCommand(TEST_IDENTITY, 'localhost:'+DEFAULT_PORT)
 
 if __name__ == '__main__':
     unittest.main()

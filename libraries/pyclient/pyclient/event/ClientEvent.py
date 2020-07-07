@@ -7,7 +7,7 @@ import time
 from ..grpc.connectorEvent_pb2 import *
 from ..grpc.connectorEvent_pb2_grpc import *
 
-from ..grpc.connector_pb2 import IteratorMessage
+from ..grpc.connector_pb2 import *
 
 
 class ClientEvent:
@@ -51,7 +51,7 @@ class ClientEvent:
         eventMessage.Payload = payload
         eventMessage.ReferenceUUID = referenceUUID
 
-        return self.client.SendEvent(eventMessage)
+        return self.client.SendEventMessage(eventMessage)
 
     def WaitEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
         eventMessageWait = EventMessageWait()
@@ -73,7 +73,7 @@ class ClientEvent:
         topicMessageWait.Topic = topic
         topicMessageWait.IteratorId = idIterator
         topicMessageWait.ReferenceUUID = referenceUUID
-        eventMessage = self.client.WaitTopiceMessage(topicMessageWait)
+        eventMessage = self.client.WaitTopicMessage(topicMessageWait)
 
         while eventMessage == None:
             time.sleep(1)
@@ -81,4 +81,4 @@ class ClientEvent:
         return eventMessage
 
     def CreateIteratorEvent(self) -> IteratorMessage:
-        return self.client.CreateIteratorEvent()
+        return self.client.CreateIteratorEvent(Empty())
