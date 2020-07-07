@@ -3,11 +3,13 @@
 
 import json
 
+
 class ClientConfiguration:
 
     @property
     def ClientCommandConnection(self):
         return self._ClientCommandConnection
+
     @ClientCommandConnection.setter
     def ClientCommandConnection(self, value):
         self._ClientCommandConnection = value
@@ -15,6 +17,7 @@ class ClientConfiguration:
     @property
     def ClientEventConnection(self):
         return self._ClientEventConnection
+
     @ClientEventConnection.setter
     def ClientEventConnection(self, value):
         self._ClientEventConnection = value
@@ -22,6 +25,7 @@ class ClientConfiguration:
     @property
     def Identity(self):
         return self._Identity
+
     @Identity.setter
     def Identity(self, value):
         self._Identity = value

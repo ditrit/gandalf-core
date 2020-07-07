@@ -9,10 +9,12 @@ from ..grpc.connectorCommand_pb2_grpc import *
 
 from ..grpc.connector_pb2 import IteratorMessage
 
+
 class ClientCommand:
     @property
     def ClientCommandConnection(self):
         return self._ClientCommandConnection
+
     @ClientCommandConnection.setter
     def ClientCommandConnection(self, value):
         self._ClientCommandConnection = value
@@ -20,6 +22,7 @@ class ClientCommand:
     @property
     def Identity(self):
         return self._Identity
+
     @Identity.setter
     def Identity(self, value):
         self._Identity = value
@@ -27,6 +30,7 @@ class ClientCommand:
     @property
     def client(self):
         return self._client
+
     @client.setter
     def client(self, value):
         self._client = value

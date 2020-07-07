@@ -4,11 +4,13 @@
 from ..grpc.connector_pb2 import *
 from ..grpc.connector_pb2_grpc import *
 
+
 class ClientBase:
 
     @property
     def ClientBaseConnection(self):
         return self._ClientBaseConnection
+
     @ClientBaseConnection.setter
     def ClientBaseConnection(self, value):
         self._ClientBaseConnection = value
@@ -16,6 +18,7 @@ class ClientBase:
     @property
     def Identity(self):
         return self._Identity
+
     @Identity.setter
     def Identity(self, value):
         self._Identity = value
@@ -23,6 +26,7 @@ class ClientBase:
     @property
     def client(self):
         return self._client
+
     @client.setter
     def client(self, value):
         self._client = value
@@ -33,7 +37,7 @@ class ClientBase:
 
         conn = grpc.insecure_channel(clientBaseConnection)
         self.client = ConnectorStub(conn)
-    
+
     def SendCommandList(self, major: int, commands: List[str]) -> Empty:
         commandList = CommandList()
         commandList.Major = major

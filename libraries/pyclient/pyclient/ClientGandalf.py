@@ -10,11 +10,13 @@ from models.Options import Options
 
 DEFAULT_TIMEOUT = "10000"
 
+
 class ClientGandalf:
-    
+
     @property
     def Identity(self):
         return self._Identity
+
     @Identity.setter
     def Identity(self, value):
         self._Identity = value
@@ -22,13 +24,15 @@ class ClientGandalf:
     @property
     def ClientConnections(self):
         return self._ClientConnections
+
     @ClientConnections.setter
     def ClientConnections(self, value):
         self._ClientConnections = value
-    
+
     @property
     def Clients(self):
         return self._Clients
+
     @Clients.setter
     def Clients(self, value):
         self._Clients = value
@@ -36,6 +40,7 @@ class ClientGandalf:
     @property
     def Timeout(self):
         return self._Timeout
+
     @Timeout.setter
     def Timeout(self, value):
         self._Timeout = value
@@ -43,6 +48,7 @@ class ClientGandalf:
     @property
     def ClientIndex(self):
         return self._ClientIndex
+
     @ClientIndex.setter
     def ClientIndex(self, value):
         self._ClientIndex = value
@@ -68,23 +74,24 @@ class ClientGandalf:
         timeout = options.timeout
         if timeout == "":
             timeout = self.Timeout
-        
+
         stay = True
         timeoutLoop = Queue(maxsize=0)
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            commandMessageUUID = self.Clients[self.getClientIndex(self.Clients, True)].SendCommand(requestSplit[0], requestSplit[1], timeout, options.payload)
+            commandMessageUUID = self.Clients[self.getClientIndex(self.Clients, True)].SendCommand(
+                requestSplit[0], requestSplit[1], timeout, options.payload)
             if commandMessageUUID != None:
                 notSend = False
                 break
-            
+
             for which, _ in select(timeoutLoop):
                 if which is timeoutLoop:
                     stay = False
                     notSend = True
                     return
-        
+
         if notSend:
             return None
 
@@ -101,17 +108,18 @@ class ClientGandalf:
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(topic, event, "", timeout, options.payload)
+            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(
+                topic, event, "", timeout, options.payload)
             if empty != None:
                 notSend = False
                 break
-            
+
             for which, _ in select(timeoutLoop):
                 if which is timeoutLoop:
                     stay = False
                     notSend = True
                     return
-        
+
         if notSend:
             return None
 
@@ -129,22 +137,23 @@ class ClientGandalf:
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(topic, event, "", timeout, options.payload)
+            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(
+                topic, event, "", timeout, options.payload)
             if empty != None:
                 notSend = False
                 break
-            
+
             for which, _ in select(timeoutLoop):
                 if which is timeoutLoop:
                     stay = False
                     notSend = True
                     return
-        
+
         if notSend:
             return None
 
         return empty
-    
+
     def SendCommandList(self, version: int, commands: List[str]) -> Empty:
         return self.Clients[self.getClientIndex(self.Clients, True)].SendCommandList(version, commands)
 
@@ -152,16 +161,16 @@ class ClientGandalf:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitCommand(command, idIterator, version)
 
     def WaitEvent(self, topic, event, idIterator: str) -> Event:
-	    return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, "", idIterator)
+        return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, "", idIterator)
 
     def WaitReplyByEvent(self, topic, event, referenceUUID, idIterator: str) -> Event:
-	    return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, referenceUUID, idIterator)
+        return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, referenceUUID, idIterator)
 
     def WaitTopic(self, topic, idIterator: str) -> Event:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, "", idIterator)
 
     def WaitReplyByTopic(self, topic, referenceUUID, idIterator: str) -> Event:
-	    return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, referenceUUID, idIterator)
+        return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, referenceUUID, idIterator)
 
     def WaitAllReplyByTopic(self, topic, referenceUUID, idIterator, version: str) -> List[Event]:
         client = self.Clients[self.getClientIndex(self.Clients, False)]
@@ -174,7 +183,7 @@ class ClientGandalf:
 
             if message.GetEvent() == "SUCCES":
                 loop = False
-        
+
         return eventMessages
 
     def CreateIteratorCommand(self) -> str:
@@ -187,14 +196,16 @@ class ClientGandalf:
         aux = self.ClientIndex
 
         if updateIndex:
-            self.ClientIndex+=1
+            self.ClientIndex += 1
         if self.ClientIndex >= len(conns):
             self.ClientIndex = 0
 
         return aux
-    
+
+
 def select(*queues):
     combined = Queue(maxsize=0)
+
     def listen_and_forward(queue):
         while True:
             combined.put((queue, queue.get()))

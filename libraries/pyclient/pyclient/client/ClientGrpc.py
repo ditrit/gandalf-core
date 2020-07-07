@@ -6,11 +6,13 @@ from event.ClientEvent import ClientEvent
 
 from base.ClientBase import ClientBase
 
+
 class ClientGrpc:
 
     @property
     def Identity(self):
         return self._Identity
+
     @Identity.setter
     def Identity(self, value):
         self._Identity = value
@@ -18,6 +20,7 @@ class ClientGrpc:
     @property
     def ClientConnection(self):
         return self._ClientConnection
+
     @ClientConnection.setter
     def ClientConnection(self, value):
         self._ClientConnection = value
@@ -25,6 +28,7 @@ class ClientGrpc:
     @property
     def ClientBase(self):
         return self._ClientBase
+
     @ClientBase.setter
     def ClientBase(self, value):
         self._ClientBase = value
@@ -32,6 +36,7 @@ class ClientGrpc:
     @property
     def ClientCommand(self):
         return self._ClientCommand
+
     @ClientCommand.setter
     def ClientCommand(self, value):
         self._ClientCommand = value
@@ -39,6 +44,7 @@ class ClientGrpc:
     @property
     def ClientEvent(self):
         return self._ClientEvent
+
     @ClientEvent.setter
     def ClientEvent(self, value):
         self._ClientEvent = value
@@ -59,13 +65,13 @@ class ClientGrpc:
 
     def SendEvent(self, topic, event, referenceUUID, timeout, payload: str) -> Empty:
         return self.ClientEvent.SendEvent(topic, event, referenceUUID, timeout, payload)
-    
+
     def WaitCommand(self, command, idIterator: str, version: int) -> CommandMessage:
         return self.ClientCommand.WaitCommand(command, idIterator, version)
 
     def WaitEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
         return self.ClientEvent.WaitEvent(topic, event, referenceUUID, idIterator)
-    
+
     def WaitTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
         return self.ClientEvent.WaitTopic(topic, referenceUUID, idIterator)
 

@@ -5,6 +5,7 @@ class Options:
     @property
     def timeout(self):
         return self._timeout
+
     @timeout.setter
     def timeout(self, value):
         self._timeout = value
@@ -12,6 +13,7 @@ class Options:
     @property
     def payload(self):
         return self._payload
+
     @payload.setter
     def payload(self, value):
         self._payload = value
