@@ -10,12 +10,30 @@ from pyclient.command.ClientCommand import ClientCommand
 
 from pyclient.grpc.connectorCommand_pb2_grpc import *
 from pyclient.grpc.connectorCommand_pb2 import *
+from pyclient.grpc.connector_pb2 import IteratorMessage
 
 from threading import Thread
 from time import sleep
 
 DEFAULT_PORT = "50150"
-SERVER_TEST_TIME = 1.0
+SERVER_TEST_TIME = 0.5
+
+FIXED_TEST_UUID = "3dc28f74-9ad3-4fc7-8b2b-03b7aab660c9"
+FIXED_TEST_COMMAND = "DummyCommand"
+FIXED_TEST_COMMAND_TYPE = "DummyCommandType"
+FIXED_TEST_ITERATOR_ID = "DummyIteratorId"
+FIXED_TEST_PAYLOAD = "DummyPayload"
+FIXED_TEST_TIMEOUT = "10000"
+FIXED_TEST_MAJOR = 42
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    add_ConnectorCommandServicer_to_server(
+        TestConnectorCommandServicer(), server)
+    server.add_insecure_port('[::]:'+DEFAULT_PORT)
+    server.start()
+    
+    server.wait_for_termination(timeout=SERVER_TEST_TIME)
 
 
 class TestConnectorCommandServicer(ConnectorCommandServicer):
@@ -26,36 +44,60 @@ class TestConnectorCommandServicer(ConnectorCommandServicer):
 
     def SendCommandMessage(self, request, context) -> CommandMessageUUID:
         print('Handle send command')
-        # request == CommandMessage
 
-        cmu = CommandMessageUUID(UUID=request.UUID)
+        return CommandMessageUUID(UUID=FIXED_TEST_UUID)
 
-        return cmu
+    def WaitCommandMessage(self, request, context) -> CommandMessage:
+        print('Handle Wait CommandMessage')
 
+        return CommandMessage(SourceWorker=request.WorkerSource, Major=request.Major, Command=request.Value)
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    add_ConnectorCommandServicer_to_server(
-        TestConnectorCommandServicer(), server)
-    server.add_insecure_port('[::]:'+DEFAULT_PORT)
-    server.start()
-    server.wait_for_termination(timeout=SERVER_TEST_TIME)
+    def CreateIteratorCommand(self, request, context) -> IteratorMessage:
+        print('Handle Create Iterator Command')
+
+        return IteratorMessage(Id=FIXED_TEST_ITERATOR_ID)
 
 
 class TestClientCommand(unittest.TestCase):
-
-    def setUp(self):
-        self.thread = Thread(target=serve)
-        self.thread.start()
 
     def test_send_command(self):
         """
         Test Send Command
         """
+        print('TEST : ClientCommand.SendCommand(commandType, command, timeoutn, payload)')
 
-        cc = ClientCommand('localhost:'+DEFAULT_PORT, 'test')
-        print(cc.SendCommand("TypeBidon", "CommandeBidon", "10000", "PayloadBidon"))
+        result = client.SendCommand(
+            FIXED_TEST_COMMAND_TYPE, FIXED_TEST_COMMAND, FIXED_TEST_TIMEOUT, FIXED_TEST_PAYLOAD)
 
+        self.assertEqual(result.UUID, FIXED_TEST_UUID)
+
+    def test_wait_command(self):
+        """
+        Test Wait Command
+        """
+        print('TEST : ClientCommand.WaitCommand(command, iteratorId, major)')
+
+        result = client.WaitCommand(
+            FIXED_TEST_COMMAND, FIXED_TEST_ITERATOR_ID, FIXED_TEST_MAJOR)
+
+        self.assertEqual(result.Command, FIXED_TEST_COMMAND)
+        self.assertEqual(result.Major, FIXED_TEST_MAJOR)
+
+    def test_create_iterator_command(self):
+        """
+        Test Create Iterator Command
+        """
+        print('TEST : ClientCommand.CreateIteratorCommand()')
+
+        result = client.CreateIteratorCommand()
+
+        self.assertEqual(result.Id, FIXED_TEST_ITERATOR_ID)
+
+
+thread = Thread(target=serve)
+thread.start()
+
+client = ClientCommand('localhost:'+DEFAULT_PORT, "test")
 
 if __name__ == '__main__':
     unittest.main()

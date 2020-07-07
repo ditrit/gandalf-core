@@ -8,6 +8,7 @@ from ..grpc.connectorCommand_pb2 import *
 from ..grpc.connectorCommand_pb2_grpc import *
 
 from ..grpc.connector_pb2 import IteratorMessage
+from ..grpc.connector_pb2 import Empty
 
 
 class ClientCommand:
@@ -68,4 +69,4 @@ class ClientCommand:
         return commandMessage
 
     def CreateIteratorCommand(self) -> IteratorMessage:
-        return self.client.CreateIteratorCommand()
+        return self.client.CreateIteratorCommand(Empty())
