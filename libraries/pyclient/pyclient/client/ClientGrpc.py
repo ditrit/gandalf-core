@@ -6,7 +6,9 @@ from typing import List
 from ..command.ClientCommand import ClientCommand
 from ..event.ClientEvent import ClientEvent
 from ..base.ClientBase import ClientBase
-
+from ..grpc.connector_pb2 import *
+from ..grpc.connectorCommand_pb2 import *
+from ..grpc.connectorEvent_pb2 import *
 
 class ClientGrpc:
 

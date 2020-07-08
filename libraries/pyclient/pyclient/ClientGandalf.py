@@ -9,6 +9,10 @@ from typing import List
 from .client.ClientGrpc import ClientGrpc
 from .models.Options import Options
 
+from pyclient.grpc.connector_pb2 import *
+from pyclient.grpc.connectorCommand_pb2 import *
+from pyclient.grpc.connectorEvent_pb2 import *
+
 DEFAULT_TIMEOUT = "10000"
 
 
@@ -161,19 +165,19 @@ class ClientGandalf:
     def WaitCommand(self, command, idIterator: str, version: int) -> CommandMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitCommand(command, idIterator, version)
 
-    def WaitEvent(self, topic, event, idIterator: str) -> Event:
+    def WaitEvent(self, topic, event, idIterator: str) -> EventMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, "", idIterator)
 
-    def WaitReplyByEvent(self, topic, event, referenceUUID, idIterator: str) -> Event:
+    def WaitReplyByEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, referenceUUID, idIterator)
 
-    def WaitTopic(self, topic, idIterator: str) -> Event:
+    def WaitTopic(self, topic, idIterator: str) -> EventMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, "", idIterator)
 
-    def WaitReplyByTopic(self, topic, referenceUUID, idIterator: str) -> Event:
+    def WaitReplyByTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, referenceUUID, idIterator)
 
-    def WaitAllReplyByTopic(self, topic, referenceUUID, idIterator, version: str) -> List[Event]:
+    def WaitAllReplyByTopic(self, topic, referenceUUID, idIterator, version: str) -> List[EventMessage]:
         client = self.Clients[self.getClientIndex(self.Clients, False)]
         eventMessages = []
         loop = True
