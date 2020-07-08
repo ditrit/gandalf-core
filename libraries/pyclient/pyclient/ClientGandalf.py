@@ -1,12 +1,13 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+import time
 from queue import Queue
 from threading import Thread
-import time
+from typing import List
 
-from client.ClientGrpc import ClientGrpc
-from models.Options import Options
+from .client.ClientGrpc import ClientGrpc
+from .models.Options import Options
 
 DEFAULT_TIMEOUT = "10000"
 
