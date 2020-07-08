@@ -186,16 +186,16 @@ class ClientGandalf:
             message = client.WaitTopic(topic, referenceUUID, idIterator)
             eventMessages.append(message)
 
-            if message.GetEvent() == "SUCCES":
+            if message.Event == "SUCCES":
                 loop = False
 
         return eventMessages
 
     def CreateIteratorCommand(self) -> str:
-        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorCommand().GetId()
+        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorCommand().Id
 
     def CreateIteratorEvent(self) -> str:
-        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorEvent().GetId()
+        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorEvent().Id
 
     def getClientIndex(self, conns: List[ClientGrpc], updateIndex: bool) -> int:
         aux = self.ClientIndex
