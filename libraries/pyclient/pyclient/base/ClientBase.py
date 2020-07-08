@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+from typing import List
+
 from ..grpc.connector_pb2 import *
 from ..grpc.connector_pb2_grpc import *
 
@@ -41,6 +43,6 @@ class ClientBase:
     def SendCommandList(self, major: int, commands: List[str]) -> Empty:
         commandList = CommandList()
         commandList.Major = major
-        commandList.Commands = commands
+        commandList.Commands.extend(commands)
 
         return self.client.SendCommandList(commandList)

@@ -17,7 +17,7 @@ from time import sleep
 
 TEST_IDENTITY = "TestClientCommand"
 DEFAULT_PORT = "50150"
-SERVER_TEST_TIME = 0.5
+SERVER_STOP_TIME = 1.0
 
 FIXED_TEST_UUID = "3dc28f74-9ad3-4fc7-8b2b-03b7aab660c9"
 FIXED_TEST_COMMAND = "DummyCommand"
@@ -27,14 +27,12 @@ FIXED_TEST_PAYLOAD = "DummyPayload"
 FIXED_TEST_TIMEOUT = "10000"
 FIXED_TEST_MAJOR = 42
 
+server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
+
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    add_ConnectorCommandServicer_to_server(
-        TestConnectorCommandServicer(), server)
-    server.add_insecure_port('[::]:'+DEFAULT_PORT)
     server.start()
-    
-    server.wait_for_termination(timeout=SERVER_TEST_TIME)
+    server.wait_for_termination()
 
 
 class TestConnectorCommandServicer(ConnectorCommandServicer):
@@ -61,13 +59,26 @@ class TestConnectorCommandServicer(ConnectorCommandServicer):
 
 class TestClientCommand(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        add_ConnectorCommandServicer_to_server(
+            TestConnectorCommandServicer(), server)
+        server.add_insecure_port('[::]:'+DEFAULT_PORT)
+        thread = Thread(target=serve)
+        thread.start()
+        cls.client = ClientCommand(TEST_IDENTITY, 'localhost:'+DEFAULT_PORT)
+
+    @classmethod
+    def tearDownClass(cls):
+        server.stop(SERVER_STOP_TIME)
+
     def test_send_command(self):
         """
         Test Send Command
         """
         print('TEST : ClientCommand.SendCommand(commandType, command, timeoutn, payload)')
 
-        result = client.SendCommand(
+        result = self.client.SendCommand(
             FIXED_TEST_COMMAND_TYPE, FIXED_TEST_COMMAND, FIXED_TEST_TIMEOUT, FIXED_TEST_PAYLOAD)
 
         self.assertEqual(result.UUID, FIXED_TEST_UUID)
@@ -78,7 +89,7 @@ class TestClientCommand(unittest.TestCase):
         """
         print('TEST : ClientCommand.WaitCommand(command, iteratorId, major)')
 
-        result = client.WaitCommand(
+        result = self.client.WaitCommand(
             FIXED_TEST_COMMAND, FIXED_TEST_ITERATOR_ID, FIXED_TEST_MAJOR)
 
         self.assertEqual(result.Command, FIXED_TEST_COMMAND)
@@ -90,15 +101,10 @@ class TestClientCommand(unittest.TestCase):
         """
         print('TEST : ClientCommand.CreateIteratorCommand()')
 
-        result = client.CreateIteratorCommand()
+        result = self.client.CreateIteratorCommand()
 
         self.assertEqual(result.Id, FIXED_TEST_ITERATOR_ID)
 
-
-thread = Thread(target=serve)
-thread.start()
-
-client = ClientCommand(TEST_IDENTITY, 'localhost:'+DEFAULT_PORT)
 
 if __name__ == '__main__':
     unittest.main()

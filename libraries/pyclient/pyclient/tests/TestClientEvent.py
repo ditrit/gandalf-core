@@ -16,8 +16,8 @@ from threading import Thread
 from time import sleep
 
 TEST_IDENTITY = "TestClientEvent"
-DEFAULT_PORT = "50151"
-SERVER_TEST_TIME = 0.5
+DEFAULT_PORT = "50150"
+SERVER_STOP_TIME = 1.0
 
 FIXED_TEST_UUID = "3dc28f74-9ad3-4fc7-8b2b-03b7aab660c9"
 FIXED_TEST_EVENT = "DummyEvent"
@@ -28,15 +28,12 @@ FIXED_TEST_PAYLOAD = "DummyPayload"
 FIXED_TEST_TIMEOUT = "10000"
 FIXED_TEST_MAJOR = 42
 
+server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    add_ConnectorEventServicer_to_server(
-        TestConnectorEventServicer(), server)
-    server.add_insecure_port('[::]:'+DEFAULT_PORT)
     server.start()
-
-    server.wait_for_termination(timeout=SERVER_TEST_TIME)
+    server.wait_for_termination()
 
 
 class TestConnectorEventServicer(ConnectorEventServicer):
@@ -68,14 +65,27 @@ class TestConnectorEventServicer(ConnectorEventServicer):
 
 class TestClientEvent(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        add_ConnectorEventServicer_to_server(
+            TestConnectorEventServicer(), server)
+        server.add_insecure_port('[::]:'+DEFAULT_PORT)
+        thread = Thread(target=serve)
+        thread.start()
+        cls.client = ClientEvent(TEST_IDENTITY, 'localhost:'+DEFAULT_PORT)
+
+    @classmethod
+    def tearDownClass(cls):
+        server.stop(SERVER_STOP_TIME)
+
     def test_send_event(self):
         """
         Test Send Event
         """
         print('TEST ClientEvent.SendEvent(topic, event, referenceUUID, timeout, payload)')
 
-        result = client.SendEvent(FIXED_TEST_TOPIC, FIXED_TEST_EVENT,
-                                  FIXED_TEST_UUID, FIXED_TEST_TIMEOUT, FIXED_TEST_PAYLOAD)
+        result = self.client.SendEvent(FIXED_TEST_TOPIC, FIXED_TEST_EVENT,
+                                       FIXED_TEST_UUID, FIXED_TEST_TIMEOUT, FIXED_TEST_PAYLOAD)
 
     def test_wait_event(self):
         """
@@ -83,7 +93,7 @@ class TestClientEvent(unittest.TestCase):
         """
         print('TEST : ClientEvent.WaitEvent(topic, event, referenceUUID, iteratorId)')
 
-        result = client.WaitEvent(
+        result = self.client.WaitEvent(
             FIXED_TEST_TOPIC, FIXED_TEST_EVENT, FIXED_TEST_UUID, FIXED_TEST_ITERATOR_ID)
 
         self.assertEqual(result.Topic, FIXED_TEST_TOPIC)
@@ -95,7 +105,7 @@ class TestClientEvent(unittest.TestCase):
         """
         print('TEST : ClientEvent.WaitTopic(topic, referenceUUID, idIterator)')
 
-        result = client.WaitTopic(
+        result = self.client.WaitTopic(
             FIXED_TEST_TOPIC, FIXED_TEST_UUID, FIXED_TEST_ITERATOR_ID)
 
         self.assertEqual(result.Topic, FIXED_TEST_TOPIC)
@@ -107,15 +117,10 @@ class TestClientEvent(unittest.TestCase):
         """
         print('TEST : ClientEvent.CreateIteratorEvent()')
 
-        result = client.CreateIteratorEvent()
+        result = self.client.CreateIteratorEvent()
 
         self.assertEqual(result.Id, FIXED_TEST_ITERATOR_ID)
 
-
-thread = Thread(target=serve)
-thread.start()
-
-client = ClientEvent(TEST_IDENTITY, 'localhost:'+DEFAULT_PORT)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+from typing import List
+
 from command.ClientCommand import ClientCommand
 from event.ClientEvent import ClientEvent
 
