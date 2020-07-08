@@ -3,10 +3,9 @@
 
 from typing import List
 
-from command.ClientCommand import ClientCommand
-from event.ClientEvent import ClientEvent
-
-from base.ClientBase import ClientBase
+from ..command.ClientCommand import ClientCommand
+from ..event.ClientEvent import ClientEvent
+from ..base.ClientBase import ClientBase
 
 
 class ClientGrpc:

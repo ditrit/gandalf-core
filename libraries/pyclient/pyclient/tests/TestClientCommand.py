@@ -5,15 +5,13 @@ import unittest
 import uuid
 import grpc
 from concurrent import futures
-
-from pyclient.command.ClientCommand import ClientCommand
-
-from pyclient.grpc.connectorCommand_pb2_grpc import *
-from pyclient.grpc.connectorCommand_pb2 import *
-from pyclient.grpc.connector_pb2 import IteratorMessage
-
 from threading import Thread
 from time import sleep
+
+from pyclient.command.ClientCommand import ClientCommand
+from pyclient.grpc.connectorCommand_pb2_grpc import *
+from pyclient.grpc.connectorCommand_pb2 import *
+from pyclient.grpc.connector_pb2 import *
 
 TEST_IDENTITY = "TestClientCommand"
 DEFAULT_PORT = "50150"

@@ -5,14 +5,12 @@ import unittest
 import uuid
 import grpc
 from concurrent import futures
-
-from pyclient.base.ClientBase import ClientBase
-
-from pyclient.grpc.connector_pb2 import *
-from pyclient.grpc.connector_pb2_grpc import *
-
 from threading import Thread
 from time import sleep
+
+from pyclient.base.ClientBase import ClientBase
+from pyclient.grpc.connector_pb2 import *
+from pyclient.grpc.connector_pb2_grpc import *
 
 TEST_IDENTITY = "TestClientBase"
 DEFAULT_PORT = "50150"
@@ -62,7 +60,9 @@ class TestClientBase(unittest.TestCase):
         """
         print('TEST : ClientBase.SendCommandList(major, commandList)')
 
-        result = self.client.SendCommandList(FIXED_TEST_MAJOR, FIXED_TEST_COMMAND_LIST)
+        result = self.client.SendCommandList(
+            FIXED_TEST_MAJOR, FIXED_TEST_COMMAND_LIST)
+
 
 if __name__ == '__main__':
     unittest.main()

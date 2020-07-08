@@ -5,15 +5,13 @@ import unittest
 import uuid
 import grpc
 from concurrent import futures
+from threading import Thread
+from time import sleep
 
 from pyclient.event.ClientEvent import ClientEvent
-
 from pyclient.grpc.connectorEvent_pb2_grpc import *
 from pyclient.grpc.connectorEvent_pb2 import *
 from pyclient.grpc.connector_pb2 import *
-
-from threading import Thread
-from time import sleep
 
 TEST_IDENTITY = "TestClientEvent"
 DEFAULT_PORT = "50150"
@@ -21,12 +19,10 @@ SERVER_STOP_TIME = 1.0
 
 FIXED_TEST_UUID = "3dc28f74-9ad3-4fc7-8b2b-03b7aab660c9"
 FIXED_TEST_EVENT = "DummyEvent"
-FIXED_TEST_EVENT_TYPE = "DummyEventType"
 FIXED_TEST_TOPIC = "DummyTopic"
 FIXED_TEST_ITERATOR_ID = "DummyIteratorId"
 FIXED_TEST_PAYLOAD = "DummyPayload"
 FIXED_TEST_TIMEOUT = "10000"
-FIXED_TEST_MAJOR = 42
 
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
