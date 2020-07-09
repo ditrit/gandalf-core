@@ -1,5 +1,1 @@
--e "../../libraries/pyclient"
-grpcio==1.30.0
-grpcio-tools==1.30.0
-protobuf==3.12.2
-six==1.15.0
+-e "git+https://github.com/ditrit/gandalf.git@3d94ab6b439f189d9989b0ce355be3cfc959c070#egg=pyclient&subdirectory=libraries\pyclient"
