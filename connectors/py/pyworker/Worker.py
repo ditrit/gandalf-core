@@ -57,8 +57,6 @@ class Worker:
 
         self.Execute(self.clientGandalf, self.version)
 
-        # <-done need to be translated
-
         
 
         

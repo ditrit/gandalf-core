@@ -6,7 +6,7 @@ You need to have installed python3, pip and virtualenv.
 
 ### Install python dependencies
 #### First step is to create the env folder
-```python3 -m virtualenv```
+```python3 -m virtualenv env```
 #### Then activate it
 On Windows  : ```env\Scripts\activate.bat``` \
 On Linux    : ```source env/bin/activate```

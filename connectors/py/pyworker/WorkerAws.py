@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from pyworker import Worker
-from pyclient.Worker import ClientGandalf
+from .Worker import Worker
+from pyclient.ClientGandalf import ClientGandalf
 
 class WorkerAws(Worker):
 
