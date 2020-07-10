@@ -2,34 +2,32 @@ from github import Github
 from github import GithubException
 import logging
 
-class ClientGithub:
-    def __init__(self, Token, clientGithub):
+
+class ClientGithubBase:
+    def __init__(self, Token):
 
         git = Github(Token)
-
-        if not self.isValidClient(git):
-            logging.ERROR("Failed to create client")
-
         self.client = git
+        self.token=Token
 
-    '''
-    def __init__(self, user, password, clientGithub):
-
-        git = Github(user, password)
-
-        if not self.isValidClient(git):
-            logging.ERROR("Failed to create client")
-
-        self.client = git
-    '''
     # This method returns true if the client is valid 
-    def isValidClient(self, gitclient):
+    def isValidClient(self):
 
-        user = gitclient.get_user()
+        user = self.client.get_user()
         try:
             login = user.login
             return True
         except:
             return False
-        #TODO
         return True
+    
+    
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class ClientGithub(ClientGithubBase, metaclass=Singleton):
+    pass

@@ -11,12 +11,14 @@ from ....libraries.pyclient.models import Options
 
 class workerRepository(Thread):
 
-    def __init__(self,clientGandalf, token, version):
+    def __init__(self, clientGithub, clientGandalf, version):
 
         Thread.__init__(self)
         self.clientGandalf = clientGandalf
-        self.clientGithub = ClientGithub(token)
+        self.clientGithub = clientGithub
         self.version = version
+        
+    
 
     def Run(self):
         CreateIssueThread = Thread(target=self.CreateIssue, args=(self,))

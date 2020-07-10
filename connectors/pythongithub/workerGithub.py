@@ -5,6 +5,7 @@ from .workers import workerRepository
 
 # Import de la classe worker de base pour python
 from ..python import Worker
+from .client.client_github import ClientGithub
 
 import json
 
@@ -26,10 +27,16 @@ class WorkerGithub(Worker):
         '''
         configFile = open('./config.json')
         configuration = json.load(configFile)
-
+        
+        clientGithub= ClientGithub(configuration.token)
+        if not clientGithub.isValidClient() :
+            raise ValueError('Invalid client')
+        
+        
+        
 
         # Thread creation
-        workerRepository = workerRepository(configuration.token, self.clientGandalf, self.version)
+        workerRepository = workerRepository(clientGithub, self.clientGandalf, self.version)
         workerRepository.start()
 
         configFile.close()
