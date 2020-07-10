@@ -4,7 +4,7 @@ from ...libraries.pyclient import ClientGandalf
 from .workers import workerRepository
 
 # Import de la classe worker de base pour python
-from ..python import Worker
+from ..py import Worker
 from .client.client_github import ClientGithub
 
 import json

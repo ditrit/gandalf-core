@@ -4,9 +4,9 @@ from threading import Thread
 
 from ..repository.issue.issuePayload import CreateIssuePayload
 from ..repository.repositoryClient import ClientRepository
-from ..client.client_github import ClientGithub
+from ..client import ClientGithub
 from ....libraries.pyclient import ClientGandalf
-from ....libraries.pyclient.models import Options
+from ....libraries.pyclient.pyclient.models import Options
 
 
 class workerRepository(Thread):
@@ -38,7 +38,7 @@ class workerRepository(Thread):
             if issuePayload != "":
                 clientRepository = ClientRepository(issuePayload.RepositoryName, self.clientGithub)
 
-                result = clientRepository.CreateIssue(issuePayload.title,issuePayload.body, issuePayload.number)
+                result = clientRepository.CreateIssue(issuePayload.title,issuePayload.body)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
