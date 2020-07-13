@@ -1,11 +1,9 @@
-# from /workers import worker1,worker2 etc
-
 from ...libraries.pyclient import ClientGandalf
 from .workers import workerRepository
 
 # Import de la classe worker de base pour python
 from ..py import Worker
-from .client.client_github import ClientGithub
+from .client import ClientGithub
 
 import json
 
@@ -19,7 +17,7 @@ workerGithub.Run()
 
 
 class WorkerGithub(Worker):
-    def Execute(self, client, version):
+    def Execute(self, version):
         '''
         configuration = { 
             "token" : None,
