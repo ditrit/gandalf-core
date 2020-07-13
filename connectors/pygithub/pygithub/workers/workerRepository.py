@@ -2,14 +2,14 @@
 import json
 from threading import Thread
 
-from ..repository.issue.issuePayload import CreateIssuePayload
-from ..repository.repositoryClient import ClientRepository
-from ..client import ClientGithub
-from ....libraries.pyclient import ClientGandalf
-from ....libraries.pyclient.pyclient.models import Options
+from pygithub.repository.issue.issuePayload import CreateIssuePayload
+from pygithub.repository.repositoryClient import ClientRepository
+from pygithub.client.clientGithub import ClientGithub
+from pyclient.ClientGandalf import ClientGandalf
+from pyclient.models import Options
 
 
-class workerRepository(Thread):
+class WorkerRepository(Thread):
 
     def __init__(self, clientGithub, clientGandalf, version):
 

@@ -1,3 +1,5 @@
+-e "../py"
+-e "../../libraries/pyclient"
 certifi==2020.6.20
 chardet==3.0.4
 Deprecated==1.2.10

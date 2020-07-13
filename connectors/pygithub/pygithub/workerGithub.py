@@ -1,20 +1,13 @@
-from ...libraries.pyclient import ClientGandalf
-from .workers import workerRepository
 
+from pyclient.ClientGandalf import ClientGandalf
 # Import de la classe worker de base pour python
-from ..py import Worker
-from .client import ClientGithub
+from pyworker.Worker import Worker
+from pygithub.workers.workerRepository import WorkerRepository
+from pygithub.client.clientGithub import ClientGithub
+
+
 
 import json
-
-
-#MAIN
-commands = ["COMMAND_1","COMMAND_2"]
-version = 2
-
-workerGithub = WorkerGithub(version, commands)
-workerGithub.Run()
-
 
 class WorkerGithub(Worker):
     def Execute(self, version):
@@ -31,11 +24,17 @@ class WorkerGithub(Worker):
             raise ValueError('Invalid client')
         
         
-        
 
         # Thread creation
-        workerRepository = workerRepository(clientGithub, self.clientGandalf, self.version)
+        workerRepository = WorkerRepository(clientGithub, self.clientGandalf, self.version)
         workerRepository.start()
 
         configFile.close()
-        pass
+
+if __name__ == "__main__":
+
+    commands = ["COMMAND_1","COMMAND_2"]
+    version = 2
+
+    workerGithub = WorkerGithub(version, commands)
+    workerGithub.Run()
