@@ -1,4 +1,4 @@
-# from /workers import worker1,worker2 etc
+#from /workers import worker1,worker2 etc
 
 #from ...libraries.pyclient import ClientGandalf
 from .workers import WorkerProject
