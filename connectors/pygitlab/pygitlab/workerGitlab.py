@@ -1,11 +1,11 @@
-#from /workers import worker1,worker2 etc
+
 
 #from ...libraries.pyclient import ClientGandalf
 #from .workers import WorkerProject
-from pygitlab.workers.workerProject import WorkerProject
+from pygitlab.workers import workerProject
 # Import de la classe worker de base pour python
-from ..python import Worker
-from .client.clientGitlab import ClientGitlab
+from pyworker import Worker
+from pygitlab.client.clientGitlab import ClientGitlab
 
 import json
 

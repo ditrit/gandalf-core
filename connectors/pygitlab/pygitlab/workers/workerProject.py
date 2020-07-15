@@ -3,13 +3,11 @@
 import json
 from threading import Thread
 from pygitlab.project.ClientProject import ClientProject
-from pygitlab.project.issue import issuePayload
-#from pygitlab.issuePayload import CreateIssuePayload
-#from ..project.issue.issuePayload import CreateIssuePayload
-#from pygitlab.ClientProject import ClientProject
-#from ..client.clientGitlab import ClientGitlab
-#from ....libraries.pyclient import ClientGandalf
-#from ....libraries.pyclient.models import Options
+from pygitlab.project.issue import CreateIssuePayload
+from pygitlab.client.clientGitlab import ClientGitlab
+from pyclient import ClientGandalf
+from pyclient.models import Options
+
 
 
 class WorkerProject(Thread):
