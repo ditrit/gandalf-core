@@ -3,7 +3,7 @@
 
 from botocore.exceptions import ClientError
 
-from .Client import Client
+from ..Client import Client
 from .Bucket import Bucket
 
 class S3(Client):
