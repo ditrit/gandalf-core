@@ -55,3 +55,5 @@ connectors/pygithub/pygithub/repository/issue/__pycache__/
 connectors/pygithub/pygithub/tests/
 
 connectors/pygithub/pygithub/workers/__pycache__/
+
+connectors/pygithub/pygithub/__pycache__/
