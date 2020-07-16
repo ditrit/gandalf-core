@@ -1,5 +1,5 @@
 class IssuePayload :
-    def __init__(self, clientGitlab, title, body, project_id): # constructor
+    def __init__(self, clientGitlab, project_id, title, body): # constructor
         self.clientGitlab= clientGitlab
         self.title= title
         self.body= body

@@ -2,7 +2,7 @@
 
 #from ...libraries.pyclient import ClientGandalf
 #from .workers import WorkerProject
-from pygitlab.workers import workerProject
+from pygitlab.workers import WorkerProject
 # Import de la classe worker de base pour python
 from pyworker import Worker
 from pygitlab.client.clientGitlab import ClientGitlab
