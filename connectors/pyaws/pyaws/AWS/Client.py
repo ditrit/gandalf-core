@@ -2,7 +2,11 @@
 # coding: utf-8
 
 import boto3
+import typing
 
+from abc import abstractmethod
+
+T = typing.TypeVar('T', bound='Client')
 
 class Client:
 
@@ -15,35 +19,37 @@ class Client:
         self._service = value
 
     @property
-    def awsAccessKeyId(self):
+    def awsAccessKeyId(self) -> str:
         return self._awsAccessKeyId
 
     @awsAccessKeyId.setter
-    def awsAccessKeyId(self, value):
+    def awsAccessKeyId(self, value: str):
         self._awsAccessKeyId = value
 
     @property
-    def awsSecretAccessKey(self):
+    def awsSecretAccessKey(self) -> str:
         return self._awsSecretAccessKey
 
     @awsSecretAccessKey.setter
-    def awsSecretAccessKey(self, value):
+    def awsSecretAccessKey(self, value: str):
         self._awsSecretAccessKey = value
 
     @property
-    def regionName(self):
+    def regionName(self) -> str:
         return self._regionName
 
     @regionName.setter
-    def regionName(self, value):
+    def regionName(self, value: str):
         self._regionName = value
 
     @property
-    def client(self):
+    @abstractmethod
+    def client(self) -> T:
         return self._client
 
     @client.setter
-    def client(self, value):
+    @abstractmethod
+    def client(self, value: T):
         self._client = value
 
     def __init__(self, service: str, regionName: str, accessKeyId: str, secretAccessKey: str):

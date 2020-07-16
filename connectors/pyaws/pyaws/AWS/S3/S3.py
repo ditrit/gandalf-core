@@ -2,6 +2,8 @@
 # coding: utf-8
 
 from botocore.exceptions import ClientError
+import mypy_boto3_s3 as botoS3
+from typing import Dict
 
 from ..Client import Client
 from .Bucket import Bucket
@@ -9,17 +11,26 @@ from .Bucket import Bucket
 class S3(Client):
     
     @property
-    def buckets(self):
+    def client(self) -> botoS3.S3Client:
+        return self._client
+
+    @client.setter
+    def client(self, value: botoS3.S3Client):
+        self._client = value
+
+    @property
+    def buckets(self) -> Dict[str, Bucket]:
         return self._buckets
 
     @buckets.setter
-    def buckets(self, value):
+    def buckets(self, value: Dict[str, Bucket]):
         self._buckets = value
 
     def __init__(self, regionName: str, accessKeyId: str, secretAccessKey: str):
         super().__init__('s3', regionName, accessKeyId, secretAccessKey)
 
         self.buckets = {}
+        self.loadBuckets()
 
     def loadBuckets(self):
         bucketList = self.client.list_buckets()['Buckets']

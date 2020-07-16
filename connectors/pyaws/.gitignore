@@ -1,1 +1,4 @@
 **/__pycache__
+pyaws.egg-info
+build
+dist
