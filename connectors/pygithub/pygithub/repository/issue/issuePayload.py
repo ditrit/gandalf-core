@@ -1,5 +1,6 @@
 class CreateIssuePayload :
-    def __init__(self, title, body, repository): # constructor
-        self.title= title
-        self.body= body
-        self.repository=repository
+
+    def __init__(self, payload):
+        self.title = payload['title']
+        self.body = payload['body']
+        self.repositoryName = payload['repository']

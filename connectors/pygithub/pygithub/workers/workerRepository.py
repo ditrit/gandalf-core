@@ -3,7 +3,7 @@ import json
 from threading import Thread
 
 from pygithub.repository.issue.issuePayload import CreateIssuePayload
-from pygithub.repository.repositoryClient import ClientRepository
+from pygithub.repository.issue.issue import CreateIssue
 from pygithub.client.clientGithub import ClientGithub
 from pyclient.ClientGandalf import ClientGandalf
 from pyclient.models import Options
@@ -36,9 +36,8 @@ class WorkerRepository(Thread):
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if issuePayload != "":
-                clientRepository = ClientRepository(issuePayload.RepositoryName, self.clientGithub)
 
-                result = clientRepository.CreateIssue(issuePayload.title,issuePayload.body)
+                result = CreateIssue(self.clientGithub, issuePayload.repositoryName ,issuePayload.title,issuePayload.body)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))

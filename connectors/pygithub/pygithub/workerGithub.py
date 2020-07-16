@@ -19,14 +19,13 @@ class WorkerGithub(Worker):
         configFile = open('./config.json')
         configuration = json.load(configFile)
         
-        clientGithub= ClientGithub(configuration.token)
+        clientGithub= ClientGithub(configuration['token'])
         if not clientGithub.isValidClient() :
             raise ValueError('Invalid client')
-        
-        
+
 
         # Thread creation
-        workerRepository = WorkerRepository(clientGithub, self.clientGandalf, self.version)
+        workerRepository = WorkerRepository(clientGithub, self._clientGandalf, self._version)
         workerRepository.start()
 
         configFile.close()
