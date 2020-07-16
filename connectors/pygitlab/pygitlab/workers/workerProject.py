@@ -37,7 +37,7 @@ class WorkerProject(Thread):
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if issuePayload != "":
-                clientProject = ClientProject(issuePayload.ProjectName, self.clientGithub)
+                clientProject = ClientProject(issuePayload.project_id, self.clientGitlab)
 
                 result = clientProject.CreateIssue(issuePayload.title,issuePayload.body)
 
