@@ -22,6 +22,7 @@ type configKey struct {
 	usage      string  // usage string (CLI)
 	mandatory  bool    // is the value mandatory
 }
+
 var ConfigKeys = make(map[string]configKey)
 
 // SetStringKeyConfig :
@@ -79,7 +80,7 @@ func InitMainConfigKeys() {
 }
 
 func InitCoreKeys() {
-	_ = SetStringKeyConfig("core", "config_file", "f", "/home/zippo/go/src/core/configuration/elements/gandalf.yaml", "path to the configuration file", true)
+	_ = SetStringKeyConfig("core", "config_file", "f", "/home/romainfairant/go/src/gandalf/core/configuration/elements/gandalf.yaml", "path to the configuration file", true)
 	_ = SetStringKeyConfig("core", "logical_name", "l", "", "logical name of the component", true)
 	_ = SetStringKeyConfig("core", "gandalf_type", "g", "", "launch mode (connector|aggregator|cluster)", true)
 	_ = SetStringKeyConfig("core", "bind_address", "b", "", "Bind address", true)
@@ -98,6 +99,7 @@ func InitConnectorKeys() {
 	_ = SetStringKeyConfig("connector", "aggregators", "a", "address1:9800,address2:6400,address3", "aggregators addresses linked to the connector", true)
 	_ = SetStringKeyConfig("connector", "gandalf_secret", "s", "/etc/gandalf/gandalfSecret", "path of the gandalf secret", true)
 	_ = SetStringKeyConfig("connector", "product_url", "u", "url1,url2,url3", "product url list of the connector", false)
+	_ = SetStringKeyConfig("connector", "workers_url", "z", "", "workers url of the connector", false)
 	_ = SetStringKeyConfig("connector", "workers", "w", "/etc/gandalf/workers", "path for the workers configuration", false)
 	_ = SetStringKeyConfig("connector", "versions", "v", "v1,v2,v3", "versions of a connector", true)
 	_ = SetStringKeyConfig("connector", "grpc_bind_address", "r", "", "GRPC bind address", true)
@@ -109,7 +111,7 @@ func InitAggregatorKeys() {
 }
 
 func InitClusterKeys() {
-	_ = SetStringKeyConfig("cluster", "cluster_join", "j", "clusterAddress", "cluster command (join)", true)
+	_ = SetStringKeyConfig("cluster", "cluster_join", "j", "", "cluster command (join)", false)
 	_ = SetStringKeyConfig("cluster", "gandalf_db", "d", "pathToTheDB", "path for the gandalf database", false)
 }
 
