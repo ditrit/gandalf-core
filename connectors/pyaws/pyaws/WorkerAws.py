@@ -33,7 +33,7 @@ if __name__ == "__main__":
     commands = list()
     version = int()
     
-    config = json.loads(sys.stdin.readlines())
+    config = json.loads(sys.stdin.read())
 
     workerAws = WorkerAws(version, commands)
 
