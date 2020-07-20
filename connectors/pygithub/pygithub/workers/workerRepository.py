@@ -80,10 +80,10 @@ class WorkerRepository(Thread):
         id = self.clientGandalf.CreateIteratorCommand()
 
         while True:
-            command = self.clientGandalf.WaitCommand("CREATE_USER_TO_COLLABORATORS", id, version)
+            command = self.clientGandalf.WaitCommand("ADD_USER_TO_COLLABORATORS", id, version)
 
             jsonAddUserToCollaboratorPayload = json.load(command.GetPayload())
-            addUserToCollaboratorsPayload = CreateRepositoryPayload(jsonAddUserToCollaboratorPayload)
+            addUserToCollaboratorsPayload = AddUserToCollaboratorsPayload(jsonAddUserToCollaboratorPayload)
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if addUserToCollaboratorsPayload != "":
@@ -102,7 +102,7 @@ class WorkerRepository(Thread):
             command = self.clientGandalf.WaitCommand("REMOVE_USER_FROM_COLLABORATORS", id, version)
 
             jsonRemoveUserFromCollaboratorPayload = json.load(command.GetPayload())
-            removeUserFromCollaboratorsPayload = CreateRepositoryPayload(jsonRemoveUserFromCollaboratorPayload)
+            removeUserFromCollaboratorsPayload = RemoveUserFromCollaboratorsPayload(jsonRemoveUserFromCollaboratorPayload)
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if removeUserFromCollaboratorsPayload != "":

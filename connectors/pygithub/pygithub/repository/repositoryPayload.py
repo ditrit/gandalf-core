@@ -6,14 +6,15 @@ class CreateRepositoryPayload:
 
 class AddUserToCollaboratorsPayload:
     def __init__(self, payload):
+        self.name  = payload['name']
+        self.username = payload['username']
+        self.permission = payload['permission']
 
-        #TODO 
 
-        pass
 
 class RemoveUserFromCollaboratorsPayload:
     def __init__(self, payload):
-
-        #TODO
+        self.name  = payload['name']
+        self.username = payload['username']
 
         pass

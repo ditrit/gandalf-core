@@ -14,20 +14,45 @@ def AddHook(clientGithub, repositoryName:str, hookName:str, events:list, host:st
     return True
 
 
-def GetHook():
+def GetHook(clientGithub, repositoryName, hookID):
 
-    #TODO
+
+    repository = clientGithub.client.get_repo(repositoryName)
+    hook = repository.get_hook(hookID)
+
+    #TODO ERROR HANDLING
     
+    return hook
+
+def GetHooks(clientGithub, repositoryName):
+
+    repository = clientGithub.client.get_repo(repositoryName)
+    hooks = repository.get_hook()
+
+    #TODO ERROR HANDLING
+
+    return hooks
+
+def DeleteHook(clientGithub, repositoryName, hookID):
+
+    repository = clientGithub.client.get_repo(repositoryName)
+    hook = repository.get_hook(hookID)
+    hook.delete()
+
+    #TODO ERROR HANDLING
+    
+    return True
+
+'''
+
+def EditHook(clientGithub, ):
+
+    repository = clientGithub.client.get_repo(repositoryName)
+    hook = repository.get_hook(hookID)
+    hook.edit(name = hookName, conifg = config, events = events, add_events = add_events, active = active)
+
+    #TODO ERROR HANDLING
+
     pass
 
-def GetHooks():
-
-    #TODO
-
-    pass
-
-def EditHook():
-
-    #TODO
-
-    pass
+'''
