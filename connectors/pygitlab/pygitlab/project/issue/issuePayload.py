@@ -1,4 +1,4 @@
-class IssuePayload :
+class CreateIssuePayload :
     def __init__(self, clientGitlab, project_id, title, body): # constructor
         self.clientGitlab= clientGitlab
         self.title= title
