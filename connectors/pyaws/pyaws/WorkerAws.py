@@ -3,13 +3,14 @@
 
 from pyworker.WorkerWorkflow import WorkerWorkflow
 from pyclient.ClientGandalf import ClientGandalf
+from typing import List
 
 import json
 import sys
 
 class WorkerAws(WorkerWorkflow):
 
-    def __init__(self, version, commandes):
+    def __init__(self, version: int, commandes: List[str]):
         super().__init__(version, commandes)
 
     def Upload(self, clientGandalf: ClientGandalf, version: int):

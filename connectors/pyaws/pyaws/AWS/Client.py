@@ -8,39 +8,15 @@ from abc import abstractmethod
 
 T = typing.TypeVar('T', bound='Client')
 
+
 class Client:
 
-    @property
-    def service(self):
-        return self._service
+    service: str
 
-    @service.setter
-    def service(self, value):
-        self._service = value
+    awsAccessKeyId: str
+    awsSecretAccessKey: str
 
-    @property
-    def awsAccessKeyId(self) -> str:
-        return self._awsAccessKeyId
-
-    @awsAccessKeyId.setter
-    def awsAccessKeyId(self, value: str):
-        self._awsAccessKeyId = value
-
-    @property
-    def awsSecretAccessKey(self) -> str:
-        return self._awsSecretAccessKey
-
-    @awsSecretAccessKey.setter
-    def awsSecretAccessKey(self, value: str):
-        self._awsSecretAccessKey = value
-
-    @property
-    def regionName(self) -> str:
-        return self._regionName
-
-    @regionName.setter
-    def regionName(self, value: str):
-        self._regionName = value
+    regionName: str
 
     @property
     @abstractmethod
@@ -50,7 +26,7 @@ class Client:
     @client.setter
     @abstractmethod
     def client(self, value: T):
-        self._client = value
+        self._client: T = value
 
     def __init__(self, service: str, regionName: str, accessKeyId: str, secretAccessKey: str):
         self.service = service
