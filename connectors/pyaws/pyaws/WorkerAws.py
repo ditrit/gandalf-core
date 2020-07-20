@@ -1,15 +1,18 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from pyworker.Worker import Worker
+from pyworker.WorkerWorkflow import WorkerWorkflow
 from pyclient.ClientGandalf import ClientGandalf
 
-class WorkerAws(Worker):
+import json
+import sys
+
+class WorkerAws(WorkerWorkflow):
 
     def __init__(self, version, commandes):
         super().__init__(version, commandes)
 
-    def Execute(self, clientGandalf: ClientGandalf, version: int):
+    def Upload(self, clientGandalf: ClientGandalf, version: int):
         # run stuff here
         print("WorkerAws running")
 
@@ -26,8 +29,10 @@ class WorkerAws(Worker):
 
 
 if __name__ == "__main__":
-    commands = ["CommandA", "CommandB"]
-    version = 2
+    commands = list()
+    version = int()
+    
+    config = json.loads(sys.stdin.readlines())
 
     workerAws = WorkerAws(version, commands)
 
