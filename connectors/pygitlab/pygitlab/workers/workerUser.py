@@ -39,7 +39,7 @@ class WorkerUser(Thread):
             if userPayload != "":
                 
 
-                result = user.CreateUser(userPayload.clientGitlab, userPayload.name)
+                result = user.CreateUser(self.clientGitlab, userPayload.name)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))

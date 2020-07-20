@@ -2,7 +2,7 @@
 # import de fonction lié au repo
 import json
 from threading import Thread
-from pygitlab.project import projectPayload
+from pygitlab.project.projectPayload import CreateProjectPayload
 from pygitlab.project import project
 from pygitlab.project.issue import issuePayload
 from pygitlab.project.issue import issue
@@ -37,13 +37,13 @@ class WorkerProject(Thread):
             command = self.clientGandalf.WaitCommand("CREATE_PROJECT", id, self.version)
 
             jsonProjectPayload = json.load(command.GetPayload())
-            createProjectPayload = projectPayload.CreateProjectPayload(jsonProjectPayload)
+            createProjectPayload = CreateProjectPayload(jsonProjectPayload)
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if createProjectPayload != "":
                 
 
-                result = project.CreateProject(createProjectPayload.clientGitlab, createProjectPayload.name)
+                result = project.CreateProject(self.clientGitlab, createProjectPayload.name)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
@@ -64,7 +64,7 @@ class WorkerProject(Thread):
             if createIssuePayload != "":
                 
 
-                result = issue.CreateIssue(createIssuePayload.clientGitlab, createIssuePayload.project_id, createIssuePayload.title, createIssuePayload.body)
+                result = issue.CreateIssue(self.clientGitlab, createIssuePayload.project_id, createIssuePayload.title, createIssuePayload.body)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
@@ -85,7 +85,7 @@ class WorkerProject(Thread):
                 if addMemberPayload != "":
                     
     
-                    result = project.AddMember(addMemberPayload.clientGitlab, addMemberPayload.new_member, addMemberPayload.project_id)
+                    result = project.AddMember(self.clientGitlab, addMemberPayload.new_member, addMemberPayload.project_id)
     
                     if result :
                         self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
