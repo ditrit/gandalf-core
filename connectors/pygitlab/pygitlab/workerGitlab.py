@@ -11,6 +11,7 @@ import json
 
 
 class WorkerGitlab(Worker):
+    
     def Execute(self, version):
         '''
         configuration = { 
