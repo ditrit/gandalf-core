@@ -2,7 +2,7 @@
 # import de fonction lié au repo
 import json
 from threading import Thread
-from pygitlab.project.projectPayload import CreateProjectPayload
+from pygitlab.project import projectPayload
 from pygitlab.project import project
 from pygitlab.project.issue import issuePayload
 from pygitlab.project.issue import issue
@@ -21,13 +21,14 @@ class WorkerProject(Thread):
         self.clientGitlab = clientGitlab
         self.version = version
         
-    
 
     def Run(self):
-        CreateIssueThread = Thread(target=self.CreateIssue, args=(self,))
         CreateProjectThread = Thread(target=self.CreateProject, args=(self,))
-        CreateIssueThread.start()
+        CreateIssueThread = Thread(target=self.CreateIssue, args=(self,))
+        AddMemberThread = Thread(target=self.AddMember, args=(self,))
         CreateProjectThread.start()
+        CreateIssueThread.start()
+        AddMemberThread.start()
 
 
     def CreateProject(self):
@@ -37,7 +38,7 @@ class WorkerProject(Thread):
             command = self.clientGandalf.WaitCommand("CREATE_PROJECT", id, self.version)
 
             jsonProjectPayload = json.load(command.GetPayload())
-            createProjectPayload = CreateProjectPayload(jsonProjectPayload)
+            createProjectPayload = projectPayload.CreateProjectPayload(jsonProjectPayload)
 
             # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
             if createProjectPayload != "":

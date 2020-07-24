@@ -22,10 +22,12 @@ class WorkerHook(Thread):
     
 
     def Run(self):
-        CreateIssueThread = Thread(target=self.CreateIssue, args=(self,))
-        CreateProjectThread = Thread(target=self.CreateProject, args=(self,))
-        CreateIssueThread.start()
-        CreateProjectThread.start()
+        ListHooksThread = Thread(target=self.ListHooks, args=(self,))
+        AddHookThread = Thread(target=self.AddHook, args=(self,))
+        DeleteHookThread = Thread(target=self.DeleteHook, args=(self,))
+        ListHooksThread.start()
+        AddHookThread.start()
+        DeleteHookThread.start()
 
 
     def ListHooks(self):
