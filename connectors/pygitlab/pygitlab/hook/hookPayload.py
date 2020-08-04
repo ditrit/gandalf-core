@@ -12,3 +12,4 @@ class AddHookPayload :
 class DeleteHookPayload :
     def __init__(self, hook_id): # constructor
         self.hook_id= hook_id
+        

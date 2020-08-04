@@ -11,3 +11,10 @@ def AddMember(clientGitlab, user_id, project_id):
                                  gitlab.DEVELOPER_ACCESS})
     #TODO ERROR CHECKING 
     return True
+
+def DeleteMember(clientGitlab, user_id, project_id):
+    #TODO
+    project = clientGitlab.client.projects.get(project_id)
+    project.members.delete(user_id)
+    #TODO ERROR CHECKING 
+    return True

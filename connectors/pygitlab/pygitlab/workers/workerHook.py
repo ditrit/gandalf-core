@@ -10,7 +10,7 @@ from pyclient.models import Options
 
 
 
-class WorkerHook(Thread):
+class WorkerAddHook(Thread):
 
     def __init__(self, clientGitlab, clientGandalf, version):
 
@@ -22,32 +22,10 @@ class WorkerHook(Thread):
     
 
     def Run(self):
-        ListHooksThread = Thread(target=self.ListHooks, args=(self,))
         AddHookThread = Thread(target=self.AddHook, args=(self,))
-        DeleteHookThread = Thread(target=self.DeleteHook, args=(self,))
-        ListHooksThread.start()
         AddHookThread.start()
-        DeleteHookThread.start()
 
 
-    def ListHooks(self):
-        id = self.clientGandalf.CreateIteratorCommand()
-
-        while True:
-            command = self.clientGandalf.WaitCommand("LIST_HOOKS", id, self.version)
-
-
-            # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
-            
-
-            result = hook.ListHooks(self.clientGitlab)
-
-            if result :
-                self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
-            else:
-                self.clientGandalf.SendReply(command.GetCommand(), "FAIL", command.GetUUID(), Options("",""))
-                
-                    
     def AddHook(self):
         id = self.clientGandalf.CreateIteratorCommand()
 
@@ -61,13 +39,28 @@ class WorkerHook(Thread):
             if addHookPayload != "":
                 
 
-                result = hook.CreateHook(self.clientGitlab, addHookPayload.url, addHookPayload.token, addHookPayload.push_events, addHookPayload.tag_push_events, addHookPayload.merge_requests_events, addHookPayload.repository_update_events, addHookPayload.enable_ssl_verification)
+                result = hook.AddHook(self.clientGitlab, addHookPayload.url, addHookPayload.token, addHookPayload.push_events, addHookPayload.tag_push_events, addHookPayload.merge_requests_events, addHookPayload.repository_update_events, addHookPayload.enable_ssl_verification)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
                 else:
                     self.clientGandalf.SendReply(command.GetCommand(), "FAIL", command.GetUUID(), Options("",""))
 
+
+class WorkerDeleteHook(Thread):
+
+    def __init__(self, clientGitlab, clientGandalf, version):
+
+        Thread.__init__(self)
+        self.clientGandalf = clientGandalf
+        self.clientGitlab = clientGitlab
+        self.version = version
+        
+    
+
+    def Run(self):
+        DeleteHookThread = Thread(target=self.DeleteHook, args=(self,))
+        DeleteHookThread.start()
 
     def DeleteHook(self):
             id = self.clientGandalf.CreateIteratorCommand()

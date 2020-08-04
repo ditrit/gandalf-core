@@ -1,3 +1,4 @@
+import gitlab
 
 def ListHooks(clientGitlab) :
     hooks = clientGitlab.client.hooks.list()
