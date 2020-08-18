@@ -4,11 +4,13 @@ import logging
 
 
 class ClientGitlabBase:
-    def __init__(self, Token, url):
+    def __init__(self, url, token):
 
-        git = Gitlab(url, Token)
+        git = Gitlab(url, token)
         self.client = git
-        self.token=Token
+        self.token=token
+        #self.clientID=clientID
+        #self.clientSecret=clientSecret
 
     # This method returns true if the client is valid 
     def isValidClient(self):

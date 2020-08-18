@@ -1,11 +1,20 @@
 class CreateProjectPayload :
-    def __init__(self, project_id, name): # constructor
-        self.project_id= project_id
+    def __init__(self, name, team, templateName = None): # constructor
         self.name= name
+        self.team= team
+        self.templateName= templateName
        
         
 class AddMemberProjectPayload :
-    def __init__(self, project_id, user_id): # constructor
-        self.project_id= project_id
-        self.user_id= user_id
+    def __init__(self, projectID, userEmail): # constructor
+        self.projectID= projectID
+        self.userEmail= userEmail
        
+        
+class RemoveMemberProjectPayload :
+    def __init__(self, projectID, userEmail): # constructor
+        self.projectID= projectID
+        self.userEmail= userEmail
+       
+        
+        

@@ -1,5 +1,4 @@
 
-# import de fonction lié au repo
 import json
 from threading import Thread
 from pygitlab.hook import hookPayload
@@ -39,7 +38,7 @@ class WorkerAddHook(Thread):
             if addHookPayload != "":
                 
 
-                result = hook.AddHook(self.clientGitlab, addHookPayload.url, addHookPayload.token, addHookPayload.push_events, addHookPayload.tag_push_events, addHookPayload.merge_requests_events, addHookPayload.repository_update_events, addHookPayload.enable_ssl_verification)
+                result = hook.AddHook(clientGitlab=self.clientGitlab, url=addHookPayload.url, token=addHookPayload.token, push_events=addHookPayload.pushEvents, tag_push_events=addHookPayload.tagPushEvents, merge_requests_events=addHookPayload.mergeRequestsEvents, repository_update_events=addHookPayload.repositoryUpdateEvents, enable_ssl_verification=addHookPayload.enableSslVerification)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
@@ -74,11 +73,13 @@ class WorkerDeleteHook(Thread):
                 # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
                 if deleteHookPayload != "":
                     
+                    #TODO
+                    if isAuthorized(self.clientGitlab, "DELETE_HOOK") :  #vérification de l'abilitation de celui qui passe la commande?
     
-                    result = hook.DeleteHook(self.clientGitlab, deleteHookPayload.hook_id)
-    
-                    if result :
-                        self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
-                    else:
-                        self.clientGandalf.SendReply(command.GetCommand(), "FAIL", command.GetUUID(), Options("",""))
-    
+                        result = hook.DeleteHook(clientGitlab=self.clientGitlab, hook_id=deleteHookPayload.hookID)
+        
+                        if result :
+                            self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
+                        else:
+                            self.clientGandalf.SendReply(command.GetCommand(), "FAIL", command.GetUUID(), Options("",""))
+        

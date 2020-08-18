@@ -40,7 +40,7 @@ class WorkerProject(Thread):
             if createProjectPayload != "":
                 
 
-                result = project.CreateProject(self.clientGitlab, createProjectPayload.name)
+                result = project.CreateProject(clientGitlab=self.clientGitlab, name=createProjectPayload.name, team=createProjectPayload.team, template_name=createProjectPayload.templateName)
 
                 if result :
                     self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))

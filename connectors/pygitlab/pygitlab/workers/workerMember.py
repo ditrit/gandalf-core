@@ -3,10 +3,7 @@ import json
 from threading import Thread
 from pygitlab.project import projectPayload
 from pygitlab.project import project
-from pygitlab.project.issue import issuePayload
-from pygitlab.project.issue import issue
-from pygitlab.client.clientGitlab import ClientGitlab
-from pyclient import ClientGandalf
+
 from pyclient.models import Options
 
 
@@ -39,7 +36,7 @@ class WorkerAddMember(Thread):
                 if addMemberPayload != "":
                     
     
-                    result = project.AddMember(self.clientGitlab, addMemberPayload.new_member, addMemberPayload.project_id)
+                    result = project.AddMember(clientGitlab = self.clientGitlab,  project_ID=addMemberPayload.projectID, user_email=addMemberPayload.userEmail)
     
                     if result :
                         self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
@@ -59,11 +56,7 @@ class WorkerRemoveMember(Thread):
         
 
     def Run(self):
-        CreateProjectThread = Thread(target=self.CreateProject, args=(self,))
-        AddMemberThread = Thread(target=self.AddMember, args=(self,))
         RemoveMemberThread = Thread(target=self.RemoveMember, args=(self,))
-        CreateProjectThread.start()
-        AddMemberThread.start()
         RemoveMemberThread.start()
     
     def RemoveMember(self):
@@ -73,13 +66,13 @@ class WorkerRemoveMember(Thread):
                     command = self.clientGandalf.WaitCommand("REMOVE_MEMBER", id, self.version)
         
                     jsonProjectPayload = json.load(command.GetPayload())
-                    removeMemberPayload = projectPayload.removeMemberProjectPayload(jsonProjectPayload)
+                    removeMemberPayload = projectPayload.RemoveMemberProjectPayload(jsonProjectPayload)
         
                     # TODO ERROR CHECKING, CHECK IF THE ISSUEPAYLOAD IS FULL
                     if removeMemberPayload != "":
                         
         
-                        result = project.RemoveMember(self.clientGitlab, removeMemberPayload.member, removeMemberPayload.project_id)
+                        result = project.RemoveMember(clientGitlab=self.clientGitlab, project_id=removeMemberPayload.projectID, user_email=removeMemberPayload.userEmail, )
         
                         if result :
                             self.clientGandalf.SendReply(command.GetCommand(), "SUCCES", command.GetUUID(), Options("",""))
