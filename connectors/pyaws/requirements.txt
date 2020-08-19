@@ -10,3 +10,5 @@ mypy-boto3==1.14.21.0
 mypy-boto3-ec2==1.14.21.0
 mypy-boto3-lambda==1.14.21.0
 mypy-boto3-s3==1.14.21.0
+mypy-boto3-s3control==1.14.21.0
+mypy-boto3-iam==1.14.21.0

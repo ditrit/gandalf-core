@@ -18,47 +18,13 @@ DEFAULT_TIMEOUT = "10000"
 
 class ClientGandalf:
 
-    @property
-    def Identity(self):
-        return self._Identity
+    Identity: str
+    ClientConnections: List[str]
+    Clients: List[ClientGrpc]
+    Timeout: str
+    ClientIndex: int
 
-    @Identity.setter
-    def Identity(self, value):
-        self._Identity = value
-
-    @property
-    def ClientConnections(self):
-        return self._ClientConnections
-
-    @ClientConnections.setter
-    def ClientConnections(self, value):
-        self._ClientConnections = value
-
-    @property
-    def Clients(self):
-        return self._Clients
-
-    @Clients.setter
-    def Clients(self, value):
-        self._Clients = value
-
-    @property
-    def Timeout(self):
-        return self._Timeout
-
-    @Timeout.setter
-    def Timeout(self, value):
-        self._Timeout = value
-
-    @property
-    def ClientIndex(self):
-        return self._ClientIndex
-
-    @ClientIndex.setter
-    def ClientIndex(self, value):
-        self._ClientIndex = value
-
-    def __init__(self, identity, timeout: str, clientConnections: List[str]):
+    def __init__(self, identity: str, timeout: str, clientConnections: List[str]):
         self.Identity = identity
         self.ClientConnections = clientConnections
         self.Clients = []

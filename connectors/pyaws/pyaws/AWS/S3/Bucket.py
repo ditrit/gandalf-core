@@ -3,28 +3,43 @@
 
 from typing import BinaryIO, Dict
 from botocore.exceptions import ClientError
-
+from mypy_boto3_s3 import S3Client
 
 class Bucket:
 
-    client: str
+    client: S3Client
     name: str
     region: str
+    accountId: str
+    bucket: Dict
 
-    def __init__(self, client, region: str, name: str):
-        self.client = client
-        self.region = region
+    def __init__(self, client: S3Client, accountId: str, name: str, region: str, bucket: Dict = None):
+        self.client: S3Client = client
+        self.accountId = accountId
         self.name = name
+        self.region = region
 
-    def uploadFile(self, fileName: str, objectName: str, fileObject: BinaryIO) -> bool:
+        self.bucket = bucket if bucket is not None else self.client.create_bucket(
+            Bucket=name, CreateBucketConfiguration={'LocationConstraint': region})
+
+    def uploadFile(self, fileName: str, objectName: str, extraArgs, fileObject: BinaryIO) -> bool:
         if objectName is None:
             objectName = fileName
 
         try:
             if fileObject is None:
-                self.client.upload_file(fileName, self.name, objectName)
+                if extraArgs is None:
+                    self.client.upload_file(fileName, self.name, objectName)
+                else:
+                    self.client.upload_file(
+                        fileName, self.name, objectName, ExtraArgs=extraArgs)
             else:
-                self.client.upload_fileobj(fileObject, self.name, objectName)
+                if extraArgs is None:
+                    self.client.upload_fileobj(
+                        fileObject, self.name, objectName)
+                else:
+                    self.client.upload_fileobj(
+                        fileObject, self.name, objectName, ExtraArgs=extraArgs)
         except ClientError as err:
             print(err)
             return False
@@ -75,12 +90,15 @@ class Bucket:
             print(err)
         return None
 
-    def putBucketAcl(self, acl: str, acp: Dict):
+    def putBucketAcl(self, acl: str):
         try:
-            self.client.put_bucket_acl(
-                Bucket=self.name, ACL=acl, AccessControlPolicy=acp)
+            self.client.put_bucket_acl(Bucket=self.name, ACL=acl)
         except ClientError as err:
             print(err)
             return False
 
         return True
+
+    def putPublicAccessBlock(self, publicAccessBlockConfiguration):
+        self.client.put_public_access_block(
+            Bucket=self.name, PublicAccessBlockConfiguration=publicAccessBlockConfiguration)

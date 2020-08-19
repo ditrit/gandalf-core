@@ -1,32 +1,29 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from pyworker.WorkerWorkflow import WorkerWorkflow
+from .WorkerInterface import WorkerInterface
+from .workers.WorkerIAM import WorkerIAM
+
 from pyclient.ClientGandalf import ClientGandalf
 from typing import List
+from threading import Thread
 
 import json
 import sys
 
-class WorkerAws(WorkerWorkflow):
+class WorkerAws(WorkerInterface):
 
     def __init__(self, version: int, commandes: List[str]):
         super().__init__(version, commandes)
 
-    def Upload(self, clientGandalf: ClientGandalf, version: int):
-        # run stuff here
+    def Execute(self, clientGandalf: ClientGandalf, version: int):
         print("WorkerAws running")
 
-        # workerA = WorkerA(clientGandalf, version)
-        # threadWorkerA = Thread(target=workerA.Run())
-        # threadWorkerA.start()
+        workerIAM = WorkerIAM(clientGandalf, version)
+        threadWorkerIAM = Thread(target=workerIAM.Run())
+        threadWorkerIAM.start()
 
-        # workerB = WorkerB(clientGandalf, version)
-        # threadWorkerB = Thread(target=workerB.Run())
-        # threadWorkerB.start()
-
-        # threadWorkerA.join()
-        # threadWorkerB.join()
+        threadWorkerIAM.join()
 
 
 if __name__ == "__main__":

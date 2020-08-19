@@ -31,7 +31,7 @@ class Client:
     def __init__(self, service: str, regionName: str, accessKeyId: str, secretAccessKey: str):
         self.service = service
         self.regionName = regionName
-        self.accessKeyId = accessKeyId
+        self.awsAccessKeyId = accessKeyId
         self.awsSecretAccessKey = secretAccessKey
 
         self.client = boto3.client(service, region_name=regionName,

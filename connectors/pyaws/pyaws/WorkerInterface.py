@@ -1,16 +1,16 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from .Worker import Worker
+from pyworker.Worker import Worker
 
 from typing import List
 from abc import ABCMeta, abstractmethod
 from pyclient.ClientGandalf import ClientGandalf
 
-class WorkerWorkflow(Worker, metaclass=abc.ABCMeta):
+class WorkerInterface(Worker, metaclass=ABCMeta):
     
     @abstractmethod
-    def Upload(self, clientGandalf: ClientGandalf, version: int):
+    def Execute(self, clientGandalf: ClientGandalf, version: int):
         raise NotImplementedError
 
     def __init__(self, version: int, commandes: List[str]):
@@ -19,4 +19,4 @@ class WorkerWorkflow(Worker, metaclass=abc.ABCMeta):
     def Run(self):
         super().Run()
 
-        self.Upload(self.clientGandalf, self.version)
+        self.Execute(self.clientGandalf, self.version)

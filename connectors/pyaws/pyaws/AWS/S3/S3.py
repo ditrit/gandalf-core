@@ -15,7 +15,7 @@ class S3(Client):
     buckets: Dict[str, Bucket]
 
     def __init__(self, regionName: str, accessKeyId: str, secretAccessKey: str):
-        super().__init__('s3', regionName, accessKeyId, secretAccessKey)
+        Client.__init__(self, 's3', regionName, accessKeyId, secretAccessKey)
 
         self.buckets = {}
         self.loadBuckets()
@@ -24,17 +24,16 @@ class S3(Client):
         bucketList = self.client.list_buckets()['Buckets']
 
         for bucket in bucketList:
-            self.buckets[bucket['Name']] = Bucket(
-                self.client, self.regionName, bucket['Name'])
+            self.buckets[bucket['Name']] = Bucket(self.client, self.awsAccessKeyId, bucket['Name'], self.regionName, bucket)
 
-    def createBucket(self, name: str):
+    def createBucket(self, name: str, region=None):
+        if region is None:
+            region = self.regionName
+
         try:
-            self.client.create_bucket(Bucket=name, CreateBucketConfiguration={
-                                      'LocationConstraint': self.regionName})
-            self.buckets[name] = Bucket(self.client, self.regionName, name)
+            self.buckets[name] = Bucket(self.client, self.awsAccessKeyId, name, region)
         except ClientError as err:
-            print(err)
-            return False
+            raise err
 
         return True
 
