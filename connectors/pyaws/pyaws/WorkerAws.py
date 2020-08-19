@@ -12,14 +12,17 @@ import json
 import sys
 
 class WorkerAws(WorkerInterface):
+    config
 
-    def __init__(self, version: int, commandes: List[str]):
+    def __init__(self, version: int, commandes: List[str], config):
         super().__init__(version, commandes)
+
+        self.config = config
 
     def Execute(self, clientGandalf: ClientGandalf, version: int):
         print("WorkerAws running")
 
-        workerIAM = WorkerIAM(clientGandalf, version)
+        workerIAM = WorkerIAM(clientGandalf, version, config)
         threadWorkerIAM = Thread(target=workerIAM.Run())
         threadWorkerIAM.start()
 
@@ -32,6 +35,6 @@ if __name__ == "__main__":
     
     config = json.loads(sys.stdin.read())
 
-    workerAws = WorkerAws(version, commands)
+    workerAws = WorkerAws(version, commands, config)
 
     workerAws.Run()
