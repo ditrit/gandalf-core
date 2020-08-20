@@ -55,6 +55,9 @@ class WorkerIAM(WorkerAws):
         print(id)
 
         command = self.clientGandalf.WaitCommand("DELETE_USER", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
 
 
     def Run(self):
