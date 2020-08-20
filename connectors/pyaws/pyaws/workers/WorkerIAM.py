@@ -49,6 +49,12 @@ class WorkerIAM(WorkerAws):
             self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not updated !"})
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User updated !"})
+    
+    def DeleteUser(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand("DELETE_USER", id, self.version)
 
 
     def Run(self):
