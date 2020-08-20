@@ -28,10 +28,27 @@ class WorkerIAM(WorkerAws):
 
         payload = json.loads(command.Payload)
 
-        if self.iamClient.createUser(payload["name"]):
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
-        else:
+
+        response = self.iamClient.createUser(payload["name"])
+        if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+    
+    def UpdateUser(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand("UPDATE_USER", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+
+        response = self.iamClient.updateUser(name=payload["name"], newName=payload["newName"])
+        if response == None:
+            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not updated !"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User updated !"})
 
 
     def Run(self):
