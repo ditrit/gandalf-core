@@ -255,7 +255,7 @@ class IAM(Client):
             raise err
 
         return None
-        
+
 
     def updateUserAccessKey(self, keyId: str, status: bool, userName: str = None):
 
@@ -269,3 +269,19 @@ class IAM(Client):
                 
         except ClientError as err:
             raise err
+
+    def listAccessKeys(self, userName: str = None, maxItems: int = 100):
+        try:
+            response = self.client.list_access_keys(UserName=userName, MaxItems=maxItems)
+            keys = response['AccessKeyMetadata']
+
+            while response['IsTruncated'] == True:
+                response = self.client.list_access_keys(UserName=userName, Marker=response['Marker'], MaxItems=maxItems)
+                keys += response['AccessKeyMetadata']
+            
+            return keys
+            
+        except ClientError as err:
+            raise err
+
+        return None
