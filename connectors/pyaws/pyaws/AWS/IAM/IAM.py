@@ -102,8 +102,23 @@ class IAM(Client):
 
         return None
 
-    def listUsers(self):
-        return self.getPaginator('list_users')
+    # def listUsers(self):
+    #     return self.getPaginator('list_users')
+    def listUsers(self, path: str, maxItems: int = 100):
+        try:
+            response = self.client.list_users(PathPrefix=path, MaxItems=maxItems)
+            users = response['Users']
+
+            while response['IsTruncated'] == True:
+                response = self.client.list_users(PathPrefix=path, MaxItems=maxItems, Marker=response['Marker'])
+                users += response['Users']
+                
+            return users
+            
+        except ClientError as err:
+            raise err
+
+        return None
 
     def getPaginator(self, interface: str):
         try:
@@ -272,6 +287,22 @@ class IAM(Client):
                     GroupName=groupName, NewGroupName=newGroupName, NewPath=newPath)
 
             return response
+        except ClientError as err:
+            raise err
+
+        return None
+
+    def listGroups(self, path: str, maxItems: int = 100):
+        try:
+            response = self.client.list_groups(PathPrefix=path, MaxItems=maxItems)
+            groups = response['Groups']
+
+            while response['IsTruncated'] == True:
+                response = self.client.list_groups(PathPrefix=path, MaxItems=maxItems, Marker=response['Marker'])
+                groups += response['Groups']
+                
+            return groups
+
         except ClientError as err:
             raise err
 
