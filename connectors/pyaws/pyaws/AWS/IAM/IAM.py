@@ -23,6 +23,10 @@ aws_roles = {
     'resources': {
         'read': ['arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess', 'arn:aws:iam::aws:policy/ResourceGroupsandTagEditorReadOnlyAccess'],
         'write': ['arn:aws:iam::aws:policy/ResourceGroupsandTagEditorFullAccess']
+    },
+    's3': {
+        'full': ['arn:aws:iam::aws:policy/AmazonS3FullAccess'],
+        'read': ['arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess']
     }
 }
 
@@ -64,6 +68,25 @@ class IAM(Client):
                     self.addUserToGroup(groupName, userName)
 
             # Attach policies to user
+            if len(policies):
+                for policy in policies:
+                    policyName = policy['name'] if 'name' in policy else None
+                    policyDocument = policy['document'] if 'document' in policy else None
+                    policyArn = policy['arn'] if 'arn' in policy else None
+
+                    if policyArn == None: # If no Arn is given, create a policy and get the arn
+                        policyInfo = self.createPolicy(
+                            policyName, policyDocument)['Policy']
+                        policyArn = policyInfo['Arn']
+                    else: # Try to get the policy with the arn, if not found, creates the policy
+                        policyInfo = self.getPolicy(policyArn)
+
+                        if policyInfo == None:
+                            policyInfo = self.createPolicy(
+                                policyName, policyDocument)['Policy']
+                            policyArn = policyInfo['Arn']
+
+                    self.attachUserPolicy(policyArn, userName) #attach the policy
 
             return response
         except ClientError as err:
@@ -102,23 +125,8 @@ class IAM(Client):
 
         return None
 
-    # def listUsers(self):
-    #     return self.getPaginator('list_users')
-    def listUsers(self, path: str, maxItems: int = 100):
-        try:
-            response = self.client.list_users(PathPrefix=path, MaxItems=maxItems)
-            users = response['Users']
-
-            while response['IsTruncated'] == True:
-                response = self.client.list_users(PathPrefix=path, MaxItems=maxItems, Marker=response['Marker'])
-                users += response['Users']
-                
-            return users
-            
-        except ClientError as err:
-            raise err
-
-        return None
+    def listUsers(self):
+        return self.getPaginator('list_users')
 
     def getPaginator(self, interface: str):
         try:
@@ -260,12 +268,14 @@ class IAM(Client):
 
     def getGroup(self, groupName: str, maxItems: int = 100):
         try:
-            response = self.client.get_group(GroupName=groupName, MaxItems=maxItems)
+            response = self.client.get_group(
+                GroupName=groupName, MaxItems=maxItems)
             group = response['Group']
             users = response['Users']
 
             while response['IsTruncated'] == True:
-                response = self.client.get_group(GroupName=groupName, MaxItems=maxItems, Marker=response['Marker'])
+                response = self.client.get_group(
+                    GroupName=groupName, MaxItems=maxItems, Marker=response['Marker'])
                 users += response['Users']
 
             return {
@@ -287,22 +297,6 @@ class IAM(Client):
                     GroupName=groupName, NewGroupName=newGroupName, NewPath=newPath)
 
             return response
-        except ClientError as err:
-            raise err
-
-        return None
-
-    def listGroups(self, path: str, maxItems: int = 100):
-        try:
-            response = self.client.list_groups(PathPrefix=path, MaxItems=maxItems)
-            groups = response['Groups']
-
-            while response['IsTruncated'] == True:
-                response = self.client.list_groups(PathPrefix=path, MaxItems=maxItems, Marker=response['Marker'])
-                groups += response['Groups']
-                
-            return groups
-
         except ClientError as err:
             raise err
 
@@ -331,7 +325,7 @@ class IAM(Client):
             response = self.client.create_access_key(UserName=userName)
             return response['AccessKey']
         except ClientError as err:
-                raise err
+            raise err
 
         return None
 
@@ -340,7 +334,8 @@ class IAM(Client):
             if userName == None:
                 response = self.client.delete_access_key(AccessKeyId=keyId)
             else:
-                response = self.client.delete_access_key(UserName=userName, AccessKeyId=keyId)
+                response = self.client.delete_access_key(
+                    UserName=userName, AccessKeyId=keyId)
 
             return response
         except ClientError as err:
@@ -348,33 +343,35 @@ class IAM(Client):
 
         return None
 
-
     def updateUserAccessKey(self, keyId: str, status: bool, userName: str = None):
 
         status = "Active" if status == True else "Inactive"
 
         try:
             if userName == None:
-                response = self.client.update_access_key(AccessKeyId=keyId, Status=status)
+                response = self.client.update_access_key(
+                    AccessKeyId=keyId, Status=status)
             else:
-                response = self.client.update_access_key(AccessKeyId=keyId, Status=status, UserName=userName)
-            
-            return response                
+                response = self.client.update_access_key(
+                    AccessKeyId=keyId, Status=status, UserName=userName)
+
+            return response
         except ClientError as err:
             raise err
-        
 
     def listAccessKeys(self, userName: str = None, maxItems: int = 100):
         try:
-            response = self.client.list_access_keys(UserName=userName, MaxItems=maxItems)
+            response = self.client.list_access_keys(
+                UserName=userName, MaxItems=maxItems)
             keys = response['AccessKeyMetadata']
 
             while response['IsTruncated'] == True:
-                response = self.client.list_access_keys(UserName=userName, Marker=response['Marker'], MaxItems=maxItems)
+                response = self.client.list_access_keys(
+                    UserName=userName, Marker=response['Marker'], MaxItems=maxItems)
                 keys += response['AccessKeyMetadata']
-            
+
             return keys
-            
+
         except ClientError as err:
             raise err
 
