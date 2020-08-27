@@ -7,6 +7,25 @@ from typing import Dict, List
 
 from ..Client import Client
 
+aws_roles = {
+    'lambda': {
+        'read': ['arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'],
+        'create': ['arn:aws:iam::aws:policy/service-role/AWSLambdaRole'],
+        'execute': ['arn:aws:iam::aws:policy/AWSLambdaExecute'],
+        'scale': ['arn:aws:iam::aws:policy/aws-service-role/AWSLambdaReplicator'],
+        'full': ['arn:aws:iam::aws:policy/AWSLambdaFullAccess']
+    },
+    'iam': {
+        'read': ['arn:aws:iam::aws:policy/IAMReadOnlyAccess'],
+        'update': ['arn:aws:iam::aws:policy/IAMUserChangePassword', 'arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials'],
+        'full': ['arn:aws:iam::aws:policy/IAMFullAccess']
+    },
+    'resources': {
+        'read': ['arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess', 'arn:aws:iam::aws:policy/ResourceGroupsandTagEditorReadOnlyAccess'],
+        'write': ['arn:aws:iam::aws:policy/ResourceGroupsandTagEditorFullAccess']
+    }
+}
+
 
 class IAM(Client):
 
@@ -15,14 +34,36 @@ class IAM(Client):
     def __init__(self, regionName: str, accessKeyId: str, secretAccessKey: str):
         Client.__init__(self, 'iam', regionName, accessKeyId, secretAccessKey)
 
-    def createUser(self, userName: str, permissions: str = None, tags: List = [], path: str = None):
+    def createUser(self, userName: str, groups: List, policies: List, permissions: str = None, tags: List = [], path: str = None):
         try:
+
+            # User creation in AWS (IAM)
             if permissions == None:
                 response = self.client.create_user(
                     UserName=userName, Tags=tags)
             else:
                 response = self.client.create_user(
                     UserName=userName, PermissionsBoundary=permissions, Tags=tags)
+
+            # Attach group to user
+            if len(groups):  # if there are groups to attach the user to
+                for group in groups:
+                    groupName = group['name'] if 'name' in group else None
+                    path = group['path'] if 'path' in group else None
+
+                    groupInfo = self.getGroup(
+                        groupName=groupName)  # fetch the group info
+
+                    if groupInfo == None:  # if not found we need to create it
+                        if path == None:
+                            self.createGroup(groupName=groupName)
+                        else:
+                            self.createGroup(groupName=groupName, path=path)
+
+                    # Attaching group to user
+                    self.addUserToGroup(groupName, userName)
+
+            # Attach policies to user
 
             return response
         except ClientError as err:
@@ -232,17 +273,22 @@ class IAM(Client):
 
         return None
 
-
-    def createUserAccessKey(self, userName: str):
+    def addUserToGroup(self, groupName: str, userName: str):
         try:
-            response = self.client.create_access_key(UserName=userName)
-            return response['AccessKey']
-
+            return self.client.add_user_to_group(GroupName=groupName, UserName=userName)
         except ClientError as err:
             raise err
 
         return None
 
+    def createUserAccessKey(self, userName: str):
+        try:
+            response = self.client.create_access_key(UserName=userName)
+            return response['AccessKey']
+        except ClientError as err:
+                raise err
+
+        return None
 
     def revokeUserAccessKey(self, keyId: str, userName: str = None):
         try:
@@ -251,6 +297,7 @@ class IAM(Client):
             else:
                 response = self.client.delete_access_key(UserName=userName, AccessKeyId=keyId)
 
+            return response
         except ClientError as err:
             raise err
 
@@ -266,6 +313,7 @@ class IAM(Client):
                 response = self.client.update_access_key(AccessKeyId=keyId, Status=status)
             else:
                 response = self.client.update_access_key(AccessKeyId=keyId, Status=status, UserName=userName)
-                
+            
+            return response                
         except ClientError as err:
             raise err

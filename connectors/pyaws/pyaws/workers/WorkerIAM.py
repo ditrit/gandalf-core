@@ -35,9 +35,11 @@ class WorkerIAM(WorkerAws):
         path = payload['path'] if 'path' in payload else None
         tags = payload['tags'] if 'tags' in payload else []
         permissions = payload['permissions'] if 'permissions' in payload else None
+        policies = payload['policies'] if 'policies' in payload else None
+        groups = payload['groups'] if 'groups' in payload else None
 
         response = self.iamClient.createUser(
-            userName=userName, permissions=permissions, tags=tags, path=path)
+            userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL", {
                                          "10000", "User not created !"})
