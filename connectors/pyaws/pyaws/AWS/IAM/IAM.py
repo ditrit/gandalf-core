@@ -231,3 +231,41 @@ class IAM(Client):
             raise err
 
         return None
+
+
+    def createUserAccessKey(self, userName: str):
+        try:
+            response = self.client.create_access_key(UserName=userName)
+            return response['AccessKey']
+
+        except ClientError as err:
+            raise err
+
+        return None
+
+
+    def revokeUserAccessKey(self, keyId: str, userName: str = None):
+        try:
+            if userName == None:
+                response = self.client.delete_access_key(AccessKeyId=keyId)
+            else:
+                response = self.client.delete_access_key(UserName=userName, AccessKeyId=keyId)
+
+        except ClientError as err:
+            raise err
+
+        return None
+        
+
+    def updateUserAccessKey(self, keyId: str, status: bool, userName: str = None):
+
+        status = "Active" if status == True else "Inactive"
+
+        try:
+            if userName == None:
+                response = self.client.update_access_key(AccessKeyId=keyId, Status=status)
+            else:
+                response = self.client.update_access_key(AccessKeyId=keyId, Status=status, UserName=userName)
+                
+        except ClientError as err:
+            raise err
