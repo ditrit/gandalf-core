@@ -146,12 +146,18 @@ class IAM(Client):
 
         return None
 
-    def listPolicies(self, scope: str = 'All', onlyAttached: bool = False, pathPrefix: str = "", policyUsageFilter: str = "", marker: str = "", maxItems: int = 100):
+    def listPolicies(self, scope: str = 'All', onlyAttached: bool = False, pathPrefix: str = "", policyUsageFilter: str = "", maxItems: int = 100):
         try:
             response = self.client.list_policies(Scope=scope, OnlyAttached=onlyAttached, PathPrefix=pathPrefix,
-                                                 PolicyUsageFilter=policyUsageFilter, Marker=marker, MaxItems=maxItems)
+                                                 PolicyUsageFilter=policyUsageFilter, MaxItems=maxItems)
+            policies = response['Policies']
 
-            return response
+            while response['IsTruncated'] == True:
+                response = self.client.list_policies(Scope=scope, OnlyAttached=onlyAttached, PathPrefix=pathPrefix,
+                                                     PolicyUsageFilter=policyUsageFilter, MaxItems=maxItems, Marker=response['Marker'])
+                policies += response['Policies']
+
+            return policies
         except ClientError as err:
             raise err
 
@@ -237,12 +243,20 @@ class IAM(Client):
 
         return None
 
-    def getGroup(self, groupName: str, marker: str = "", maxItems: int = 100):
+    def getGroup(self, groupName: str, maxItems: int = 100):
         try:
-            response = self.client.get_group(
-                GroupName=groupName, MaxItems=maxItems, Marker=marker)
+            response = self.client.get_group(GroupName=groupName, MaxItems=maxItems)
+            group = response['Group']
+            users = response['Users']
 
-            return response
+            while response['IsTruncated'] == True:
+                response = self.client.get_group(GroupName=groupName, MaxItems=maxItems, Marker=response['Marker'])
+                users += response['Users']
+
+            return {
+                'Group': group,
+                'Users': users
+            }
         except ClientError as err:
             raise err
 
@@ -317,6 +331,7 @@ class IAM(Client):
             return response                
         except ClientError as err:
             raise err
+        
 
     def listAccessKeys(self, userName: str = None, maxItems: int = 100):
         try:
