@@ -207,27 +207,15 @@ class IAM(Client):
 
         return None
 
-    def updateGroup(self, groupName: str, newGroupName: str, newPath: str = None):
+    def deleteUser(self, name: str):
         try:
-            if newPath == None:
-                response = self.client.update_group(
-                    GroupName=groupName, NewGroupName=newGroupName)
-            else:
-                response = self.client.update_group(
-                    GroupName=groupName, NewGroupName=newGroupName, NewPath=newPath)
 
+            response = self.client.delete_user(UserName=name)
             return response
+
         except ClientError as err:
             raise err
 
         return None
 
-    def deleteGroup(self, groupName: str):
-        try:
-            response = self.client.delete_group(GroupName=groupName)
 
-            return response
-        except ClientError as err:
-            raise err
-
-        return None
