@@ -29,7 +29,7 @@ class WorkerIAM(WorkerAws):
         payload = json.loads(command.Payload)
 
 
-        response = self.iamClient.createUser(payload["name"])
+        response = self.iamClient.createUser(userName=payload["name"])
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
         else:
