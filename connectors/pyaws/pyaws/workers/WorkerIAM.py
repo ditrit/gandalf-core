@@ -44,7 +44,7 @@ class WorkerIAM(WorkerAws):
 
         payload = json.loads(command.Payload)
 
-        response = self.iamClient.updateUser(name=payload["name"], newName=payload["newName"])
+        response = self.iamClient.updateUser(userName=payload["name"], newUserName=payload["newName"])
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not updated !"})
         else:
@@ -58,6 +58,60 @@ class WorkerIAM(WorkerAws):
         print(command)
 
         payload = json.loads(command.Payload)
+
+        response = self.iamClient.deleteUser(userName=payload["name"])
+        if response == None:
+            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not deleted !"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User deleted !"})
+
+    def CreateGroup(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand("CREATE_GROUP", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+
+
+        # response = self.iamClient.createUser(payload["name"])
+        # if response == None:
+        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
+        # else:
+        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+
+    def UpdateGroup(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand("UPDATE_GROUP", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+
+
+        # response = self.iamClient.createUser(payload["name"])
+        # if response == None:
+        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
+        # else:
+        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+
+    def DeleteGroup(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand("DELETE_GROUP", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+
+
+        # response = self.iamClient.createUser(payload["name"])
+        # if response == None:
+        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
+        # else:
+        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
 
 
     def Run(self):

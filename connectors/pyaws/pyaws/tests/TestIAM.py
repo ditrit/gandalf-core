@@ -12,6 +12,7 @@ aws_secret_access_key = os.environ["aws_secret_access_key"]
 FIXED_TEST_USER_NAME = "userTEST"
 FIXED_TEST_USER_NEWNAME = "newUserTest"
 
+
 def make_orderer():
     order = {}
 
@@ -32,19 +33,34 @@ unittest.defaultTestLoader.sortTestMethodsUsing = compare
 class TestIAM(unittest.TestCase):
 
     iam: IAM
+    userInfo = None
 
     @classmethod
     def setUpClass(cls):
         cls.iam = IAM(regionName=aws_region_name, accessKeyId=aws_access_key_id,
-                        secretAccessKey=aws_secret_access_key)
+                      secretAccessKey=aws_secret_access_key)
 
     @ordered
     def test_create_user(self):
-        self.assertNotEqual(self.iam.createUser(name=FIXED_TEST_USER_NAME), None)
+        self.assertNotEqual(self.iam.createUser(
+            userName=FIXED_TEST_USER_NAME), None)
 
     @ordered
     def test_update_user(self):
-        self.assertNotEqual(self.iam.updateUser(name=FIXED_TEST_USER_NAME, newName=FIXED_TEST_USER_NEWNAME), None)
+        self.assertNotEqual(self.iam.updateUser(
+            userName=FIXED_TEST_USER_NAME, newUserName=FIXED_TEST_USER_NEWNAME), None)
+
+    @ordered
+    def test_get_user(self):
+        self.userInfo = self.iam.getUser(
+            userName=FIXED_TEST_USER_NEWNAME)['User']
+
+        self.assertEqual(self.userInfo['UserName'], FIXED_TEST_USER_NEWNAME)
+
+    @ordered
+    def test_delete_user(self):
+        self.assertEqual(self.iam.deleteUser(
+            userName=FIXED_TEST_USER_NEWNAME)['ResponseMetadata']['HTTPStatusCode'], 200)
 
 
 if __name__ == '__main__':
