@@ -3,7 +3,7 @@
 
 from botocore.exceptions import ClientError
 from mypy_boto3_iam import IAMClient
-from typing import Dict, List
+from typing import Dict, List, Callable
 
 from ..Client import Client
 
@@ -38,9 +38,8 @@ class IAM(Client):
     def __init__(self, regionName: str, accessKeyId: str, secretAccessKey: str):
         Client.__init__(self, 'iam', regionName, accessKeyId, secretAccessKey)
 
-    def createUser(self, userName: str, groups: List, policies: List, permissions: str = None, tags: List = [], path: str = None):
+    def createUser(self, userName: str, groups: List = [], policies: List = [], permissions: str = None, tags: List = [], path: str = None):
         try:
-
             # User creation in AWS (IAM)
             if permissions == None:
                 response = self.client.create_user(
@@ -50,43 +49,12 @@ class IAM(Client):
                     UserName=userName, PermissionsBoundary=permissions, Tags=tags)
 
             # Attach group to user
-            if len(groups):  # if there are groups to attach the user to
-                for group in groups:
-                    groupName = group['name'] if 'name' in group else None
-                    path = group['path'] if 'path' in group else None
-
-                    groupInfo = self.getGroup(
-                        groupName=groupName)  # fetch the group info
-
-                    if groupInfo == None:  # if not found we need to create it
-                        if path == None:
-                            self.createGroup(groupName=groupName)
-                        else:
-                            self.createGroup(groupName=groupName, path=path)
-
-                    # Attaching group to user
-                    self.addUserToGroup(groupName, userName)
+            for group in groups:  # if there are groups to attach the user to
+                self.linkUserToGroup(group, userName)
 
             # Attach policies to user
-            if len(policies):
-                for policy in policies:
-                    policyName = policy['name'] if 'name' in policy else None
-                    policyDocument = policy['document'] if 'document' in policy else None
-                    policyArn = policy['arn'] if 'arn' in policy else None
-
-                    if policyArn == None: # If no Arn is given, create a policy and get the arn
-                        policyInfo = self.createPolicy(
-                            policyName, policyDocument)['Policy']
-                        policyArn = policyInfo['Arn']
-                    else: # Try to get the policy with the arn, if not found, creates the policy
-                        policyInfo = self.getPolicy(policyArn)
-
-                        if policyInfo == None:
-                            policyInfo = self.createPolicy(
-                                policyName, policyDocument)['Policy']
-                            policyArn = policyInfo['Arn']
-
-                    self.attachUserPolicy(policyArn, userName) #attach the policy
+            for policy in policies:
+                self.linkPolicyTo(policy, userName, self.attachUserPolicy)
 
             return response
         except ClientError as err:
@@ -104,10 +72,22 @@ class IAM(Client):
 
         return None
 
-    def updateUser(self, userName: str, newUserName: str, newPath: str = None):
+    def updateUser(self, userName: str, newUserName: str, groups: List = [], policies: List = [], newPath: str = None):
         try:
-            response = self.client.update_user(
-                UserName=userName, NewUserName=newUserName)
+            if newPath == None:
+                response = self.client.update_user(
+                    UserName=userName, NewUserName=newUserName)
+            else:
+                response = self.client.update_user(
+                    UserName=userName, NewUserName=newUserName, NewPath=newPath)
+
+            # Attach group to user
+            for group in groups:  # if there are groups to attach the user to
+                self.linkUserToGroup(group, userName)
+
+            # Attach policies to user
+            for policy in policies:
+                self.linkPolicyTo(policy, userName, self.attachUserPolicy)
 
             return response
         except ClientError as err:
@@ -138,10 +118,21 @@ class IAM(Client):
 
         return None
 
-    def createPolicy(self, policyName: str, policyDocument: str):
+    def createPolicy(self, policyName: str = None, policyDocument: str = None, policyArn: str = None):
         try:
-            response = self.client.create_policy(
-                PolicyName=policyName, PolicyDocument=policyDocument)
+            if policyArn == None:  # If no Arn is given, create a policy and get the arn
+                if policyDocument == None or policyName == None:
+                    raise ValueError(
+                        "if policyArn is None, policyDocument and policyName must contains a value")
+
+                response = self.client.create_policy(
+                    PolicyName=policyName, PolicyDocument=policyDocument)
+            else:  # Try to get the policy with the arn, if not found, creates the policy
+                response = self.getPolicy(policyArn)
+
+                if response == None:
+                    response = self.client.create_policy(
+                        PolicyName=policyName, PolicyDocument=policyDocument)
 
             return response
         except ClientError as err:
@@ -252,13 +243,27 @@ class IAM(Client):
 
         return None
 
-    def createGroup(self, groupName: str, path: str = None):
+    def linkPolicyTo(self, policy: Dict, name: str, attachFunction: Callable):
+        policyName = policy['name'] if 'name' in policy else None
+        policyDocument = policy['document'] if 'document' in policy else None
+        policyArn = policy['arn'] if 'arn' in policy else None
+
+        policyArn = self.createPolicy(
+            policyName, policyDocument, policyArn)['Policy']
+
+        attachFunction(policyArn, name)  # attach the policy
+
+    def createGroup(self, groupName: str, policies: List = [], path: str = None):
         try:
             if path == None:
                 response = self.client.create_group(GroupName=groupName)
             else:
                 response = self.client.create_group(
                     GroupName=groupName, Path=path)
+            
+            # Attach policies to group
+            for policy in policies:
+                self.linkPolicyTo(policy, groupName, self.attachGroupPolicy)
 
             return response
         except ClientError as err:
@@ -311,6 +316,22 @@ class IAM(Client):
             raise err
 
         return None
+
+    def linkUserToGroup(self, group: Dict, userName: str):
+        groupName = group['name'] if 'name' in group else None
+        path = group['path'] if 'path' in group else None
+
+        groupInfo = self.getGroup(
+            groupName=groupName)  # fetch the group info
+
+        if groupInfo == None:  # if not found we need to create it
+            if path == None:
+                self.createGroup(groupName=groupName)
+            else:
+                self.createGroup(groupName=groupName, path=path)
+
+        # Attaching group to user
+        self.addUserToGroup(groupName, userName)
 
     def addUserToGroup(self, groupName: str, userName: str):
         try:
