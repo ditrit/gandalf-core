@@ -3,6 +3,7 @@
 
 from ..WorkerAws import WorkerAws
 from ..AWS.IAM.IAM import IAM
+from botocore.exceptions import ClientError
 
 from typing import List
 from threading import Thread
@@ -23,7 +24,25 @@ class WorkerIAM(WorkerAws):
     def Execute(self, clientGandalf, version):
         # fetch the config or something here
         pass
-    
+
+    def reportClientError(self, uuid: str, command: str, error: ClientError, timeout: str = "10000"):
+        payload = (
+            "{}: An AWS error occurenced while executing command #{}\n".format(command, uuid) +
+            "Code: {}, message: \n{}\n".format(error['Error']['Code'], error['Error']['Message']) +
+            "AWS Metadata :\nRequest ID:{}, Host ID:{}, HTTP status: {}".format(error['ResponseMetadata']['RequestId'], 
+                                                                                error['ResponseMetadata']['HostId'],
+                                                                                error['ResponseMetadata']['HTTPStatusCode'])
+        )
+        self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
+
+
+    def reportError(self, uuid: str, command: str, error: str, timeout: str = "10000"):
+        payload = (
+            "{}: Error in command #{}\n{}".format(command, uuid, error)
+        )
+        self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
+
+
     # TODO : Create user access key and return it along with the created user
     def CreateUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -42,14 +61,17 @@ class WorkerIAM(WorkerAws):
         policies = payload['policies'] if 'policies' in payload else []
         groups = payload['groups'] if 'groups' in payload else []
 
-        response = self.iamClient.createUser(
-            userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL", {
-                                         "10000", "User not created !"})
+        if not userName:
+            self.reportError(uuid=command.UUID, command="CREATE_USER", error="User name must be provided")
+
+        try:
+            response = self.iamClient.createUser(
+                userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)           
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="CREATE_USER", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
-                                         "10000", "User created !"})
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+
 
     def UpdateUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -67,14 +89,17 @@ class WorkerIAM(WorkerAws):
         policies = payload['policies'] if 'policies' in payload else []
         groups = payload['groups'] if 'groups' in payload else []
 
-        response = self.iamClient.updateUser(
-            userName=userName, newUserName=newUserName, newPath=newPath, groups=groups, policies=policies)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL", {
-                                         "10000", "User not updated !"})
+        if not userName:
+            self.reportError(uuid=command.UUID, command="UPDATE_USER", error="User name must be provided")
+        
+        try:
+            response = self.iamClient.updateUser(
+                userName=userName, newUserName=newUserName, newPath=newPath, groups=groups, policies=policies)
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="UPDATE_USER", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
-                                         "10000", "User updated !"})
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User updated !"})
+
 
     def DeleteUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -88,13 +113,17 @@ class WorkerIAM(WorkerAws):
 
         userName = payload['name'] if 'name' in payload else None
 
-        response = self.iamClient.deleteUser(userName=userName)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL", {
-                                         "10000", "User not deleted !"})
+        if not userName:
+            self.reportError(uuid=command.UUID, command="DELETE_USER", error="User name must be provided")
+
+        try:
+            response = self.iamClient.deleteUser(userName=userName)
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="DELETE_USER", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "User deleted !"})
+
 
     # TODO : Check exsiting policies and create if necesary
     def CreateGroup(self):
@@ -111,11 +140,16 @@ class WorkerIAM(WorkerAws):
         path = payload['path'] if 'path' in payload else None
         policies = payload['policies'] if 'policies' in payload else []
 
-        response = self.iamClient.createGroup(groupName=groupName, policies=policies, path=path)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Group not created !"})
+        if not groupName:
+            self.reportError(uuid=command.UUID, command="CREATE_GROUP", error="Group name must be provided")
+
+        try:
+            response = self.iamClient.createGroup(groupName=groupName, policies=policies, path=path)
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="CREATE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group created !"})
+
 
     def UpdateGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -130,10 +164,13 @@ class WorkerIAM(WorkerAws):
         newName = payload['newName'] if 'newName' in payload else None
         newPath = payload['newPath'] if 'newPath' in payload else None
 
-
-        response = self.iamClient.updateGroup(groupName=name, newGroupName=newName, newPath=newPath)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Could not update this group"})
+        if not name:
+            self.reportError(uuid=command.UUID, command="UPDATE_GROUP", error="Group name must be provided")
+            
+        try:
+            response = self.iamClient.updateGroup(groupName=name, newGroupName=newName, newPath=newPath)
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="UPDATE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group updated !"})
 
@@ -148,10 +185,13 @@ class WorkerIAM(WorkerAws):
         payload = json.loads(command.Payload)
         name = payload['name'] if 'name' in payload else None
 
-
-        response = self.iamClient.deleteGroup(groupName=name)
-        if response == None:
-            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Group not deleted !"})
+        if not name:
+            self.reportError(uuid=command.UUID, command="DELETE_GROUP", error="Group name must be provided")
+            
+        try:
+            response = self.iamClient.deleteGroup(groupName=name)
+        except ClientError as err:
+            self.reportClientError(uuid=command.UUID, command="DELETE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group deleted !"})
 
