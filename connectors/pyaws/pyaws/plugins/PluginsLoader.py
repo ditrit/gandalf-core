@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+
 try:
     import importlib.resources as pkg_resources
 except ImportError:
@@ -52,7 +53,8 @@ class PluginsLoader:
 
         try:
             with pkg_resources.path(plugins, name) as path:
-                process = subprocess.Popen(["python", path], encoding="utf-8", stdout=subprocess.PIPE, shell=True)
+                process = subprocess.Popen(
+                    ["python", path], encoding="utf-8", stdout=subprocess.PIPE, shell=True)
         except FileNotFoundError:
             self.loadedPlugins[name]["output"] += "ERROR: " + \
                 name+" cannot be executed !"
@@ -70,5 +72,8 @@ class PluginsLoader:
                 if output:
                     self.loadedPlugins[name]["output"] += output.strip() + "\n"
 
+            rc = process.poll()
+            process.stdout.close()
             self.loadedPlugins[name]["state"] = "STOPPED"
-            return process.poll()
+
+            return rc

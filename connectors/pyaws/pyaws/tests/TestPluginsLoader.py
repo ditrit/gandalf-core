@@ -39,6 +39,11 @@ class TestPluginsLoader(unittest.TestCase):
     def test_start_plugins(self):
         self.loader.runPlugins()
 
+    @ordered
+    def test_read_output_plugins(self):
+        for plugin in self.loader.loadedPlugins.values():
+            print(plugin["output"])
+
 
 if __name__ == '__main__':
     unittest.main()

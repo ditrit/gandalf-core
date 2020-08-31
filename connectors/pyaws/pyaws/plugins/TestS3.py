@@ -1,6 +1,6 @@
-import unittest
 import uuid
 import os
+import time
 from io import BytesIO
 
 from pyaws.AWS.S3.S3 import S3
@@ -20,107 +20,45 @@ FIXED_TEST_INDEX_FILE = b"<html><head><title>Gandalf AWS Connector S3 Static Web
 FIXED_TEST_ERROR_FILE = b"<html><head><title>Gandalf AWS Connector S3 Static Website Test (Error)</title><meta charset=\"UTF-8\"></head><body><h1>Error !!!</h1></body></html>"
 
 
-def make_orderer():
-    order = {}
-
-    def ordered(f):
-        order[f.__name__] = len(order)
-        return f
-
-    def compare(a, b):
-        return [1, -1][order[a] < order[b]]
-
-    return ordered, compare
-
-
-ordered, compare = make_orderer()
-unittest.defaultTestLoader.sortTestMethodsUsing = compare
-
-
-class TestS3(unittest.TestCase):
-
-    @property
-    def s3(self) -> S3:
-        return self._s3
-
-    @s3.setter
-    def s3(self, value: S3):
-        self._s3: S3 = value
-
-    @property
-    def s3control(self) -> S3Control:
-        return self._s3control
-
-    @s3control.setter
-    def s3control(self, value: S3Control):
-        self._s3control: S3Control = value
-
-    @property
-    def testBucket(self) -> str:
-        return self._testBucket
-
-    @testBucket.setter
-    def testBucket(self, value: str):
-        self._testBucket: str = value
-
-    @classmethod
-    def setUpClass(cls):
-        cls.s3: S3 = S3(regionName=aws_region_name, accessKeyId=aws_access_key_id,
-                        secretAccessKey=aws_secret_access_key)
-        cls.s3control: S3Control = S3Control(regionName=aws_region_name, accessKeyId=aws_access_key_id,
-                        secretAccessKey=aws_secret_access_key)
-        cls.testBucket: str = str(uuid.uuid4())
-
-    @ordered
-    def test_create_bucket(self):
-        self.assertTrue(self.s3.createBucket(self.testBucket))
-
-    @ordered
-    def test_get_bucket_list(self):
-        bucketList = self.s3.getBucketList()
-
-        self.assertGreater(len(bucketList), 0)
-
-    @ordered
-    def test_put_bucket_website(self):
-        bucket: Bucket = self.s3.buckets[self.testBucket]
-
-        self.assertTrue(bucket.putWebsite(FIXED_TEST_WEBSITE_CONFIG))
-
-    @ordered
-    def test_get_bucket_website(self):
-        bucket: Bucket = self.s3.buckets[self.testBucket]
-
-        self.assertGreater(len(bucket.getWebsite()), 0)
-
-    @ordered
-    def test_upload_file_to_bucket(self):
-        bucket: Bucket = self.s3.buckets[self.testBucket]
-
-        with BytesIO(FIXED_TEST_INDEX_FILE) as f:
-            bucket.uploadFile("index.html", "index.html", {'ACL': 'public-read'}, f)
-
-    @ordered
-    def test_make_public_read_bucket(self):
-        bucket: Bucket = self.s3.buckets[self.testBucket]
-
-        bucket.putBucketAcl('public-read')
-    
-    @ordered
-    def test_aclpub(self):
-        bucket: Bucket = self.s3.buckets[self.testBucket]
-        self.s3control.createAccessPoint(bucket=bucket.name, name="TestAP")
-
-    # @ordered
-    # def test_delete_bucket_website(self):
-    #     bucket: Bucket = self.s3.buckets[self.testBucket]
-
-    #     self.assertTrue(bucket.deleteWebsite())
-
-    # @ordered
-    # def test_delete_bucket(self):
-    #     self.assertTrue(self.s3.deleteBucket(self.testBucket))
-
-
 if __name__ == '__main__':
-    unittest.main()
+    print("Script has started !")
+    s3: S3 = S3(regionName=aws_region_name, accessKeyId=aws_access_key_id,
+                secretAccessKey=aws_secret_access_key)
+    s3control: S3Control = S3Control(regionName=aws_region_name, accessKeyId=aws_access_key_id,
+                                     secretAccessKey=aws_secret_access_key)
+    testBucket: str = str(uuid.uuid4())
+
+    # Create a bucket
+    s3.createBucket(testBucket)
+
+    # Get the bucket list
+    bucketList = s3.getBucketList()
+    print(len(bucketList))
+
+    # Get the bucket
+    bucket: Bucket = s3.buckets[testBucket]
+
+    # Put the files config in the bucket
+    bucket.putWebsite(FIXED_TEST_WEBSITE_CONFIG)
+
+    # Verify if files config are added to the bucket
+    print(len(bucket.getWebsite()))
+
+    # Upload files to bucket
+    with BytesIO(FIXED_TEST_INDEX_FILE) as f:
+        bucket.uploadFile("index.html", "index.html",
+                          {'ACL': 'public-read'}, f)
+
+    # create an acl for the bucket
+    bucket.putBucketAcl('public-read')
+
+    # create an access point
+    s3control.createAccessPoint(bucket=bucket.name, name="TestAP")
+
+    # delete file config
+    bucket.deleteWebsite()
+
+    # delete bucket
+    s3.deleteBucket(testBucket)
+
+    print("end of the script ...")
