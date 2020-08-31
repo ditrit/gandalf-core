@@ -9,8 +9,9 @@ from typing import List
 from threading import Thread
 import json
 
-# TODO : Implement more detailed return types including the API errors returned, and stronger payload checks 
+# TODO : Implement more detailed return types including the API errors returned, and stronger payload checks
 #        for known mandatory parameters
+
 
 class WorkerIAM(WorkerAws):
     iamClient: IAM
@@ -148,7 +149,8 @@ class WorkerIAM(WorkerAws):
         except ClientError as err:
             self.reportClientError(uuid=command.UUID, command="CREATE_GROUP", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group created !"})
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
+                                         "10000", "Group created !"})
 
 
     def UpdateGroup(self):
@@ -172,7 +174,8 @@ class WorkerIAM(WorkerAws):
         except ClientError as err:
             self.reportClientError(uuid=command.UUID, command="UPDATE_GROUP", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group updated !"})
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
+                                         "10000", "Group updated !"})
 
     def DeleteGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -193,7 +196,8 @@ class WorkerIAM(WorkerAws):
         except ClientError as err:
             self.reportClientError(uuid=command.UUID, command="DELETE_GROUP", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group deleted !"})
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
+                                         "10000", "Group deleted !"})
 
     # NOTE : Access keys removed from here, not relevant to the larger-scale Gandalf thingy. They should be automatically
     #        managed by the worker.
@@ -202,7 +206,7 @@ class WorkerIAM(WorkerAws):
         createUser = Thread(target=self.CreateUser())
         updateUser = Thread(target=self.UpdateUser())
         deleteUser = Thread(target=self.DeleteUser())
-        
+
         createUser.start()
         updateUser.start()
         deleteUser.start()
