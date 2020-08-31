@@ -35,6 +35,7 @@ class WorkerIAM(WorkerAws):
                                                                                 error['ResponseMetadata']['HTTPStatusCode'])
         )
         self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
+        return None
 
 
     def reportError(self, uuid: str, command: str, error: str, timeout: str = "10000"):
@@ -42,6 +43,8 @@ class WorkerIAM(WorkerAws):
             "{}: Error in command #{}\n{}".format(command, uuid, error)
         )
         self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
+
+        return None
 
 
     # TODO : Create user access key and return it along with the created user
@@ -198,6 +201,47 @@ class WorkerIAM(WorkerAws):
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "Group deleted !"})
+
+    def CreatePolicy(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand(
+            "CREATE_POLICY", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+        policyName = payload['policyName'] if 'policyName' in payload else self.reportError(command.UUID, "CREATE_POLICY", "A policy name must be provided")
+        policyDocument = payload['policyDocument'] if 'policyDocument' in payload else self.reportError(command.UUID, "CREATE_POLICY", "A policy document must be provided")
+        policyArn = payload['policyArn'] if 'policyArn' in payload else self.reportError(command.UUID, "CREATE_POLICY", "A policy ARN must be provided")
+
+        try:
+            self.iamClient.createPolicy(policyName=policyName, policyDocument=policyDocument, policyArn=policyArn)
+        except ClientError as err:
+            self.reportClientError(command.UUID, "CREATE_POLICY", err)
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Policy created !"})
+
+
+    def DeletePolicy(self):
+        id = self.clientGandalf.CreateIteratorCommand()
+        print(id)
+
+        command = self.clientGandalf.WaitCommand(
+            "DELETE_POLICY", id, self.version)
+        print(command)
+
+        payload = json.loads(command.Payload)
+        policyArn = payload['policyArn'] if 'policyArn' in payload else self.reportError(command.UUID, "DELETE_POLICY", "A policy ARN must be provided")
+
+        try:
+            self.iamClient.deleteGroup(policyArn=policyArn)
+        except ClientError as err:
+            self.reportClientError(command.UUID, "DELETE_POLICY", err)
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Policy deleted !"})
+
+
 
     # NOTE : Access keys removed from here, not relevant to the larger-scale Gandalf thingy. They should be automatically
     #        managed by the worker.
