@@ -30,22 +30,12 @@ class WorkerIAM(WorkerAws):
         payload = (
             "{}: An AWS error occurenced while executing command #{}\n".format(command, uuid) +
             "Code: {}, message: \n{}\n".format(error['Error']['Code'], error['Error']['Message']) +
-            "AWS Metadata :\nRequest ID:{}, Host ID:{}, HTTP status: {}".format(error['ResponseMetadata']['RequestId'], 
+            "AWS Metadata :\nRequest ID:{}, Host ID:{}, HTTP status: {}".format(error['ResponseMetadata']['RequestId'],
                                                                                 error['ResponseMetadata']['HostId'],
                                                                                 error['ResponseMetadata']['HTTPStatusCode'])
         )
         self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
         return None
-
-
-    def reportError(self, uuid: str, command: str, error: str, timeout: str = "10000"):
-        payload = (
-            "{}: Error in command #{}\n{}".format(command, uuid, error)
-        )
-        self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
-
-        return None
-
 
     # TODO : Create user access key and return it along with the created user
     def CreateUser(self):
@@ -66,16 +56,18 @@ class WorkerIAM(WorkerAws):
         groups = payload['groups'] if 'groups' in payload else []
 
         if not userName:
-            self.reportError(uuid=command.UUID, command="CREATE_USER", error="User name must be provided")
+            self.reportError(uuid=command.UUID, command="CREATE_USER",
+                             error="User name must be provided")
 
         try:
             response = self.iamClient.createUser(
-                userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)           
+                userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="CREATE_USER", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="CREATE_USER", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
-
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
+                                         "10000", "User created !"})
 
     def UpdateUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -94,16 +86,18 @@ class WorkerIAM(WorkerAws):
         groups = payload['groups'] if 'groups' in payload else []
 
         if not userName:
-            self.reportError(uuid=command.UUID, command="UPDATE_USER", error="User name must be provided")
-        
+            self.reportError(uuid=command.UUID, command="UPDATE_USER",
+                             error="User name must be provided")
+
         try:
             response = self.iamClient.updateUser(
                 userName=userName, newUserName=newUserName, newPath=newPath, groups=groups, policies=policies)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="UPDATE_USER", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="UPDATE_USER", error=err)
         else:
-            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User updated !"})
-
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
+                                         "10000", "User updated !"})
 
     def DeleteUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -118,18 +112,20 @@ class WorkerIAM(WorkerAws):
         userName = payload['name'] if 'name' in payload else None
 
         if not userName:
-            self.reportError(uuid=command.UUID, command="DELETE_USER", error="User name must be provided")
+            self.reportError(uuid=command.UUID, command="DELETE_USER",
+                             error="User name must be provided")
 
         try:
             response = self.iamClient.deleteUser(userName=userName)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="DELETE_USER", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="DELETE_USER", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "User deleted !"})
 
-
     # TODO : Check exsiting policies and create if necesary
+
     def CreateGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
         print(id)
@@ -145,16 +141,18 @@ class WorkerIAM(WorkerAws):
         policies = payload['policies'] if 'policies' in payload else []
 
         if not groupName:
-            self.reportError(uuid=command.UUID, command="CREATE_GROUP", error="Group name must be provided")
+            self.reportError(uuid=command.UUID, command="CREATE_GROUP",
+                             error="Group name must be provided")
 
         try:
-            response = self.iamClient.createGroup(groupName=groupName, policies=policies, path=path)
+            response = self.iamClient.createGroup(
+                groupName=groupName, policies=policies, path=path)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="CREATE_GROUP", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="CREATE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "Group created !"})
-
 
     def UpdateGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -168,14 +166,18 @@ class WorkerIAM(WorkerAws):
         name = payload['name'] if 'name' in payload else None
         newName = payload['newName'] if 'newName' in payload else None
         newPath = payload['newPath'] if 'newPath' in payload else None
+        policies = payload['policies'] if 'policies' in payload else []
 
         if not name:
-            self.reportError(uuid=command.UUID, command="UPDATE_GROUP", error="Group name must be provided")
-            
+            self.reportError(uuid=command.UUID, command="UPDATE_GROUP",
+                             error="Group name must be provided")
+
         try:
-            response = self.iamClient.updateGroup(groupName=name, newGroupName=newName, newPath=newPath)
+            response = self.iamClient.updateGroup(
+                groupName=name, newGroupName=newName, newPath=newPath, policies=policies)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="UPDATE_GROUP", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="UPDATE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "Group updated !"})
@@ -192,12 +194,14 @@ class WorkerIAM(WorkerAws):
         name = payload['name'] if 'name' in payload else None
 
         if not name:
-            self.reportError(uuid=command.UUID, command="DELETE_GROUP", error="Group name must be provided")
-            
+            self.reportError(uuid=command.UUID, command="DELETE_GROUP",
+                             error="Group name must be provided")
+
         try:
             response = self.iamClient.deleteGroup(groupName=name)
         except ClientError as err:
-            self.reportClientError(uuid=command.UUID, command="DELETE_GROUP", error=err)
+            self.reportClientError(
+                uuid=command.UUID, command="DELETE_GROUP", error=err)
         else:
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "Group deleted !"})
@@ -250,13 +254,22 @@ class WorkerIAM(WorkerAws):
         createUser = Thread(target=self.CreateUser())
         updateUser = Thread(target=self.UpdateUser())
         deleteUser = Thread(target=self.DeleteUser())
+        createGroup = Thread(target=self.CreateGroup())
+        updateGroup = Thread(target=self.UpdateGroup())
+        deleteGroup = Thread(target=self.DeleteGroup())
 
         createUser.start()
         updateUser.start()
         deleteUser.start()
+        createGroup.start()
+        updateGroup.start()
+        deleteGroup.start()
 
         createUser.join()
         updateUser.join()
         deleteUser.join()
+        createGroup.join()
+        updateGroup.join()
+        deleteGroup.join()
 
         pass

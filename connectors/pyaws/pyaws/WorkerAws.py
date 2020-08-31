@@ -3,6 +3,7 @@
 
 from .WorkerInterface import WorkerInterface
 from .workers.WorkerIAM import WorkerIAM
+from .workers.WorkerPlugins import WorkerPlugins
 
 from pyclient.ClientGandalf import ClientGandalf
 from typing import List
@@ -23,10 +24,22 @@ class WorkerAws(WorkerInterface):
         print("WorkerAws running")
 
         workerIAM = WorkerIAM(clientGandalf, version, config)
+        workerPlugins = WorkerPlugins(clientGandalf, version, config)
+
         threadWorkerIAM = Thread(target=workerIAM.Run())
+        threadWorkerPlugins = Thread(target=workerPlugins.Run())
+
         threadWorkerIAM.start()
+        threadWorkerPlugins.start()
 
         threadWorkerIAM.join()
+        threadWorkerPlugins.join()
+    
+    def reportError(self, uuid: str, command: str, error: str, timeout: str = "10000"):
+        payload = (
+            "{}: Error in command #{}\n{}".format(command, uuid, error)
+        )
+        self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
 
 
 if __name__ == "__main__":

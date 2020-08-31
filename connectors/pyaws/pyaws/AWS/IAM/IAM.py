@@ -292,7 +292,7 @@ class IAM(Client):
 
         return None
 
-    def updateGroup(self, groupName: str, newGroupName: str, newPath: str = None):
+    def updateGroup(self, groupName: str, newGroupName: str, policies: List = [], newPath: str = None):
         try:
             if newPath == None:
                 response = self.client.update_group(
@@ -300,6 +300,9 @@ class IAM(Client):
             else:
                 response = self.client.update_group(
                     GroupName=groupName, NewGroupName=newGroupName, NewPath=newPath)
+
+            for policy in policies:
+                self.linkPolicyTo(policy, groupName, self.attachGroupPolicy)
 
             return response
         except ClientError as err:
