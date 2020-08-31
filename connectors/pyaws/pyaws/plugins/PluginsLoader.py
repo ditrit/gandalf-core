@@ -48,6 +48,30 @@ class PluginsLoader:
         for plugin in self.loadedPlugins.values():
             plugin["thread"].join()
 
+    def run(self, name):
+        plugin = None
+        for script in self.scripts:
+            if script == name:
+                plugin = script
+                break
+        
+        if plugin is None:
+            raise ValueError("This plugin wasn't found !")
+
+        self.loadedPlugins[plugin] = {
+            "thread": None,
+            "output": "",
+            "state": "STOPPED"
+        }
+
+        self.loadedPlugins[plugin]["thread"] = Thread(
+            target=self.runPlugin(plugin))
+
+        self.loadedPlugins["thread"].start()
+
+        self.loadedPlugins["thread"].join()
+
+
     def runPlugin(self, name):
         self.loadedPlugins[name]["state"] = "RUNNING"
 

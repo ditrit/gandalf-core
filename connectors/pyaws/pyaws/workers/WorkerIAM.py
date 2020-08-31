@@ -36,14 +36,6 @@ class WorkerIAM(WorkerAws):
         )
         self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
 
-
-    def reportError(self, uuid: str, command: str, error: str, timeout: str = "10000"):
-        payload = (
-            "{}: Error in command #{}\n{}".format(command, uuid, error)
-        )
-        self.clientGandalf.SendEvent(uuid, "FAIL", {timeout, payload})
-
-
     # TODO : Create user access key and return it along with the created user
     def CreateUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
