@@ -7,6 +7,8 @@ from ..AWS.IAM.IAM import IAM
 from typing import List
 import json
 
+# TODO : Implement more detailed return types including the API errors returned, and stronger payload checks 
+#        for known mandatory parameters
 
 class WorkerIAM(WorkerAws):
     iamClient: IAM
@@ -20,7 +22,8 @@ class WorkerIAM(WorkerAws):
     def Execute(self, clientGandalf, version):
         # fetch the config or something here
         pass
-
+    
+    # TODO : Create user access key and return it along with the created user
     def CreateUser(self):
         id = self.clientGandalf.CreateIteratorCommand()
         print(id)
@@ -88,6 +91,7 @@ class WorkerIAM(WorkerAws):
             self.clientGandalf.SendEvent(command.UUID, "SUCCES", {
                                          "10000", "User deleted !"})
 
+    # TODO : Check exsiting policies and create if necesary
     def CreateGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
         print(id)
@@ -98,11 +102,15 @@ class WorkerIAM(WorkerAws):
 
         payload = json.loads(command.Payload)
 
-        # response = self.iamClient.createUser(payload["name"])
-        # if response == None:
-        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
-        # else:
-        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+        name = payload['name'] if 'name' in payload else None
+        path = payload['path'] if 'path' in payload else None
+        policies = payload['policies'] if 'policies' in payload else None
+
+        response = self.iamClient.createGroup(groupName=name, policies=policies, path=path)
+        if response == None:
+            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Group not created !"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group created !"})
 
     def UpdateGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -113,12 +121,16 @@ class WorkerIAM(WorkerAws):
         print(command)
 
         payload = json.loads(command.Payload)
+        name = payload['name'] if 'name' in payload else None
+        newName = payload['newName'] if 'newName' in payload else None
+        newPath = payload['newPath'] if 'newPath' in payload else None
 
-        # response = self.iamClient.createUser(payload["name"])
-        # if response == None:
-        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
-        # else:
-        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+
+        response = self.iamClient.updateGroup(groupName=name, newGroupName=newName, newPath=newPath)
+        if response == None:
+            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Could not update this group"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group updated !"})
 
     def DeleteGroup(self):
         id = self.clientGandalf.CreateIteratorCommand()
@@ -129,12 +141,17 @@ class WorkerIAM(WorkerAws):
         print(command)
 
         payload = json.loads(command.Payload)
+        name = payload['name'] if 'name' in payload else None
 
-        # response = self.iamClient.createUser(payload["name"])
-        # if response == None:
-        #     self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "User not created !"})
-        # else:
-        #     self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "User created !"})
+
+        response = self.iamClient.deleteGroup(groupName=name)
+        if response == None:
+            self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Group not deleted !"})
+        else:
+            self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "Group deleted !"})
+
+    # NOTE : Access keys removed from here, not relevant to the larger-scale Gandalf thingy. They should be automatically
+    #        managed by the worker.
 
     def Run(self):
         pass
