@@ -5,6 +5,7 @@ from ..WorkerAws import WorkerAws
 from ..AWS.IAM.IAM import IAM
 
 from typing import List
+from threading import Thread
 import json
 
 # TODO : Implement more detailed return types including the API errors returned, and stronger payload checks 
@@ -38,8 +39,8 @@ class WorkerIAM(WorkerAws):
         path = payload['path'] if 'path' in payload else None
         tags = payload['tags'] if 'tags' in payload else []
         permissions = payload['permissions'] if 'permissions' in payload else None
-        policies = payload['policies'] if 'policies' in payload else None
-        groups = payload['groups'] if 'groups' in payload else None
+        policies = payload['policies'] if 'policies' in payload else []
+        groups = payload['groups'] if 'groups' in payload else []
 
         response = self.iamClient.createUser(
             userName=userName, groups=groups, policies=policies, permissions=permissions, tags=tags, path=path)
@@ -63,9 +64,11 @@ class WorkerIAM(WorkerAws):
         userName = payload['name'] if 'name' in payload else None
         newUserName = payload['newName'] if 'newName' in payload else None
         newPath = payload['newPath'] if 'newPath' in payload else None
+        policies = payload['policies'] if 'policies' in payload else []
+        groups = payload['groups'] if 'groups' in payload else []
 
         response = self.iamClient.updateUser(
-            userName=userName, newUserName=newUserName, newPath=newPath)
+            userName=userName, newUserName=newUserName, newPath=newPath, groups=groups, policies=policies)
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL", {
                                          "10000", "User not updated !"})
@@ -83,7 +86,9 @@ class WorkerIAM(WorkerAws):
 
         payload = json.loads(command.Payload)
 
-        response = self.iamClient.deleteUser(userName=payload["name"])
+        userName = payload['name'] if 'name' in payload else None
+
+        response = self.iamClient.deleteUser(userName=userName)
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL", {
                                          "10000", "User not deleted !"})
@@ -102,11 +107,11 @@ class WorkerIAM(WorkerAws):
 
         payload = json.loads(command.Payload)
 
-        name = payload['name'] if 'name' in payload else None
+        groupName = payload['name'] if 'name' in payload else None
         path = payload['path'] if 'path' in payload else None
-        policies = payload['policies'] if 'policies' in payload else None
+        policies = payload['policies'] if 'policies' in payload else []
 
-        response = self.iamClient.createGroup(groupName=name, policies=policies, path=path)
+        response = self.iamClient.createGroup(groupName=groupName, policies=policies, path=path)
         if response == None:
             self.clientGandalf.SendEvent(command.UUID, "FAIL",{"10000", "Group not created !"})
         else:
@@ -154,4 +159,16 @@ class WorkerIAM(WorkerAws):
     #        managed by the worker.
 
     def Run(self):
+        createUser = Thread(target=self.CreateUser())
+        updateUser = Thread(target=self.UpdateUser())
+        deleteUser = Thread(target=self.DeleteUser())
+        
+        createUser.start()
+        updateUser.start()
+        deleteUser.start()
+
+        createUser.join()
+        updateUser.join()
+        deleteUser.join()
+
         pass
