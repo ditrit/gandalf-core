@@ -1,4 +1,4 @@
--e git://github.com/ditrit/gandalf.git@pyaws-connector#egg=py&subdirectory=connectors/py
+-e git://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyworker&subdirectory=connectors/py
 -e git://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyclient&subdirectory=libraries/pyclient
 certifi==2020.6.20
 chardet==3.0.4
