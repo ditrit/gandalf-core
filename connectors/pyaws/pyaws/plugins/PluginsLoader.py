@@ -25,9 +25,10 @@ class PluginsLoader:
         self.loadedPlugins = dict()
 
     def detectPlugins(self):
+        # Get .py files and Filter PluginsLoader.py and __init__.py
         self.scripts = [plugin for plugin in pkg_resources.contents(
             plugins) if plugin[-3:] == '.py' and pkg_resources.is_resource(plugins, plugin) and plugin != "PluginsLoader.py" and plugin != "__init__.py"]
-
+            
         if len(self.scripts) == 0:
             raise Exception("No plugins found !")
 
@@ -54,7 +55,7 @@ class PluginsLoader:
             if script == name:
                 plugin = script
                 break
-        
+
         if plugin is None:
             raise ValueError("This plugin wasn't found !")
 
@@ -67,10 +68,8 @@ class PluginsLoader:
         self.loadedPlugins[plugin]["thread"] = Thread(
             target=self.runPlugin(plugin))
 
-        self.loadedPlugins["thread"].start()
-
-        self.loadedPlugins["thread"].join()
-
+        self.loadedPlugins[plugin]["thread"].start()
+        self.loadedPlugins[plugin]["thread"].join()
 
     def runPlugin(self, name):
         self.loadedPlugins[name]["state"] = "RUNNING"
