@@ -1,0 +1,58 @@
+model:
+name: PythonDemoConnectorConfig_1
+
+# Product Type
+connectorproduct:
+  name: Demo
+  version: 1
+
+# Commands
+connectorcommands:
+- model:
+  name: RUN_TEST_1
+  schema: '{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/RunTest1",
+    "definitions": {
+      "RunTest1": {
+        "required": ["TestValue1"],
+        "properties": {
+          "TestValue1": {
+            "type": "string",
+          }
+        },
+        "additionalProperties": false,
+        "type": "object"
+      }
+    }
+  }'
+
+# Events
+- model:
+  name: RUN_TEST_2
+  schema: '{
+    "type": "string"  
+  }'
+
+# Actions
+actions:
+# - model:
+#   name: create
+#   resource:
+#     model:
+#     name: test_resource_1
+# - model:
+#   name: read
+#   resource:
+#     model:
+#     name: test_resource_1
+# - model:
+#   name: update
+#   resource:
+#     model:
+#     name: test_resource_1
+# - model:
+#   name: delete
+#   resource:
+#     model:
+#     name: test_resource_1

@@ -21,3 +21,7 @@ class WorkerTest(WorkerDemo):
         print(command)
 
         payload = json.loads(command.Payload)
+
+        print(payload)
+
+        self.clientGandalf.SendEvent(command.UUID, "SUCCES", {"10000", "RUN_TEST_1 works !"})

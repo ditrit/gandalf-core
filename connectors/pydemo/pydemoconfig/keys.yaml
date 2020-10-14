@@ -1,0 +1,4 @@
+- name: test_1
+  defaultValue: test_value_1
+  type: string
+  mandatory: false
