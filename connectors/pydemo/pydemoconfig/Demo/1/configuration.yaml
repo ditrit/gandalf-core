@@ -26,6 +26,9 @@ connectorcommands:
       }
     }
   }'
+  actions:
+    - model:
+      name: runTest
 
 # Events
 - model:
@@ -33,26 +36,20 @@ connectorcommands:
   schema: '{
     "type": "string"  
   }'
+  actions:
+    - model:
+      name: runTest
 
-# Actions
-actions:
+# Resources
+# resources:
 # - model:
-#   name: create
-#   resource:
-#     model:
-#     name: test_resource_1
-# - model:
-#   name: read
-#   resource:
-#     model:
-#     name: test_resource_1
-# - model:
-#   name: update
-#   resource:
-#     model:
-#     name: test_resource_1
-# - model:
-#   name: delete
-#   resource:
-#     model:
-#     name: test_resource_1
+#   name: test_resource_1
+#   actions:
+#     - model:
+#       name: create
+#     - model:
+#       name: read
+#     - model:
+#       name: update
+#     - model:
+#       name: delete

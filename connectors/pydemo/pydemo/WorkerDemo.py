@@ -4,7 +4,6 @@
 from .WorkerInterface import WorkerInterface
 from .workers.WorkerTest import WorkerTest
 
-import json, sys
 from typing import List, Dict
 from threading import Thread
 
@@ -21,13 +20,3 @@ class WorkerDemo(WorkerInterface):
         threadWorkerTest = Thread(target=workerTest.Run())
         threadWorkerTest.start()
         threadWorkerTest.join()
-
-if __name__ == "__main__":
-    commands = list()
-    version = int()
-
-    config = json.loads(sys.stdin.read())
-
-    workerDemo = WorkerDemo(version, commands, config)
-
-    workerDemo.Run()

@@ -1,2 +1,2 @@
--e "../py"
--e "../../libraries/pyclient"
+-e "git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyworker&subdirectory=connectors/py"
+-e "git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyclient&subdirectory=libraries/pyclient"

@@ -7,10 +7,5 @@ setup(
     description='Python demo connector for Gandalf',
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
-    packages=find_packages(),
-    entry_points={
-        'console_scripts': [
-            'gandalf_pydemo=pydemo.WorkerDemo:main'
-        ]
-    }
+    packages=find_packages()
 )
