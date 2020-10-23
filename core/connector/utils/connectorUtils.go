@@ -12,7 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/ditrit/gandalf/core/configuration"
+
 	"github.com/ditrit/gandalf/core/models"
+	"gopkg.in/yaml.v2"
 
 	"github.com/ditrit/shoset/msg"
 
@@ -29,7 +32,7 @@ func CreateValidationEvent(command msg.Command, tenant string) (evt *msg.Event) 
 
 	evt = msg.NewEvent(tab)
 	evt.Tenant = tenant
-	evt.Timeout = 100000
+	evt.Timeout = 10000
 
 	return
 }
@@ -77,9 +80,8 @@ func GetConnectorTypeConfigByVersion(version int64, list []*models.ConnectorConf
 	return result
 }
 
-//TODO REVOIR INTERFACE
-// GetConnectorTypeCommand : GetConnectorTypeCommand
-func GetConnectorTypeCommand(commandName string, list []models.ConnectorTypeCommand) (result models.ConnectorTypeCommand) {
+// GetConnectorCommand : GetConnectorCommand
+func GetConnectorCommand(commandName string, list []models.Object) (result models.Object) {
 	for _, command := range list {
 		if command.Name == commandName {
 			result = command
@@ -89,9 +91,8 @@ func GetConnectorTypeCommand(commandName string, list []models.ConnectorTypeComm
 	return result
 }
 
-//TODO REVOIR INTERFACE
-// GetConnectorTypeEvent : GetConnectorTypeEvent
-func GetConnectorTypeEvent(eventName string, list []models.ConnectorTypeEvent) (result models.ConnectorTypeEvent) {
+// GetConnectorEvent : GetConnectorEvent
+func GetConnectorEvent(eventName string, list []models.Object) (result models.Object) {
 	for _, event := range list {
 		if event.Name == eventName {
 			result = event
@@ -120,8 +121,9 @@ func ValidatePayload(payload, payloadSchema string) (result bool) {
 
 }
 
-// DownloadConfigurationsKeys : Download configurationsKeys from url
-func DownloadConfigurationsKeys(url, ressource string) (body string, err error) {
+// DownloadConfiguration : Download configuration from url
+func DownloadConfiguration(url, ressource string) (connectorConfig *models.ConnectorConfig, err error) {
+
 	resp, err := http.Get(url + ressource)
 	if err != nil {
 		log.Printf("err: %s", err)
@@ -137,6 +139,35 @@ func DownloadConfigurationsKeys(url, ressource string) (body string, err error) 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = yaml.Unmarshal(bodyBytes, &connectorConfig)
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal(err)
+	}
+
+	return
+}
+
+// DownloadConfigurationsKeys : Download configurationsKeys from url
+func DownloadConfigurationsKeys(url, ressource string) (body string, err error) {
+
+	resp, err := http.Get(url + ressource)
+	if err != nil {
+		fmt.Println(err)
+		log.Printf("err: %s", err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	bodyString := string(bodyBytes)
 
 	return bodyString, nil
@@ -222,4 +253,21 @@ func Unzip(zipPath string, dirPath string) ([]string, error) {
 		}
 	}
 	return filenames, nil
+}
+
+func GetConfigurationKeys(configkeys []models.ConfigurationKeys) (stindargs string) {
+	var keyValue string
+	for i, configkey := range configkeys {
+		keyValue, _ = configuration.GetStringConfig(configkey.Name)
+		fmt.Println("keyValue")
+		fmt.Println(keyValue)
+		if i == 0 {
+			stindargs = "{\"" + configkey.Name + "\":" + "\"" + keyValue + "\""
+		} else {
+			stindargs = stindargs + ", \"" + configkey.Name + "\":" + "\"" + keyValue + "\""
+		}
+
+	}
+	stindargs = stindargs + "}"
+	return
 }
