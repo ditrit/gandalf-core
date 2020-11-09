@@ -1,0 +1,2 @@
+pyworker@ git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyworker&subdirectory=connectors/py
+pyclient@ git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyclient&subdirectory=libraries/pyclient
