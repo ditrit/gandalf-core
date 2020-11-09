@@ -63,13 +63,16 @@ func InitTenantDatabase(tenantDatabaseClient *gorm.DB) (login string, password s
 		}
 	}
 
+	DemoCreateAggregator(tenantDatabaseClient)
+	DemoCreateConnector(tenantDatabaseClient)
 	DemoCreateConnectorType(tenantDatabaseClient)
 	DemoCreateAction(tenantDatabaseClient)
+	DemoCreateApplicationUtils(tenantDatabaseClient)
 	//TODO REMOVE
 	//DemoCreateUser1(tenantDatabaseClient)
 	//DemoCreateConnectorType(tenantDatabaseClient)
 	//TODO REMOVE
-	DemoTestHierachical(tenantDatabaseClient)
+	//DemoTestHierachical(tenantDatabaseClient)
 	return
 }
 
@@ -268,7 +271,6 @@ func DemoTestHierachical(tenantDatabaseClient *gorm.DB) {
 	fmt.Println(enforce.Enforce(tenantDatabaseClient, romain, gandalf, odomains, create))
 
 	fmt.Println("ENFORCE 7 expect : false")
-	fmt.Println(enforce.Enforce(tenantDatabaseClient, romain, ogree, orepositories, create))
 
 }
 
@@ -280,6 +282,7 @@ func DemoCreateAggregator(tenantDatabaseClient *gorm.DB) {
 //DemoCreateConnector
 func DemoCreateConnector(tenantDatabaseClient *gorm.DB) {
 	tenantDatabaseClient.Create(&models.Connector{LogicalName: "Connector1", InstanceName: "Connector1", Secret: "TOTO"})
+	tenantDatabaseClient.Create(&models.Connector{LogicalName: "Connector2", InstanceName: "Connector2", Secret: "TOTO"})
 }
 
 //DemoCreateConnectorType
@@ -324,6 +327,25 @@ func DemoCreateUser2(tenantDatabaseClient *gorm.DB) {
 
 	user := models.NewUser("User2", "User2", "User2")
 	tenantDatabaseClient.Create(&user)
+}
+
+//DemoCreateApplicationUtils
+func DemoCreateApplicationUtils(tenantDatabaseClient *gorm.DB) {
+	var AggregatorUtils models.Aggregator
+	var ConnectorUtils models.Connector
+	var ConnectorTypeUtils models.ConnectorType
+
+	tenantDatabaseClient.Where("logical_name = ? and instance_name = ?", "Aggregator1", "Aggregator1").First(&AggregatorUtils)
+	tenantDatabaseClient.Where("logical_name = ? and instance_name = ?", "Connector1", "Connector1").First(&ConnectorUtils)
+	tenantDatabaseClient.Where("name = ?", "Utils").First(&ConnectorTypeUtils)
+
+	fmt.Println(AggregatorUtils)
+	fmt.Println(ConnectorTypeUtils)
+
+	tenantDatabaseClient.Create(&models.Application{Name: "Application1",
+		Aggregator:    AggregatorUtils,
+		Connector:     ConnectorUtils,
+		ConnectorType: ConnectorTypeUtils})
 }
 
 /* //DemoCreateProductUtils

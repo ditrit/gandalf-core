@@ -3,6 +3,7 @@ package shoset
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/ditrit/gandalf/core/connector/utils"
@@ -30,18 +31,18 @@ func HandleCommand(c *net.ShosetConn, message msg.Message) (err error) {
 			var connectorTypeConfig *models.ConnectorConfig
 			if listConnectorTypeConfig, ok := config[connectorType]; ok {
 				if cmd.Major == 0 {
-					versions := ch.Context["versions"].([]int64)
+					versions := ch.Context["versions"].([]models.Version)
 					if versions != nil {
 						maxVersion := utils.GetMaxVersion(versions)
-						cmd.Major = int8(maxVersion)
+						cmd.Major = maxVersion.Major
 						//connectorTypeConfig := utils.GetConnectorTypeConfigByVersion(int64(cmd.GetMajor()), listConnectorTypeConfig)
-						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion, listConnectorTypeConfig)
+						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion.Major, listConnectorTypeConfig)
 
 					} else {
 						log.Println("Versions not found")
 					}
 				} else {
-					connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(int64(cmd.Major), listConnectorTypeConfig)
+					connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(cmd.Major, listConnectorTypeConfig)
 				}
 
 				//connectorTypeConfig := utils.GetConnectorTypeConfigByVersion(int64(cmd.GetMajor()), listConnectorTypeConfig)
@@ -65,9 +66,15 @@ func HandleCommand(c *net.ShosetConn, message msg.Message) (err error) {
 		log.Println("Versions not found")
 
 	}
-
+	fmt.Println("validate")
+	fmt.Println(validate)
 	if validate {
+
 		ok := ch.Queue["cmd"].Push(cmd, c.ShosetType, c.GetBindAddr())
+
+		fmt.Println("add queue shoset")
+		fmt.Println(ch.Queue["cmd"])
+
 		if ok {
 			ch.ConnsByAddr.Iterate(
 				func(key string, val *net.ShosetConn) {

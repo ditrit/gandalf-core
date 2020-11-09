@@ -4,6 +4,7 @@ package grpc
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -25,6 +26,9 @@ var grpcSendIndex = 0
 
 // ConnectorGrpc : ConnectorGrpc struct.
 type ConnectorGrpc struct {
+	pb.UnimplementedConnectorServer
+	pb.UnimplementedConnectorCommandServer
+	pb.UnimplementedConnectorEventServer
 	GrpcConnection string
 	Shoset         sn.Shoset
 	//MapWorkerIterators map[string][]*msg.Iterator
@@ -65,15 +69,73 @@ func (r ConnectorGrpc) StartGrpcServer() {
 }
 
 //SendCommandList : Connector send command list function.
-func (r ConnectorGrpc) SendCommandList(ctx context.Context, in *pb.CommandList) (empty *pb.Empty, err error) {
+func (r ConnectorGrpc) SendCommandList(ctx context.Context, in *pb.CommandList) (validate *pb.Validate, err error) {
 	log.Println("Handle send command list")
+	fmt.Println("SNED COMMAND LIST")
+	validation := false
 
-	mapVersionConnectorCommands := r.Shoset.Context["mapVersionConnectorCommands"].(map[int64][]string)
-	if mapVersionConnectorCommands != nil {
-		mapVersionConnectorCommands[in.GetMajor()] = append(mapVersionConnectorCommands[in.GetMajor()], in.GetCommands()...)
+	/* 	mapVersionConnectorCommands := r.Shoset.Context["mapVersionConnectorCommands"].(map[int8][]string)
+	   	if mapVersionConnectorCommands != nil {
+	   		mapVersionConnectorCommands[int8(in.GetMajor())] = append(mapVersionConnectorCommands[int8(in.GetMajor())], in.GetCommands()...)
+	   	} */
+
+	config := r.Shoset.Context["mapConnectorsConfig"].(map[string][]*models.ConnectorConfig)
+	fmt.Println("config")
+	fmt.Println(config)
+	if config != nil {
+		connectorType := r.Shoset.Context["connectorType"].(string)
+		connectorConfig := utils.GetConnectorTypeConfigByVersion(int8(in.GetMajor()), config[connectorType])
+		if connectorConfig != nil {
+			var configCommands []string
+			for _, command := range connectorConfig.ConnectorCommands {
+				configCommands = append(configCommands, command.Name)
+			}
+			fmt.Println("commands")
+			fmt.Println(in.GetCommands())
+			fmt.Println("configCommands")
+			fmt.Println(configCommands)
+
+			if len(configCommands) == len(in.GetCommands()) {
+				result := true
+				for _, ccommand := range configCommands {
+					currentResult := false
+					for _, icommand := range in.GetCommands() {
+						if ccommand == icommand {
+							currentResult = true
+						}
+					}
+					result = result && currentResult
+				}
+				validation = result
+			}
+
+			fmt.Println("validation")
+			fmt.Println(validation)
+		} else {
+			log.Printf("Can't get connector configuration with connector type %s, and version %s", connectorType, int8(in.GetMajor()))
+		}
+
+	} else {
+		log.Printf("Connectors configuration not found")
 	}
 
-	return &pb.Empty{}, nil
+	activeWorkers := r.Shoset.Context["mapActiveWorkers"].(map[models.Version]bool)
+	activeWorkers[models.Version{Major: int8(in.GetMajor()), Minor: int8(in.GetMinor())}] = validation
+	r.Shoset.Context["mapActiveWorkers"] = activeWorkers
+
+	return &pb.Validate{Valid: validation}, nil
+}
+
+//SendStop : Connector send stop.
+func (r ConnectorGrpc) SendStop(ctx context.Context, in *pb.Stop) (validate *pb.Validate, err error) {
+	log.Println("Handle send command list")
+
+	activeWorkers := r.Shoset.Context["mapActiveWorkers"].(map[models.Version]bool)
+	for activeWorkers[models.Version{Major: int8(in.GetMajor()), Minor: int8(in.GetMinor())}] {
+		time.Sleep(5 * time.Second)
+	}
+	return &pb.Validate{Valid: true}, nil
+
 }
 
 //SendCommandMessage : Connector send command function.
@@ -92,18 +154,19 @@ func (r ConnectorGrpc) SendCommandMessage(ctx context.Context, in *pb.CommandMes
 			var connectorTypeConfig *models.ConnectorConfig
 			if listConnectorTypeConfig, ok := config[connectorType]; ok {
 				if cmd.Major == 0 {
-					versions := r.Shoset.Context["versions"].([]int64)
+					versions := r.Shoset.Context["versions"].([]models.Version)
 					if versions != nil {
 						maxVersion := utils.GetMaxVersion(versions)
-						cmd.Major = int8(maxVersion)
+						cmd.Major = maxVersion.Major
+
 						//connectorTypeConfig := utils.GetConnectorTypeConfigByVersion(int64(cmd.GetMajor()), listConnectorTypeConfig)
-						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion, listConnectorTypeConfig)
+						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion.Major, listConnectorTypeConfig)
 
 					} else {
 						log.Println("Versions not found")
 					}
 				} else {
-					connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(int64(cmd.Major), listConnectorTypeConfig)
+					connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(cmd.Major, listConnectorTypeConfig)
 				}
 
 				//connectorTypeConfig := utils.GetConnectorTypeConfigByVersion(int64(cmd.GetMajor()), listConnectorTypeConfig)
@@ -127,7 +190,8 @@ func (r ConnectorGrpc) SendCommandMessage(ctx context.Context, in *pb.CommandMes
 	} else {
 		log.Println("Connectors configuration not found")
 	}
-
+	fmt.Println("validate")
+	fmt.Println(validate)
 	if validate {
 		cmd.Tenant = r.Shoset.Context["tenant"].(string)
 		shosets := sn.GetByType(r.Shoset.ConnsByAddr, "a")
@@ -184,7 +248,7 @@ func (r ConnectorGrpc) WaitCommandMessage(ctx context.Context, in *pb.CommandMes
 
 	iterator := r.MapIterators[in.GetIteratorId()]
 
-	go r.runIteratorCommand(in.GetValue(), in.GetMajor(), iterator, r.MapCommandChannel[in.GetIteratorId()])
+	go r.runIteratorCommand(in.GetValue(), int8(in.GetMajor()), iterator, r.MapCommandChannel[in.GetIteratorId()])
 
 	messageChannel := <-r.MapCommandChannel[in.GetIteratorId()]
 	commandMessage = pb.CommandToGrpc(messageChannel.(msg.Command))
@@ -208,18 +272,18 @@ func (r ConnectorGrpc) SendEventMessage(ctx context.Context, in *pb.EventMessage
 				var connectorTypeConfig *models.ConnectorConfig
 				if listConnectorTypeConfig, ok := config[connectorType]; ok {
 					if evt.Major == 0 {
-						versions := r.Shoset.Context["versions"].([]int64)
+						versions := r.Shoset.Context["versions"].([]models.Version)
 						if versions != nil {
 							maxVersion := utils.GetMaxVersion(versions)
-							evt.Major = int8(maxVersion)
+							evt.Major = maxVersion.Major
 
-							connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion, listConnectorTypeConfig)
+							connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(maxVersion.Major, listConnectorTypeConfig)
 
 						} else {
 							log.Println("Versions not found")
 						}
 					} else {
-						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(int64(evt.Major), listConnectorTypeConfig)
+						connectorTypeConfig = utils.GetConnectorTypeConfigByVersion(evt.Major, listConnectorTypeConfig)
 					}
 
 					if connectorTypeConfig != nil {
@@ -298,6 +362,9 @@ func (r ConnectorGrpc) WaitTopicMessage(ctx context.Context, in *pb.TopicMessage
 func (r ConnectorGrpc) CreateIteratorCommand(ctx context.Context, in *pb.Empty) (iteratorMessage *pb.IteratorMessage, err error) {
 	log.Println("Handle create iterator command")
 
+	fmt.Println("add queue grpc")
+	fmt.Println(r.Shoset.Queue["cmd"])
+
 	iterator := msg.NewIterator(r.Shoset.Queue["cmd"])
 	index := uuid.New()
 	log.Printf("Create new iterator command: %s", index)
@@ -326,19 +393,24 @@ func (r ConnectorGrpc) CreateIteratorEvent(ctx context.Context, in *pb.Empty) (i
 	return
 }
 
+//TODO REVOIR
 // runIterator : Iterator run function.
-func (r ConnectorGrpc) runIteratorCommand(command string, version int64, iterator *msg.Iterator, channel chan msg.Message) {
+func (r ConnectorGrpc) runIteratorCommand(command string, major int8, iterator *msg.Iterator, channel chan msg.Message) {
 	log.Printf("Run iterator command on command %s", command)
 
 	for {
+
+		fmt.Println("messageIterator" + command)
+		iterator.PrintQueue()
+
 		messageIterator := iterator.Get()
 
 		if messageIterator != nil {
 			message := (messageIterator.GetMessage()).(msg.Command)
 
 			if command == message.GetCommand() {
-				major := int64(message.GetMajor())
-				if version == 0 || (version != 0 && major == version) {
+				versionMajor := message.GetMajor()
+				if major == 0 || (major != 0 && versionMajor == major) {
 					log.Println("Get iterator command")
 					log.Println(message)
 
@@ -359,6 +431,7 @@ func (r ConnectorGrpc) runIteratorEvent(topic, event, referenceUUID string, iter
 
 	for {
 		messageIterator := iterator.Get()
+		iterator.PrintQueue()
 
 		if messageIterator != nil {
 			message := (messageIterator.GetMessage()).(msg.Event)

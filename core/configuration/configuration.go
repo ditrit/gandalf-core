@@ -359,16 +359,16 @@ func IsConfigValid() error {
 func GetConnectorValues() {
 }
 
+//TODO REVOIR
 //Set the list for all versions of a component
-func GetVersionsList(strVal string) ([]int64, error) {
-	var resultList []int64
+func GetVersionsList(strVal string) ([]models.Version, error) {
+	var resultList []models.Version
 
 	for _, val := range strings.Split(strVal, ",") {
-		valint64, err := strconv.ParseInt(val, 10, 64)
-		if err != nil {
-			return nil, err
-		}
-		resultList = append(resultList, valint64)
+		valSplit := strings.Split(val, ".")
+		major, _ := strconv.ParseInt(valSplit[0], 10, 8)
+		minor, _ := strconv.ParseInt(valSplit[1], 10, 8)
+		resultList = append(resultList, models.Version{Major: int8(major), Minor: int8(minor)})
 	}
 	return resultList, nil
 }
