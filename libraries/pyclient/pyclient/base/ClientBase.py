@@ -3,24 +3,22 @@
 
 from typing import List
 
+from grpc import Channel
+
 from ..grpc.connector_pb2 import *
 from ..grpc.connector_pb2_grpc import *
+from ..ClientWarper import ClientWarper
 
 
-class ClientBase:
+class ClientBase(ClientWarper):
 
-    clientBaseConnection: str
-    identity: str
-    client: ConnectorStub
+    @property
+    def clientBaseConnection(self) -> str:
+        return self.clientConnection
 
-    def __init__(self, identity: str, clientBaseConnection: str):
-        self.identity = identity
-        self.clientBaseConnection = clientBaseConnection
-
-        conn = grpc.insecure_channel(clientBaseConnection)
-
-        self.client = ConnectorStub(conn)
-        print("clientBase connect : {}".format(clientBaseConnection))
+    @clientBaseConnection.setter
+    def clientBaseConnection(self, value: str):
+        self.clientConnection = value
 
     def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Empty:
         commandList = CommandList()

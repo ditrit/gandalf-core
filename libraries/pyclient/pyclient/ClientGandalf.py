@@ -9,9 +9,9 @@ from typing import List
 from .client.ClientGrpc import ClientGrpc
 from .models.Options import Options
 
-from pyclient.grpc.connector_pb2 import *
-from pyclient.grpc.connectorCommand_pb2 import *
-from pyclient.grpc.connectorEvent_pb2 import *
+from .grpc.connector_pb2 import *
+from .grpc.connectorCommand_pb2 import *
+from .grpc.connectorEvent_pb2 import *
 
 DEFAULT_TIMEOUT = "10000"
 

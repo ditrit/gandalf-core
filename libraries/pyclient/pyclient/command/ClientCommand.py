@@ -11,8 +11,8 @@ from ..grpc.connector_pb2 import IteratorMessage
 from ..grpc.connector_pb2 import Empty
 
 
-class ClientCommand:
-
+class ClientCommand:    
+    
     clientCommandConnection: str
     identity: str
     client: ConnectorCommandStub
