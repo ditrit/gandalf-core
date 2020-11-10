@@ -3,8 +3,6 @@
 
 from typing import List
 
-from grpc import Channel
-
 from ..grpc.connector_pb2 import *
 from ..grpc.connector_pb2_grpc import *
 from ..ClientWarper import ClientWarper

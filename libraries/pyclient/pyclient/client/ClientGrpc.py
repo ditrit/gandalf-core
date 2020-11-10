@@ -3,28 +3,32 @@
 
 from typing import List
 
+from grpc import Channel
+
 from ..command.ClientCommand import ClientCommand
 from ..event.ClientEvent import ClientEvent
 from ..base.ClientBase import ClientBase
 from ..grpc.connector_pb2 import *
 from ..grpc.connectorCommand_pb2 import *
 from ..grpc.connectorEvent_pb2 import *
+from ..ClientWarper import ClientWarper
 
-class ClientGrpc:
+class ClientGrpc(ClientWarper):
     
-    identity: str
-    clientConnection: str
     clientBase: ClientBase
     clientCommand: ClientCommand
     clientEvent: ClientEvent
 
     def __init__(self, identity: str, clientConnection: str):
-        self.identity = identity
-        self.clientConnection = clientConnection
+        ClientWarper.__init__(self, identity, clientConnection)
 
         self.clientBase = ClientBase(identity, clientConnection)
         self.clientCommand = ClientCommand(identity, clientConnection)
         self.clientEvent = ClientEvent(identity, clientConnection)
+
+    def loadStub(self, conn: Channel):
+        # loadStub Override so that we don't call the ClientWarper one
+        pass
 
     def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Validate:
         return self.clientBase.SendCommandList(major, minor, commands)
