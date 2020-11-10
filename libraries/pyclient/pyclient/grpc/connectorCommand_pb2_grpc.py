@@ -87,6 +87,7 @@ class ConnectorCommand(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -95,7 +96,7 @@ class ConnectorCommand(object):
             connectorCommand__pb2.CommandMessage.SerializeToString,
             connectorCommand__pb2.CommandMessageUUID.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def WaitCommandMessage(request,
@@ -103,6 +104,7 @@ class ConnectorCommand(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -111,7 +113,7 @@ class ConnectorCommand(object):
             connectorCommand__pb2.CommandMessageWait.SerializeToString,
             connectorCommand__pb2.CommandMessage.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateIteratorCommand(request,
@@ -119,6 +121,7 @@ class ConnectorCommand(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -127,4 +130,4 @@ class ConnectorCommand(object):
             connector__pb2.Empty.SerializeToString,
             connector__pb2.IteratorMessage.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

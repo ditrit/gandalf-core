@@ -17,7 +17,8 @@ DEFAULT_PORT = "50150"
 SERVER_STOP_TIME = 1.0
 
 FIXED_TEST_COMMAND_LIST = ["DummyCommandA", "DummyCommandB", "DummyCommandC"]
-FIXED_TEST_MAJOR = 42
+FIXED_TEST_MAJOR = 3
+FIXED_TEST_MINOR = 42
 
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -61,7 +62,7 @@ class TestClientBase(unittest.TestCase):
         print('TEST : ClientBase.SendCommandList(major, commandList)')
 
         result = self.client.SendCommandList(
-            FIXED_TEST_MAJOR, FIXED_TEST_COMMAND_LIST)
+            FIXED_TEST_MAJOR, FIXED_TEST_MINOR, FIXED_TEST_COMMAND_LIST)
 
 
 if __name__ == '__main__':

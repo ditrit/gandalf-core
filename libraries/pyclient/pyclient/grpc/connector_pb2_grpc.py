@@ -17,7 +17,12 @@ class ConnectorStub(object):
         self.SendCommandList = channel.unary_unary(
                 '/grpc.Connector/SendCommandList',
                 request_serializer=connector__pb2.CommandList.SerializeToString,
-                response_deserializer=connector__pb2.Empty.FromString,
+                response_deserializer=connector__pb2.Validate.FromString,
+                )
+        self.SendStop = channel.unary_unary(
+                '/grpc.Connector/SendStop',
+                request_serializer=connector__pb2.Stop.SerializeToString,
+                response_deserializer=connector__pb2.Validate.FromString,
                 )
 
 
@@ -30,13 +35,24 @@ class ConnectorServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SendStop(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConnectorServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'SendCommandList': grpc.unary_unary_rpc_method_handler(
                     servicer.SendCommandList,
                     request_deserializer=connector__pb2.CommandList.FromString,
-                    response_serializer=connector__pb2.Empty.SerializeToString,
+                    response_serializer=connector__pb2.Validate.SerializeToString,
+            ),
+            'SendStop': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendStop,
+                    request_deserializer=connector__pb2.Stop.FromString,
+                    response_serializer=connector__pb2.Validate.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -54,12 +70,30 @@ class Connector(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/grpc.Connector/SendCommandList',
             connector__pb2.CommandList.SerializeToString,
-            connector__pb2.Empty.FromString,
+            connector__pb2.Validate.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendStop(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.Connector/SendStop',
+            connector__pb2.Stop.SerializeToString,
+            connector__pb2.Validate.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

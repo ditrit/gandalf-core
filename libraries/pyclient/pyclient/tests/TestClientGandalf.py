@@ -27,7 +27,8 @@ FIXED_TEST_EVENT = "DummyEvent"
 FIXED_TEST_TOPIC = "DummyTopic"
 FIXED_TEST_COMMAND = "DummyCommand"
 FIXED_TEST_COMMAND_TYPE = "DummyCommandType"
-FIXED_TEST_MAJOR = 42
+FIXED_TEST_MAJOR = 3
+FIXED_TEST_MINOR = 42
 FIXED_TEST_COMMAND_LIST = ["DummyCommandA", "DummyCommandB", "DummyCommandC"]
 
 
@@ -134,7 +135,7 @@ class TestClientGandalf(unittest.TestCase):
             FIXED_TEST_TIMEOUT, FIXED_TEST_PAYLOAD))
 
     def test_send_command_list(self):
-        self.client.SendCommandList(FIXED_TEST_MAJOR, FIXED_TEST_COMMAND_LIST)
+        self.client.SendCommandList(FIXED_TEST_MAJOR, FIXED_TEST_MINOR, FIXED_TEST_COMMAND_LIST)
 
     def test_wait_command(self):
         self.client.WaitCommand(

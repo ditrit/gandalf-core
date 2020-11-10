@@ -15,7 +15,6 @@ from pyclient.grpc.connectorEvent_pb2 import *
 
 DEFAULT_TIMEOUT = "10000"
 
-
 class ClientGandalf:
 
     Identity: str
@@ -109,7 +108,7 @@ class ClientGandalf:
 
         while stay:
             empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(
-                topic, event, "", timeout, options.payload)
+                topic, event, referenceUUID, timeout, options.payload)
             if empty != None:
                 notSend = False
                 break
@@ -125,8 +124,11 @@ class ClientGandalf:
 
         return empty
 
-    def SendCommandList(self, version: int, commands: List[str]) -> Empty:
-        return self.Clients[self.getClientIndex(self.Clients, True)].SendCommandList(version, commands)
+    def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Validate:
+        return self.Clients[self.getClientIndex(self.Clients, True)].SendCommandList(major, minor, commands)
+
+    def SendStop(self, major: int, minor: int) -> Validate:
+        return self.Clients[self.getClientIndex(self.Clients, True)].SendStop(major, minor)
 
     def WaitCommand(self, command, idIterator: str, version: int) -> CommandMessage:
         return self.Clients[self.getClientIndex(self.Clients, False)].WaitCommand(command, idIterator, version)
@@ -168,8 +170,8 @@ class ClientGandalf:
 
         if updateIndex:
             self.ClientIndex += 1
-        if self.ClientIndex >= len(conns):
-            self.ClientIndex = 0
+            if self.ClientIndex >= len(conns):
+                self.ClientIndex = 0
 
         return aux
 

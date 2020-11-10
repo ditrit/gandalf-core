@@ -2,22 +2,10 @@
 # coding: utf-8
 
 class Options:
-    @property
-    def timeout(self):
-        return self._timeout
 
-    @timeout.setter
-    def timeout(self, value):
-        self._timeout = value
+    timeout: str
+    payload: str
 
-    @property
-    def payload(self):
-        return self._payload
-
-    @payload.setter
-    def payload(self, value):
-        self._payload = value
-
-    def __init__(self, timeout, payload: str):
+    def __init__(self, timeout: str, payload: str):
         self.timeout = timeout
         self.payload = payload

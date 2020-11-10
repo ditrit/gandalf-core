@@ -103,6 +103,7 @@ class ConnectorEvent(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -111,7 +112,7 @@ class ConnectorEvent(object):
             connectorEvent__pb2.EventMessage.SerializeToString,
             connector__pb2.Empty.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def WaitEventMessage(request,
@@ -119,6 +120,7 @@ class ConnectorEvent(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -127,7 +129,7 @@ class ConnectorEvent(object):
             connectorEvent__pb2.EventMessageWait.SerializeToString,
             connectorEvent__pb2.EventMessage.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def WaitTopicMessage(request,
@@ -135,6 +137,7 @@ class ConnectorEvent(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -143,7 +146,7 @@ class ConnectorEvent(object):
             connectorEvent__pb2.TopicMessageWait.SerializeToString,
             connectorEvent__pb2.EventMessage.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateIteratorEvent(request,
@@ -151,6 +154,7 @@ class ConnectorEvent(object):
             options=(),
             channel_credentials=None,
             call_credentials=None,
+            insecure=False,
             compression=None,
             wait_for_ready=None,
             timeout=None,
@@ -159,4 +163,4 @@ class ConnectorEvent(object):
             connector__pb2.Empty.SerializeToString,
             connector__pb2.IteratorMessage.FromString,
             options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

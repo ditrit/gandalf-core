@@ -4,6 +4,8 @@
 import uuid
 import time
 
+from grpc import RpcError
+
 from ..grpc.connectorEvent_pb2 import *
 from ..grpc.connectorEvent_pb2_grpc import *
 
@@ -11,36 +13,22 @@ from ..grpc.connector_pb2 import *
 
 
 class ClientEvent:
-    @property
-    def ClientEventConnection(self):
-        return self._ClientEventConnection
 
-    @ClientEventConnection.setter
-    def ClientEventConnection(self, value):
-        self._ClientEventConnection = value
-
-    @property
-    def Identity(self):
-        return self._Identity
-
-    @Identity.setter
-    def Identity(self, value):
-        self._Identity = value
-
-    @property
-    def client(self):
-        return self._client
-
-    @client.setter
-    def client(self, value):
-        self._client = value
+    clientEventConnection: str
+    identity: str
+    client: ConnectorEventStub
 
     def __init__(self, identity: str, clientEventConnection: str):
-        self.Identity = identity
-        self.ClientEventConnection = clientEventConnection
+        self.identity = identity
+        self.clientEventConnection = clientEventConnection
 
-        conn = grpc.insecure_channel(clientEventConnection)
-        self.client = ConnectorEventStub(conn)
+        try:
+            conn = grpc.insecure_channel(clientEventConnection)
+            
+            self.client = ConnectorEventStub(conn)
+            print("clientEvent connect : {}".format(clientEventConnection))
+        except RpcError as err:
+            print("clientEvent failed dial : {}".format(err))
 
     def SendEvent(self, topic, event, referenceUUID, timeout, payload: str) -> Empty:
         eventMessage = EventMessage()
@@ -55,7 +43,7 @@ class ClientEvent:
 
     def WaitEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
         eventMessageWait = EventMessageWait()
-        eventMessageWait.WorkerSource = self.Identity
+        eventMessageWait.WorkerSource = self.identity
         eventMessageWait.Topic = topic
         eventMessageWait.Event = event
         eventMessageWait.IteratorId = idIterator
@@ -69,7 +57,7 @@ class ClientEvent:
 
     def WaitTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
         topicMessageWait = TopicMessageWait()
-        topicMessageWait.WorkerSource = self.Identity
+        topicMessageWait.WorkerSource = self.identity
         topicMessageWait.Topic = topic
         topicMessageWait.IteratorId = idIterator
         topicMessageWait.ReferenceUUID = referenceUUID
