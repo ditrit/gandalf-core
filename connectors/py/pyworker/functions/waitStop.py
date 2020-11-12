@@ -4,8 +4,8 @@
 from typing import List, Set
 import time
 from pyclient.ClientGandalf import ClientGandalf
-from ..models.workerState import WorkerState
-from ..models.ongoingTreatments import OngoingTreatments
+from ..models.WorkerState import WorkerState
+from ..models.OngoingTreatments import OngoingTreatments
 
 def waitStop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState, ongoingTreatment: OngoingTreatments):        
     # [WAIT_STOP] Step 1 & 2
