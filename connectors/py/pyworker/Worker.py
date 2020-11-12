@@ -12,7 +12,7 @@ from pyclient.grpc.connectorEvent_pb2 import EventMessage
 
 from .functions.Start import Start
 from .functions.SendCommands import SendCommands
-
+from .functions.Stop import Stop
 
 class Worker:
 
@@ -40,6 +40,7 @@ class Worker:
         self.commandes = commandes
 
         self.Start = Start
+        self.Stop = Stop
         self.SendCommands = SendCommands
 
     def Run(self):
