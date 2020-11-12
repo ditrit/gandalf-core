@@ -14,15 +14,15 @@ from ..ClientWarper import ClientWarper
 
 class ClientEvent(ClientWarper):
 
-    client: ConnectorEventStub
+    Client: ConnectorEventStub
 
     @property
-    def clientEventConnection(self) -> str:
-        return self.clientConnection
+    def ClientEventConnection(self) -> str:
+        return self.ClientConnection
 
-    @clientEventConnection.setter
-    def clientEventConnection(self, value: str):
-        self.clientConnection = value
+    @ClientEventConnection.setter
+    def ClientEventConnection(self, value: str):
+        self.ClientConnection = value
 
     def __init__(self, identity: str, clientEventConnection: str):
         super().__init__(identity, clientEventConnection)
@@ -30,7 +30,7 @@ class ClientEvent(ClientWarper):
         try:
             conn = grpc.insecure_channel(clientEventConnection)
             
-            self.client = ConnectorEventStub(conn)
+            self.Client = ConnectorEventStub(conn)
             print("clientEvent connect : {}".format(clientEventConnection))
         except RpcError as err:
             print("clientEvent failed dial : {}".format(err))
@@ -44,16 +44,16 @@ class ClientEvent(ClientWarper):
         eventMessage.Payload = payload
         eventMessage.ReferenceUUID = referenceUUID
 
-        return self.client.SendEventMessage(eventMessage)
+        return self.Client.SendEventMessage(eventMessage)
 
     def WaitEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
         eventMessageWait = EventMessageWait()
-        eventMessageWait.WorkerSource = self.identity
+        eventMessageWait.WorkerSource = self.Identity
         eventMessageWait.Topic = topic
         eventMessageWait.Event = event
         eventMessageWait.IteratorId = idIterator
         eventMessageWait.ReferenceUUID = referenceUUID
-        eventMessage = self.client.WaitEventMessage(eventMessageWait)
+        eventMessage = self.Client.WaitEventMessage(eventMessageWait)
 
         while eventMessage == None:
             time.sleep(1)
@@ -62,11 +62,11 @@ class ClientEvent(ClientWarper):
 
     def WaitTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
         topicMessageWait = TopicMessageWait()
-        topicMessageWait.WorkerSource = self.identity
+        topicMessageWait.WorkerSource = self.Identity
         topicMessageWait.Topic = topic
         topicMessageWait.IteratorId = idIterator
         topicMessageWait.ReferenceUUID = referenceUUID
-        eventMessage = self.client.WaitTopicMessage(topicMessageWait)
+        eventMessage = self.Client.WaitTopicMessage(topicMessageWait)
 
         while eventMessage == None:
             time.sleep(1)
@@ -74,4 +74,4 @@ class ClientEvent(ClientWarper):
         return eventMessage
 
     def CreateIteratorEvent(self) -> IteratorMessage:
-        return self.client.CreateIteratorEvent(Empty())
+        return self.Client.CreateIteratorEvent(Empty())

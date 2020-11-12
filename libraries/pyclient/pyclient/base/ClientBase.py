@@ -11,12 +11,12 @@ from ..ClientWarper import ClientWarper
 class ClientBase(ClientWarper):
 
     @property
-    def clientBaseConnection(self) -> str:
-        return self.clientConnection
+    def ClientBaseConnection(self) -> str:
+        return self.ClientConnection
 
-    @clientBaseConnection.setter
-    def clientBaseConnection(self, value: str):
-        self.clientConnection = value
+    @ClientBaseConnection.setter
+    def ClientBaseConnection(self, value: str):
+        self.ClientConnection = value
 
     def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Empty:
         commandList = CommandList()
@@ -25,9 +25,9 @@ class ClientBase(ClientWarper):
         commandList.Commands.extend(commands)
 
         print("SEND COMMAND LIST LIB")
-        return self.client.SendCommandList(commandList)
+        return self.Client.SendCommandList(commandList)
 
     def SendStop(self, major: int, minor: int):
         stop = Stop(major, minor)
 
-        return self.client.SendStop(stop)
+        return self.Client.SendStop(stop)

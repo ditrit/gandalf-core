@@ -15,21 +15,21 @@ from ..grpc.connector_pb2 import Empty
 
 class ClientCommand(ClientWarper):    
 
-    client: ConnectorCommandStub
+    Client: ConnectorCommandStub
 
     @property
-    def clientCommandConnection(self) -> str:
-        return self.clientConnection
+    def ClientCommandConnection(self) -> str:
+        return self.ClientConnection
 
-    @clientCommandConnection.setter
-    def clientCommandConnection(self, value: str):
-        self.clientConnection = value
+    @ClientCommandConnection.setter
+    def ClientCommandConnection(self, value: str):
+        self.ClientConnection = value
 
     def __init__(self, identity: str, clientCommandConnection: str):
         super().__init__(identity, clientCommandConnection)
     
     def loadStub(self, conn: Channel):
-        self.client = ConnectorCommandStub(conn)
+        self.Client = ConnectorCommandStub(conn)
 
     def SendCommand(self, connectorType: str, command: str,  timeout: str, payload: str) -> CommandMessageUUID:
         commandMessage = CommandMessage()
@@ -39,16 +39,16 @@ class ClientCommand(ClientWarper):
         commandMessage.Command = command
         commandMessage.Payload = payload
 
-        return self.client.SendCommandMessage(commandMessage)
+        return self.Client.SendCommandMessage(commandMessage)
 
     def WaitCommand(self, command: str, idIterator: str, major: int) -> CommandMessage:
         commandMessageWait = CommandMessageWait()
-        commandMessageWait.WorkerSource = self.identity
+        commandMessageWait.WorkerSource = self.Identity
         commandMessageWait.Value = command
         commandMessageWait.IteratorId = idIterator
         commandMessageWait.Major = major
 
-        commandMessage = self.client.WaitCommandMessage(commandMessageWait)
+        commandMessage = self.Client.WaitCommandMessage(commandMessageWait)
         print(commandMessage)
 
         while commandMessage == None:
@@ -57,4 +57,4 @@ class ClientCommand(ClientWarper):
         return commandMessage
 
     def CreateIteratorCommand(self) -> IteratorMessage:
-        return self.client.CreateIteratorCommand(Empty())
+        return self.Client.CreateIteratorCommand(Empty())

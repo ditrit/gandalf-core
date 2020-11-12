@@ -11,13 +11,13 @@ from .grpc.connector_pb2_grpc import *
 
 class ClientWarper:
 
-    clientConnection: str
-    identity: str
-    client: ConnectorStub
+    ClientConnection: str
+    Identity: str
+    Client: ConnectorStub
 
     def __init__(self, identity: str, clientConnection: str):
-        self.identity = identity
-        self.clientConnection = clientConnection
+        self.Identity = identity
+        self.ClientConnection = clientConnection
 
         try:
             conn = grpc.insecure_channel(clientConnection)
@@ -27,6 +27,6 @@ class ClientWarper:
             print("{} failed dial : {}".format(type(self).__name__, err))
 
     def loadStub(self, conn: Channel):
-        self.client = ConnectorStub(conn)
+        self.Client = ConnectorStub(conn)
         print("{} connect : {}".format(
-            type(self).__name__, self.clientConnection))
+            type(self).__name__, self.ClientConnection))

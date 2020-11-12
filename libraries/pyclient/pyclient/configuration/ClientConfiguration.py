@@ -6,14 +6,14 @@ import json
 
 class ClientConfiguration:
 
-    clientCommandConnection: str
-    clientEventConnection: str
-    identity: str
+    ClientCommandConnection: str
+    ClientEventConnection: str
+    Identity: str
 
     def __init__(self, clientCommandConnection: str, clientEventConnection: str, identity: str):
-        self.clientCommandConnection = clientCommandConnection
-        self.clientEventConnection = clientEventConnection
-        self.identity = identity
+        self.ClientCommandConnection = clientCommandConnection
+        self.ClientEventConnection = clientEventConnection
+        self.Identity = identity
 
     def __init__(self, path: str):
         self.LoadConfiguration(path)
@@ -22,6 +22,6 @@ class ClientConfiguration:
         with open(path, 'r') as jsonFile:
             data = json.load(jsonFile)
 
-            self.clientCommandConnection = data['ClientCommandConnection']
-            self.clientEventConnection = data['ClientEventConnection']
-            self.identity = data['Identity']
+            self.ClientCommandConnection = data['ClientCommandConnection']
+            self.ClientEventConnection = data['ClientEventConnection']
+            self.Identity = data['Identity']

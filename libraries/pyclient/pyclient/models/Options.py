@@ -3,9 +3,9 @@
 
 class Options:
 
-    timeout: str
-    payload: str
+    Timeout: str
+    Payload: str
 
     def __init__(self, timeout: str, payload: str):
-        self.timeout = timeout
-        self.payload = payload
+        self.Timeout = timeout
+        self.Payload = payload

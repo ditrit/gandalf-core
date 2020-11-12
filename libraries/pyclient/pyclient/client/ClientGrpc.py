@@ -15,44 +15,44 @@ from ..ClientWarper import ClientWarper
 
 class ClientGrpc(ClientWarper):
     
-    clientBase: ClientBase
-    clientCommand: ClientCommand
-    clientEvent: ClientEvent
+    ClientBase: ClientBase
+    ClientCommand: ClientCommand
+    ClientEvent: ClientEvent
 
     def __init__(self, identity: str, clientConnection: str):
         super().__init__(identity, clientConnection)
 
-        self.clientBase = ClientBase(identity, clientConnection)
-        self.clientCommand = ClientCommand(identity, clientConnection)
-        self.clientEvent = ClientEvent(identity, clientConnection)
+        self.ClientBase = ClientBase(identity, clientConnection)
+        self.ClientCommand = ClientCommand(identity, clientConnection)
+        self.ClientEvent = ClientEvent(identity, clientConnection)
 
     def loadStub(self, conn: Channel):
         # loadStub Override so that we don't call the ClientWarper one
         pass
 
     def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Validate:
-        return self.clientBase.SendCommandList(major, minor, commands)
+        return self.ClientBase.SendCommandList(major, minor, commands)
 
     def SendStop(self, major: int, minor:int) -> Validate:
-        return self.clientBase.SendStop(major, minor)
+        return self.ClientBase.SendStop(major, minor)
 
     def SendCommand(self, connectorType, command, timeout, payload: str) -> CommandMessageUUID:
-        return self.clientCommand.SendCommand(connectorType, command, timeout, payload)
+        return self.ClientCommand.SendCommand(connectorType, command, timeout, payload)
 
     def SendEvent(self, topic, event, referenceUUID, timeout, payload: str) -> Empty:
-        return self.clientEvent.SendEvent(topic, event, referenceUUID, timeout, payload)
+        return self.ClientEvent.SendEvent(topic, event, referenceUUID, timeout, payload)
 
     def WaitCommand(self, command, idIterator: str, version: int) -> CommandMessage:
-        return self.clientCommand.WaitCommand(command, idIterator, version)
+        return self.ClientCommand.WaitCommand(command, idIterator, version)
 
     def WaitEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
-        return self.clientEvent.WaitEvent(topic, event, referenceUUID, idIterator)
+        return self.ClientEvent.WaitEvent(topic, event, referenceUUID, idIterator)
 
     def WaitTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
-        return self.clientEvent.WaitTopic(topic, referenceUUID, idIterator)
+        return self.ClientEvent.WaitTopic(topic, referenceUUID, idIterator)
 
     def CreateIteratorCommand(self) -> IteratorMessage:
-        return self.clientCommand.CreateIteratorCommand()
+        return self.ClientCommand.CreateIteratorCommand()
 
     def CreateIteratorEvent(self) -> IteratorMessage:
-        return self.clientEvent.CreateIteratorEvent()
+        return self.ClientEvent.CreateIteratorEvent()
