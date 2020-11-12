@@ -107,20 +107,18 @@ class Worker:
 
         joinList: List[Thread] = []
 
-        for wstate in self.WorkerState:
-            if wstate.GetState() == 0:
-                print("[{}](waitCommands) Wait for {}".format(id, commandName))
-                command = self.clientGandalf.WaitCommand(
-                    commandName, id, self.major)
-                print("[{}](waitCommands) command :\n{}".format(id, command))
+        if self.WorkerState.GetState() == 0:
+            print("[{}](waitCommands) Wait for {}".format(id, commandName))
+            command = self.clientGandalf.WaitCommand(
+                commandName, id, self.major)
+            print("[{}](waitCommands) command :\n{}".format(id, command))
 
-                joinList.append(
-                    Thread(target=self.executeCommands(command, function)))
-                joinList[len(joinList)-1].start()
+            joinList.append(
+                Thread(target=self.executeCommands(command, function)))
+            joinList[len(joinList)-1].start()
 
-        for ontreatment in self.OngoingTreatments:
-            if ontreatment.GetIndex() > 0:
-                time.Sleep(2)
+        if self.OngoingTreatments.GetIndex() > 0:
+            time.Sleep(2)
 
         print("[{}](waitCommands) Wait for tasks to finish".format(id))
         for threadWait in joinList:
@@ -147,21 +145,19 @@ class Worker:
 
         joinList: List[Thread] = []
 
-        for wstate in self.WorkerState:
-            if wstate.GetState() == 0:
-                print("[{}](waitEvents) Wait for {}".format(
-                    id, topicEvent.Event))
-                event = self.clientGandalf.WaitEvent(
-                    topicEvent.Topic, topicEvent.Event, id)
-                print("[{}](waitEvents) event :\n{}".format(id, event))
+        if self.WorkerState.GetState() == 0:
+            print("[{}](waitEvents) Wait for {}".format(
+                id, topicEvent.Event))
+            event = self.clientGandalf.WaitEvent(
+                topicEvent.Topic, topicEvent.Event, id)
+            print("[{}](waitEvents) event :\n{}".format(id, event))
 
-                joinList.append(
-                    Thread(target=self.executeEvents(event, function)))
-                joinList[len(joinList)-1].start()
+            joinList.append(
+                Thread(target=self.executeEvents(event, function)))
+            joinList[len(joinList)-1].start()
 
-        for ontreatment in self.OngoingTreatments:
-            if ontreatment.GetIndex() > 0:
-                time.Sleep(2)
+        if self.OngoingTreatments.GetIndex() > 0:
+            time.Sleep(2)
 
         print("[{}](waitEvents) Wait for tasks to finish".format(id))
         for threadWait in joinList:
