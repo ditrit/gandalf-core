@@ -66,10 +66,9 @@ class Worker:
         valid = self.SendCommands(
             self.clientGandalf, self.major, self.minor, keys)
         if valid:
+            # [RUN] Step 3 : Set state as "ongoing"
+            self.WorkerState.SetOngoingWorkerState()
             for key, function in self.CommandsFuncs:
-                # [RUN] Step 3 : Set state as "ongoing"
-                self.WorkerState.SetOngoingWorkerState()
-
                 # [RUN] Step 4 : Run waitCommand
                 id = self.clientGandalf.CreateIteratorCommand()
 
@@ -81,9 +80,6 @@ class Worker:
                 joinList[len(joinList)-1].start()
 
             for key, function in self.EventsFunc:
-                # [RUN] Step 3 : Set state as "ongoing"
-                self.WorkerState.SetOngoingWorkerState()
-
                 # [RUN] Step 4bis : Run waitEvent
                 id = self.clientGandalf.CreateIteratorEvent()
 
