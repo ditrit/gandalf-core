@@ -14,14 +14,15 @@ from .functions.Start import Start
 from .functions.SendCommands import SendCommands
 from .functions.Stop import Stop
 
+
 class Worker:
 
     major: int
     minor: int
     commandes: List[str]
     clientGandalf: ClientGandalf
-    CommandsFuncs: Dict
-    EventsFunc: Dict
+    CommandsFuncs: Dict[Callable[[ClientGandalf, int, CommandMessage], int]]
+    EventsFunc: Dict[Callable[[ClientGandalf, int, EventMessage], int]]
     WorkerState: List[WorkerState]
     OngoingTreatments: List[OngoingTreatments]
 
@@ -52,7 +53,8 @@ class Worker:
         valid = self.SendCommands(
             self.clientGandalf, self.major, self.minor, keys)
 
-        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        joinList: List[Thread] = []
 
         if valid:
             joinList.append(Thread(target=self.Stop(
@@ -70,7 +72,7 @@ class Worker:
                 id = self.clientGandalf.CreateIteratorEvent()
 
                 joinList.append(
-                    Thread(target=self.WaitEvents(id, key, function)))
+                    Thread(target=self.waitEvents(id, key, function)))
                 joinList[len(joinList)-1].start()
 
             for wstate in self.WorkerState:
@@ -89,10 +91,11 @@ class Worker:
         for threadWait in joinList:
             threadWait.join()
 
-    def waitCommands(self, id, commandName: str, function: Callable):
+    def waitCommands(self, id, commandName: str, function: Callable[[ClientGandalf, int, CommandMessage], int]):
         print("[{}](waitCommands) Start wait".format(id))
 
-        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        joinList: List[Thread] = []
 
         for wstate in self.WorkerState:
             if wstate.GetState() == 0:
@@ -114,8 +117,9 @@ class Worker:
             threadWait.join()
         print("[{}](waitCommands) End Wait".format(id))
 
-    def executeCommands(self, command: CommandMessage, function: Callable):
-        print("[{}](executeCommands) Execute command : {}".format(id, command.Command))
+    def executeCommands(self, command: CommandMessage, function: Callable[[ClientGandalf, int, CommandMessage], int]):
+        print("[{}](executeCommands) Execute command : {}".format(
+            id, command.Command))
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, command)
 
@@ -128,14 +132,16 @@ class Worker:
 
         self.OngoingTreatments.DecrementOngoingTreatments()
 
-    def waitEvents(self, id: str, topicEvent: TopicEvent, function: Callable):
+    def waitEvents(self, id: str, topicEvent: TopicEvent, function: Callable[[ClientGandalf, int, EventMessage], int]):
         print("[{}](waitEvents) Start wait".format(id))
 
-        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
+        joinList: List[Thread] = []
 
         for wstate in self.WorkerState:
             if wstate.GetState() == 0:
-                print("[{}](waitEvents) Wait for {}".format(id, topicEvent.Event))
+                print("[{}](waitEvents) Wait for {}".format(
+                    id, topicEvent.Event))
                 event = self.clientGandalf.WaitEvent(
                     topicEvent.Topic, topicEvent.Event, id)
                 print("[{}](waitEvents) event :\n{}".format(id, event))
@@ -147,13 +153,13 @@ class Worker:
         for ontreatment in self.OngoingTreatments:
             if ontreatment.GetIndex() > 0:
                 time.Sleep(2)
-        
+
         print("[{}](waitEvents) Wait for tasks to finish".format(id))
         for threadWait in joinList:
             threadWait.join()
         print("[{}](waitEvents) End Wait".format(id))
 
-    def executeEvents(self, event: EventMessage, function: Callable):
+    def executeEvents(self, event: EventMessage, function: Callable[[ClientGandalf, int, EventMessage], int]):
         print("[{}](executeEvents) Execute event : {}".format(id, event.Event))
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, event)
