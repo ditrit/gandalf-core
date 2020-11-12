@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Set
 from threading import Thread
 import time
 
@@ -13,6 +13,8 @@ from pyclient.grpc.connectorEvent_pb2 import EventMessage
 from .functions.Start import Start
 from .functions.SendCommands import SendCommands
 from .functions.Stop import Stop
+from .functions.waitStop import waitStop
+
 from .models.workerState import WorkerState
 from .models.ongoingTreatments import OngoingTreatments
 from .models.topicEvent import TopicEvent
@@ -25,13 +27,16 @@ class Worker:
     clientGandalf: ClientGandalf
     CommandsFuncs: Dict[Callable[[ClientGandalf, int, CommandMessage], int]]
     EventsFunc: Dict[Callable[[ClientGandalf, int, EventMessage], int]]
-    WorkerState: List[WorkerState]
-    OngoingTreatments: List[OngoingTreatments]
+    WorkerState: WorkerState
+    OngoingTreatments: OngoingTreatments
 
     def Start(self, clientGandalf: ClientGandalf):
         pass
 
-    def Stop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: List[WorkerState]):
+    def Stop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState):
+        pass
+
+    def waitStop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState, ongoingTreatment: OngoingTreatments):        
         pass
 
     def SendCommands(self, clientGandalf: ClientGandalf, major: int, minor: int, commands: List[str]):
@@ -48,43 +53,46 @@ class Worker:
         self.Start = Start
         self.Stop = Stop
         self.SendCommands = SendCommands
+        self.waitStop = waitStop
 
     def Run(self):
-        self.clientGandalf = self.Start()
-
-        keys = self.CommandsFuncs.values()
-
-        valid = self.SendCommands(
-            self.clientGandalf, self.major, self.minor, keys)
-
         joinList: List[Thread] = []
 
-        if valid:
-            joinList.append(Thread(target=self.Stop(
-                self.clientGandalf, self.major, self.minor, self.WorkerState)))
-            joinList[len(joinList)-1].start()
+        # [RUN] Step 1 : Exec Start function
+        self.clientGandalf = self.Start()
 
+        # [RUN] Step 2 : Send keys of CommandsFuncs to router
+        keys = self.CommandsFuncs.keys()
+        valid = self.SendCommands(
+            self.clientGandalf, self.major, self.minor, keys)
+        if valid:
             for key, function in self.CommandsFuncs:
+                # [RUN] Step 3 : Set state as "ongoing"
+                self.WorkerState.SetOngoingWorkerState()
+
+                # [RUN] Step 4 : Run waitCommand
                 id = self.clientGandalf.CreateIteratorCommand()
 
                 joinList.append(
                     Thread(target=self.waitCommands(id, key, function)))
                 joinList[len(joinList)-1].start()
+                joinList.append(
+                    Thread(target=self.waitStop(self.clientGandalf, self.major, self.minor, self.WorkerState, self.OngoingTreatments)))
+                joinList[len(joinList)-1].start()
 
             for key, function in self.EventsFunc:
+                # [RUN] Step 3 : Set state as "ongoing"
+                self.WorkerState.SetOngoingWorkerState()
+
+                # [RUN] Step 4bis : Run waitEvent
                 id = self.clientGandalf.CreateIteratorEvent()
 
                 joinList.append(
                     Thread(target=self.waitEvents(id, key, function)))
                 joinList[len(joinList)-1].start()
-
-            for wstate in self.WorkerState:
-                if wstate.GetState() == 0:
-                    pass
-
-            for ontreatment in self.OngoingTreatments:
-                if ontreatment.GetIndex() > 0:
-                    time.Sleep(2)
+                joinList.append(
+                    Thread(target=self.waitStop(self.clientGandalf, self.major, self.minor, self.WorkerState, self.OngoingTreatments)))
+                joinList[len(joinList)-1].start()
         else:
             # SEND EVENT INVALID CONFIGURATION
             # self.clientGandalf.SendReply(
