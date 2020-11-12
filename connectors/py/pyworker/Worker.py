@@ -114,20 +114,24 @@ class Worker:
         result = function(self.clientGandalf, self.major, command)
 
         if result == 0:
-            self.clientGandalf.SendReply(command.Command, "SUCCES", command.UUID, Options("", ""))
+            self.clientGandalf.SendReply(
+                command.Command, "SUCCES", command.UUID, Options("", ""))
         else:
-            self.clientGandalf.SendReply(command.Command, "FAIL", command.UUID, Options("", ""))
+            self.clientGandalf.SendReply(
+                command.Command, "FAIL", command.UUID, Options("", ""))
 
         self.OngoingTreatments.DecrementOngoingTreatments()
-    
+
     def waitEvents(self, id: str, topicEvent: TopicEvent, function: function):
         joinList: List[Thread] = []
 
         for wstate in self.WorkerState:
             if wstate.GetState() == 0:
-                event = self.clientGandalf.WaitEvent(topicEvent.Topic, topicEvent.Event, id)
+                event = self.clientGandalf.WaitEvent(
+                    topicEvent.Topic, topicEvent.Event, id)
 
-                joinList.append(Thread(target=self.executeEvents(event, function)))
+                joinList.append(
+                    Thread(target=self.executeEvents(event, function)))
                 joinList[len(joinList)-1].start()
 
         for ontreatment in self.OngoingTreatments:
@@ -137,14 +141,16 @@ class Worker:
         print("END WAIT")
         for threadWait in joinList:
             threadWait.join()
-    
+
     def executeEvents(self, event: EventMessage, function: function):
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, event)
 
         if result == 0:
-            self.clientGandalf.SendReply(event.Event, "SUCCES", event.UUID, Options("", ""))
+            self.clientGandalf.SendReply(
+                event.Event, "SUCCES", event.UUID, Options("", ""))
         else:
-            self.clientGandalf.SendReply(event.Event, "FAIL", event.UUID, Options("", ""))
+            self.clientGandalf.SendReply(
+                event.Event, "FAIL", event.UUID, Options("", ""))
 
         self.OngoingTreatments.DecrementOngoingTreatments()

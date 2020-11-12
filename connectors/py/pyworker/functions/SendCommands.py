@@ -6,6 +6,7 @@ from typing import List
 
 from pyclient.ClientGandalf import ClientGandalf
 
+
 def SendCommands(clientGandalf: ClientGandalf, major: int, minor: int, commands: List[str]) -> bool:
     print("SEND COMMAND LIST WORKER")
     validate = clientGandalf.SendCommandList(major, minor, commands)
