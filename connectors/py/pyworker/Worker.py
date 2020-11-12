@@ -28,7 +28,7 @@ class Worker:
     def Start(self, clientGandalf: ClientGandalf):
         pass
 
-    def Stop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState):
+    def Stop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: List[WorkerState]):
         pass
 
     def SendCommands(self, clientGandalf: ClientGandalf, major: int, minor: int, commands: List[str]):
