@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from typing import Dict, List
+from typing import Dict, List, Callable
 from threading import Thread
 import time
 
@@ -39,6 +39,7 @@ class Worker:
         self.minor = minor
         self.commandes = commandes
 
+        # On importe les fonctions du dossier functions
         self.Start = Start
         self.Stop = Stop
         self.SendCommands = SendCommands
@@ -51,7 +52,7 @@ class Worker:
         valid = self.SendCommands(
             self.clientGandalf, self.major, self.minor, keys)
 
-        joinList: List[Thread] = []
+        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
 
         if valid:
             joinList.append(Thread(target=self.Stop(
@@ -62,7 +63,7 @@ class Worker:
                 id = self.clientGandalf.CreateIteratorCommand()
 
                 joinList.append(
-                    Thread(target=self.WaitCommands(id, key, function)))
+                    Thread(target=self.waitCommands(id, key, function)))
                 joinList[len(joinList)-1].start()
 
             for key, function in self.EventsFunc:
@@ -81,21 +82,24 @@ class Worker:
                     time.Sleep(2)
         else:
             # SEND EVENT INVALID CONFIGURATION
+            # self.clientGandalf.SendReply(
+            #     event.Event, "FAIL", event.UUID, Options("", ""))
             pass
 
         for threadWait in joinList:
             threadWait.join()
 
-    def WaitCommands(self, id, commandName: str, function: function):
-        joinList: List[Thread] = []
+    def waitCommands(self, id, commandName: str, function: Callable):
+        print("[{}](waitCommands) Start wait".format(id))
+
+        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
 
         for wstate in self.WorkerState:
             if wstate.GetState() == 0:
-                print("wait {}".format(commandName))
+                print("[{}](waitCommands) Wait for {}".format(id, commandName))
                 command = self.clientGandalf.WaitCommand(
                     commandName, id, self.major)
-                print("command")
-                print(command)
+                print("[{}](waitCommands) command :\n{}".format(id, command))
 
                 joinList.append(
                     Thread(target=self.executeCommands(command, function)))
@@ -105,12 +109,13 @@ class Worker:
             if ontreatment.GetIndex() > 0:
                 time.Sleep(2)
 
-        print("END WAIT")
+        print("[{}](waitCommands) Wait for tasks to finish".format(id))
         for threadWait in joinList:
             threadWait.join()
+        print("[{}](waitCommands) End Wait".format(id))
 
-    def executeCommands(self, command: CommandMessage, function: function):
-        print("execute")
+    def executeCommands(self, command: CommandMessage, function: Callable):
+        print("[{}](executeCommands) Execute command : {}".format(id, command.Command))
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, command)
 
@@ -123,13 +128,17 @@ class Worker:
 
         self.OngoingTreatments.DecrementOngoingTreatments()
 
-    def waitEvents(self, id: str, topicEvent: TopicEvent, function: function):
-        joinList: List[Thread] = []
+    def waitEvents(self, id: str, topicEvent: TopicEvent, function: Callable):
+        print("[{}](waitEvents) Start wait".format(id))
+
+        joinList: List[Thread] = [] # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
 
         for wstate in self.WorkerState:
             if wstate.GetState() == 0:
+                print("[{}](waitEvents) Wait for {}".format(id, topicEvent.Event))
                 event = self.clientGandalf.WaitEvent(
                     topicEvent.Topic, topicEvent.Event, id)
+                print("[{}](waitEvents) event :\n{}".format(id, event))
 
                 joinList.append(
                     Thread(target=self.executeEvents(event, function)))
@@ -138,12 +147,14 @@ class Worker:
         for ontreatment in self.OngoingTreatments:
             if ontreatment.GetIndex() > 0:
                 time.Sleep(2)
-
-        print("END WAIT")
+        
+        print("[{}](waitEvents) Wait for tasks to finish".format(id))
         for threadWait in joinList:
             threadWait.join()
+        print("[{}](waitEvents) End Wait".format(id))
 
-    def executeEvents(self, event: EventMessage, function: function):
+    def executeEvents(self, event: EventMessage, function: Callable):
+        print("[{}](executeEvents) Execute event : {}".format(id, event.Event))
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, event)
 
