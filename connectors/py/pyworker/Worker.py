@@ -107,7 +107,7 @@ class Worker:
 
         joinList: List[Thread] = []
 
-        if self.WorkerState.GetState() == 0:
+        while self.WorkerState.GetState() == 0:
             print("[{}](waitCommands) Wait for {}".format(id, commandName))
             command = self.clientGandalf.WaitCommand(
                 commandName, id, self.major)
@@ -145,7 +145,7 @@ class Worker:
 
         joinList: List[Thread] = []
 
-        if self.WorkerState.GetState() == 0:
+        while self.WorkerState.GetState() == 0:
             print("[{}](waitEvents) Wait for {}".format(
                 id, topicEvent.Event))
             event = self.clientGandalf.WaitEvent(
