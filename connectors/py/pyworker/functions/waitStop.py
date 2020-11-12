@@ -12,5 +12,5 @@ def waitStop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerS
     self.Stop(clientGandalf, major, minor, workerState)
 
     # [WAIT_STOP] Step 3
-    while workerState.GetState() == 0 and ongoingTreatment.GetIndex() != 0 :
+    while workerState.GetState() == 0 or ongoingTreatment.GetIndex() != 0 :
         time.Sleep(2)
