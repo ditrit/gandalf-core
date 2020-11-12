@@ -13,13 +13,15 @@ from pyclient.grpc.connectorEvent_pb2 import EventMessage
 from .functions.Start import Start
 from .functions.SendCommands import SendCommands
 from .functions.Stop import Stop
+from .models.workerState import WorkerState
+from .models.ongoingTreatments import OngoingTreatments
+from .models.topicEvent import TopicEvent
 
 
 class Worker:
 
     major: int
     minor: int
-    commandes: List[str]
     clientGandalf: ClientGandalf
     CommandsFuncs: Dict[Callable[[ClientGandalf, int, CommandMessage], int]]
     EventsFunc: Dict[Callable[[ClientGandalf, int, EventMessage], int]]
@@ -35,12 +37,14 @@ class Worker:
     def SendCommands(self, clientGandalf: ClientGandalf, major: int, minor: int, commands: List[str]):
         pass
 
-    def __init__(self, major: int, minor: int, commandes: List[str]):
+    def __init__(self, major: int, minor: int):
         self.major = major
         self.minor = minor
-        self.commandes = commandes
+        self.CommandsFuncs = {}
+        self.EventsFunc = {}
+        self.OngoingTreatments = OngoingTreatments()
+        self.WorkerState = WorkerState()
 
-        # On importe les fonctions du dossier functions
         self.Start = Start
         self.Stop = Stop
         self.SendCommands = SendCommands
@@ -53,7 +57,6 @@ class Worker:
         valid = self.SendCommands(
             self.clientGandalf, self.major, self.minor, keys)
 
-        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
         joinList: List[Thread] = []
 
         if valid:
@@ -94,7 +97,6 @@ class Worker:
     def waitCommands(self, id, commandName: str, function: Callable[[ClientGandalf, int, CommandMessage], int]):
         print("[{}](waitCommands) Start wait".format(id))
 
-        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
         joinList: List[Thread] = []
 
         for wstate in self.WorkerState:
@@ -135,7 +137,6 @@ class Worker:
     def waitEvents(self, id: str, topicEvent: TopicEvent, function: Callable[[ClientGandalf, int, EventMessage], int]):
         print("[{}](waitEvents) Start wait".format(id))
 
-        # Va contenir tous les threads lancés pour pouvoir les attendre à la fin (simuler les go routines)
         joinList: List[Thread] = []
 
         for wstate in self.WorkerState:
