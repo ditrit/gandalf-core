@@ -17,25 +17,25 @@ DEFAULT_TIMEOUT = "10000"
 
 class ClientGandalf:
 
-    Identity: str
-    ClientConnections: List[str]
-    Clients: List[ClientGrpc]
-    Timeout: str
-    ClientIndex: int
+    identity: str
+    clientConnections: List[str]
+    clients: List[ClientGrpc]
+    timeout: str
+    clientIndex: int
 
     def __init__(self, identity: str, timeout: str, clientConnections: List[str]):
-        self.Identity = identity
-        self.ClientConnections = clientConnections
-        self.Clients = []
-        self.ClientIndex = 0
+        self.identity = identity
+        self.clientConnections = clientConnections
+        self.clients = []
+        self.clientIndex = 0
 
         if timeout == "":
-            self.Timeout = DEFAULT_TIMEOUT
+            self.timeout = DEFAULT_TIMEOUT
         else:
-            self.Timeout = timeout
+            self.timeout = timeout
 
-        for connection in self.ClientConnections:
-            self.Clients.append(ClientGrpc(self.Identity, connection))
+        for connection in self.clientConnections:
+            self.clients.append(ClientGrpc(self.identity, connection))
 
     # Need to be checked
     def SendCommand(self, request: str, options: Options) -> CommandMessageUUID:
@@ -43,14 +43,14 @@ class ClientGandalf:
         requestSplit = request.split(".")
         timeout = options.timeout
         if timeout == "":
-            timeout = self.Timeout
+            timeout = self.timeout
 
         stay = True
         timeoutLoop = Queue(maxsize=0)
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            commandMessageUUID = self.Clients[self.getClientIndex(self.Clients, True)].SendCommand(
+            commandMessageUUID = self.clients[self.getClientIndex(self.clients, True)].SendCommand(
                 requestSplit[0], requestSplit[1], timeout, options.payload)
             if commandMessageUUID != None:
                 notSend = False
@@ -71,14 +71,14 @@ class ClientGandalf:
         notSend: bool
         timeout = options.timeout
         if timeout == "":
-            timeout = self.Timeout
+            timeout = self.timeout
 
         stay = True
         timeoutLoop = Queue(maxsize=0)
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(
+            empty = self.clients[self.getClientIndex(self.clients, True)].SendEvent(
                 topic, event, "", timeout, options.payload)
             if empty != None:
                 notSend = False
@@ -100,14 +100,14 @@ class ClientGandalf:
         timeout = options.timeout
 
         if timeout == "":
-            timeout = self.Timeout
+            timeout = self.timeout
 
         stay = True
         timeoutLoop = Queue(maxsize=0)
         Thread(target=lambda: time.sleep(1) or timeoutLoop.put(0)).start()
 
         while stay:
-            empty = self.Clients[self.getClientIndex(self.Clients, True)].SendEvent(
+            empty = self.clients[self.getClientIndex(self.clients, True)].SendEvent(
                 topic, event, referenceUUID, timeout, options.payload)
             if empty != None:
                 notSend = False
@@ -125,28 +125,28 @@ class ClientGandalf:
         return empty
 
     def SendCommandList(self, major: int, minor: int, commands: List[str]) -> Validate:
-        return self.Clients[self.getClientIndex(self.Clients, True)].SendCommandList(major, minor, commands)
+        return self.clients[self.getClientIndex(self.clients, True)].SendCommandList(major, minor, commands)
 
     def SendStop(self, major: int, minor: int) -> Validate:
-        return self.Clients[self.getClientIndex(self.Clients, True)].SendStop(major, minor)
+        return self.clients[self.getClientIndex(self.clients, True)].SendStop(major, minor)
 
     def WaitCommand(self, command, idIterator: str, version: int) -> CommandMessage:
-        return self.Clients[self.getClientIndex(self.Clients, False)].WaitCommand(command, idIterator, version)
+        return self.clients[self.getClientIndex(self.clients, False)].WaitCommand(command, idIterator, version)
 
     def WaitEvent(self, topic, event, idIterator: str) -> EventMessage:
-        return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, "", idIterator)
+        return self.clients[self.getClientIndex(self.clients, False)].WaitEvent(topic, event, "", idIterator)
 
     def WaitReplyByEvent(self, topic, event, referenceUUID, idIterator: str) -> EventMessage:
-        return self.Clients[self.getClientIndex(self.Clients, False)].WaitEvent(topic, event, referenceUUID, idIterator)
+        return self.clients[self.getClientIndex(self.clients, False)].WaitEvent(topic, event, referenceUUID, idIterator)
 
     def WaitTopic(self, topic, idIterator: str) -> EventMessage:
-        return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, "", idIterator)
+        return self.clients[self.getClientIndex(self.clients, False)].WaitTopic(topic, "", idIterator)
 
     def WaitReplyByTopic(self, topic, referenceUUID, idIterator: str) -> EventMessage:
-        return self.Clients[self.getClientIndex(self.Clients, False)].WaitTopic(topic, referenceUUID, idIterator)
+        return self.clients[self.getClientIndex(self.clients, False)].WaitTopic(topic, referenceUUID, idIterator)
 
     def WaitAllReplyByTopic(self, topic, referenceUUID, idIterator, version: str) -> List[EventMessage]:
-        client = self.Clients[self.getClientIndex(self.Clients, False)]
+        client = self.clients[self.getClientIndex(self.clients, False)]
         eventMessages = []
         loop = True
 
@@ -160,18 +160,18 @@ class ClientGandalf:
         return eventMessages
 
     def CreateIteratorCommand(self) -> str:
-        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorCommand().Id
+        return self.clients[self.getClientIndex(self.clients, False)].CreateIteratorCommand().Id
 
     def CreateIteratorEvent(self) -> str:
-        return self.Clients[self.getClientIndex(self.Clients, False)].CreateIteratorEvent().Id
+        return self.clients[self.getClientIndex(self.clients, False)].CreateIteratorEvent().Id
 
     def getClientIndex(self, conns: List[ClientGrpc], updateIndex: bool) -> int:
-        aux = self.ClientIndex
+        aux = self.clientIndex
 
         if updateIndex:
-            self.ClientIndex += 1
-            if self.ClientIndex >= len(conns):
-                self.ClientIndex = 0
+            self.clientIndex += 1
+            if self.clientIndex >= len(conns):
+                self.clientIndex = 0
 
         return aux
 

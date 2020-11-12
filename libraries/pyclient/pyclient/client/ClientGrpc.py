@@ -20,7 +20,7 @@ class ClientGrpc(ClientWarper):
     clientEvent: ClientEvent
 
     def __init__(self, identity: str, clientConnection: str):
-        ClientWarper.__init__(self, identity, clientConnection)
+        super().__init__(identity, clientConnection)
 
         self.clientBase = ClientBase(identity, clientConnection)
         self.clientCommand = ClientCommand(identity, clientConnection)

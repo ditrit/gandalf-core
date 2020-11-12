@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+from grpc import Channel
+from ..ClientWarper import ClientWarper
 import uuid
 import time
 
@@ -11,20 +13,23 @@ from ..grpc.connector_pb2 import IteratorMessage
 from ..grpc.connector_pb2 import Empty
 
 
-class ClientCommand:    
-    
-    clientCommandConnection: str
-    identity: str
+class ClientCommand(ClientWarper):    
+
     client: ConnectorCommandStub
 
-    def __init__(self, identity: str, clientCommandConnection: str):
-        super().__init__()
-        self.clientCommandConnection = clientCommandConnection
-        self.identity = identity
+    @property
+    def clientCommandConnection(self) -> str:
+        return self.clientConnection
 
-        conn = grpc.insecure_channel(clientCommandConnection)
+    @clientCommandConnection.setter
+    def clientCommandConnection(self, value: str):
+        self.clientConnection = value
+
+    def __init__(self, identity: str, clientCommandConnection: str):
+        super().__init__(identity, clientCommandConnection)
+    
+    def loadStub(self, conn: Channel):
         self.client = ConnectorCommandStub(conn)
-        print("clientCommand connect : {}".format(clientCommandConnection))
 
     def SendCommand(self, connectorType: str, command: str,  timeout: str, payload: str) -> CommandMessageUUID:
         commandMessage = CommandMessage()

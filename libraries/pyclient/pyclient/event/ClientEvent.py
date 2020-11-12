@@ -10,17 +10,22 @@ from ..grpc.connectorEvent_pb2 import *
 from ..grpc.connectorEvent_pb2_grpc import *
 
 from ..grpc.connector_pb2 import *
+from ..ClientWarper import ClientWarper
 
+class ClientEvent(ClientWarper):
 
-class ClientEvent:
-
-    clientEventConnection: str
-    identity: str
     client: ConnectorEventStub
 
+    @property
+    def clientEventConnection(self) -> str:
+        return self.clientConnection
+
+    @clientEventConnection.setter
+    def clientEventConnection(self, value: str):
+        self.clientConnection = value
+
     def __init__(self, identity: str, clientEventConnection: str):
-        self.identity = identity
-        self.clientEventConnection = clientEventConnection
+        super().__init__(identity, clientEventConnection)
 
         try:
             conn = grpc.insecure_channel(clientEventConnection)
