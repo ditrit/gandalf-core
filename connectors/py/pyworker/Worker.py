@@ -118,6 +118,14 @@ class Worker:
         for threadWait in joinList:
             threadWait.join()
 
+    def RegisterCommandsFuncs(self, command: str, function: Callable[[ClientGandalf, int, CommandMessage], int]):
+        print("[{}](RegisterCommandsFuncs) REGISTER".format(command))
+        self.CommandsFuncs[command] = function
+
+    def RegisterEventsFuncs(self, topicevent: TopicEvent, function: Callable[[ClientGandalf, int, EventMessage], int]):
+        print("[{}](RegisterEventsFuncs) REGISTER".format(topicevent.topic))
+        self.EventsFuncs[topicevent] = function
+
     def waitCommands(self, id, commandName: str, function: Callable[[ClientGandalf, int, CommandMessage], int]):
         print("[{}](waitCommands) Start wait".format(id))
 
