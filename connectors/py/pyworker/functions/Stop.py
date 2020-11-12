@@ -6,6 +6,7 @@ from pyclient.ClientGandalf import ClientGandalf
 
 from ..models.WorkerState import WorkerState
 
+
 def Stop(clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState):
     validate = clientGandalf.SendStop(major, minor)
 
