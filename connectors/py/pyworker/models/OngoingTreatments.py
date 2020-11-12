@@ -1,6 +1,7 @@
 
 from threading import Lock
 
+
 class OngoingTreatments(Lock):
 
     index: int = 0
@@ -10,7 +11,7 @@ class OngoingTreatments(Lock):
             index: int = self.index
 
         return index
-    
+
     def Increment(self):
         with self:
             self.index += 1

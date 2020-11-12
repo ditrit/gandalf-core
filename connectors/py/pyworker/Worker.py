@@ -117,7 +117,7 @@ class Worker:
                 Thread(target=self.executeCommands(command, function)))
             joinList[len(joinList)-1].start()
 
-        if self.OngoingTreatments.GetIndex() > 0:
+        while self.OngoingTreatments.GetIndex() > 0:
             time.Sleep(2)
 
         print("[{}](waitCommands) Wait for tasks to finish".format(id))
@@ -156,7 +156,7 @@ class Worker:
                 Thread(target=self.executeEvents(event, function)))
             joinList[len(joinList)-1].start()
 
-        if self.OngoingTreatments.GetIndex() > 0:
+        while self.OngoingTreatments.GetIndex() > 0:
             time.Sleep(2)
 
         print("[{}](waitEvents) Wait for tasks to finish".format(id))
