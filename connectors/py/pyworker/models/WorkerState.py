@@ -6,7 +6,7 @@ class State:
     STOPPING = 1
 
 class WorkerState(Lock):
-    state: State = State.STOPPING
+    state: State = State.ONGOING
 
     def getState(self) -> State:
         """
