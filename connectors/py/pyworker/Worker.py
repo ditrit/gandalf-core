@@ -15,9 +15,9 @@ from .functions.SendCommands import SendCommands
 from .functions.Stop import Stop
 from .functions.waitStop import waitStop
 
-from .models.workerState import WorkerState
-from .models.ongoingTreatments import OngoingTreatments
-from .models.topicEvent import TopicEvent
+from .models.WorkerState import WorkerState
+from .models.OngoingTreatments import OngoingTreatments
+from .models.TopicEvent import TopicEvent
 
 
 class Worker:
