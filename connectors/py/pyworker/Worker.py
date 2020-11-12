@@ -36,7 +36,7 @@ class Worker:
     def Stop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState):
         pass
 
-    def waitStop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState, ongoingTreatment: OngoingTreatments):        
+    def waitStop(self, clientGandalf: ClientGandalf, major: int, minor: int, workerState: WorkerState, ongoingTreatment: OngoingTreatments):
         pass
 
     def SendCommands(self, clientGandalf: ClientGandalf, major: int, minor: int, commands: List[str]):

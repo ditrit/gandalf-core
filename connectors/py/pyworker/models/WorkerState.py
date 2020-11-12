@@ -1,9 +1,11 @@
 
 from threading import Lock
 
+
 class State:
     ONGOING = 0
     STOPPING = 1
+
 
 class WorkerState(Lock):
     state: State = State.ONGOING
@@ -13,7 +15,7 @@ class WorkerState(Lock):
         Return the state
         """
         return self.state
-    
+
     def setOngoingWorkerState(self):
         with self:
             self.state = State.ONGOING
