@@ -64,7 +64,11 @@ class Worker:
         # [RUN] Step 2 : Send keys of CommandsFuncs to router
         keys = self.CommandsFuncs.keys()
         valid = self.SendCommands(
-            self.clientGandalf, self.major, self.minor, keys)
+            self.clientGandalf,
+            self.major,
+            self.minor,
+            keys
+        )
         if valid:
             # [RUN] Step 3 : Set state as "ongoing"
             self.WorkerState.SetOngoingWorkerState()
@@ -73,10 +77,18 @@ class Worker:
                 id = self.clientGandalf.CreateIteratorCommand()
 
                 joinList.append(
-                    Thread(target=self.waitCommands(id, key, function)))
+                    Thread(target=self.waitCommands(id, key, function))
+                )
                 joinList[len(joinList)-1].start()
                 joinList.append(
-                    Thread(target=self.waitStop(self.clientGandalf, self.major, self.minor, self.WorkerState, self.OngoingTreatments)))
+                    Thread(target=self.waitStop(
+                        self.clientGandalf,
+                        self.major,
+                        self.minor,
+                        self.WorkerState,
+                        self.OngoingTreatments
+                    ))
+                )
                 joinList[len(joinList)-1].start()
 
             for key, function in self.EventsFunc:
@@ -84,10 +96,18 @@ class Worker:
                 id = self.clientGandalf.CreateIteratorEvent()
 
                 joinList.append(
-                    Thread(target=self.waitEvents(id, key, function)))
+                    Thread(target=self.waitEvents(id, key, function))
+                )
                 joinList[len(joinList)-1].start()
                 joinList.append(
-                    Thread(target=self.waitStop(self.clientGandalf, self.major, self.minor, self.WorkerState, self.OngoingTreatments)))
+                    Thread(target=self.waitStop(
+                        self.clientGandalf,
+                        self.major,
+                        self.minor,
+                        self.WorkerState,
+                        self.OngoingTreatments
+                    ))
+                )
                 joinList[len(joinList)-1].start()
         else:
             # SEND EVENT INVALID CONFIGURATION
@@ -106,11 +126,15 @@ class Worker:
         while self.WorkerState.GetState() == 0:
             print("[{}](waitCommands) Wait for {}".format(id, commandName))
             command = self.clientGandalf.WaitCommand(
-                commandName, id, self.major)
+                commandName,
+                id,
+                self.major
+            )
             print("[{}](waitCommands) command :\n{}".format(id, command))
 
             joinList.append(
-                Thread(target=self.executeCommands(command, function)))
+                Thread(target=self.executeCommands(command, function))
+            )
             joinList[len(joinList)-1].start()
 
         while self.OngoingTreatments.GetIndex() > 0:
@@ -122,17 +146,29 @@ class Worker:
         print("[{}](waitCommands) End Wait".format(id))
 
     def executeCommands(self, command: CommandMessage, function: Callable[[ClientGandalf, int, CommandMessage], int]):
-        print("[{}](executeCommands) Execute command : {}".format(
-            id, command.Command))
+        print(
+            "[{}](executeCommands) Execute command : {}".format(
+                id,
+                command.Command
+            )
+        )
         self.OngoingTreatments.IncrementOngoingTreatments()
         result = function(self.clientGandalf, self.major, command)
 
         if result == 0:
             self.clientGandalf.SendReply(
-                command.Command, "SUCCES", command.UUID, Options("", ""))
+                command.Command,
+                "SUCCES",
+                command.UUID,
+                Options("", "")
+            )
         else:
             self.clientGandalf.SendReply(
-                command.Command, "FAIL", command.UUID, Options("", ""))
+                command.Command,
+                "FAIL",
+                command.UUID,
+                Options("", "")
+            )
 
         self.OngoingTreatments.DecrementOngoingTreatments()
 
@@ -142,14 +178,27 @@ class Worker:
         joinList: List[Thread] = []
 
         while self.WorkerState.GetState() == 0:
-            print("[{}](waitEvents) Wait for {}".format(
-                id, topicEvent.Event))
+            print(
+                "[{}](waitEvents) Wait for {}".format(
+                    id,
+                    topicEvent.Event
+                )
+            )
             event = self.clientGandalf.WaitEvent(
-                topicEvent.Topic, topicEvent.Event, id)
-            print("[{}](waitEvents) event :\n{}".format(id, event))
+                topicEvent.Topic,
+                topicEvent.Event,
+                id
+            )
+            print(
+                "[{}](waitEvents) event :\n{}".format(
+                    id,
+                    event
+                )
+            )
 
             joinList.append(
-                Thread(target=self.executeEvents(event, function)))
+                Thread(target=self.executeEvents(event, function))
+            )
             joinList[len(joinList)-1].start()
 
         while self.OngoingTreatments.GetIndex() > 0:
@@ -167,9 +216,17 @@ class Worker:
 
         if result == 0:
             self.clientGandalf.SendReply(
-                event.Event, "SUCCES", event.UUID, Options("", ""))
+                event.Event,
+                "SUCCES",
+                event.UUID,
+                Options("", "")
+            )
         else:
             self.clientGandalf.SendReply(
-                event.Event, "FAIL", event.UUID, Options("", ""))
+                event.Event,
+                "FAIL",
+                event.UUID,
+                Options("", "")
+            )
 
         self.OngoingTreatments.DecrementOngoingTreatments()
