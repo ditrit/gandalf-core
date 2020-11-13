@@ -26,7 +26,7 @@ class Worker:
     minor: int
     clientGandalf: ClientGandalf
     CommandsFuncs: Dict[Callable[[ClientGandalf, int, CommandMessage], int]]
-    EventsFunc: Dict[Callable[[ClientGandalf, int, EventMessage], int]]
+    EventsFuncs: Dict[Callable[[ClientGandalf, int, EventMessage], int]]
     WorkerState: WorkerState
     OngoingTreatments: OngoingTreatments
 
@@ -71,7 +71,7 @@ class Worker:
         )
         if valid:
             # [RUN] Step 3 : Set state as "ongoing"
-            self.WorkerState.SetOngoingWorkerState()
+            self.WorkerState.setOngoingWorkerState()
             for key, function in self.CommandsFuncs:
                 # [RUN] Step 4 : Run waitCommand
                 id = self.clientGandalf.CreateIteratorCommand()
@@ -131,7 +131,7 @@ class Worker:
 
         joinList: List[Thread] = []
 
-        while self.WorkerState.GetState() == 0:
+        while self.WorkerState.getState() == 0:
             print("[{}](waitCommands) Wait for {}".format(id, commandName))
             command = self.clientGandalf.WaitCommand(
                 commandName,
@@ -145,8 +145,8 @@ class Worker:
             )
             joinList[len(joinList)-1].start()
 
-        while self.OngoingTreatments.GetIndex() > 0:
-            time.Sleep(2)
+        while self.OngoingTreatments.getIndex() > 0:
+            time.sleep(2)
 
         print("[{}](waitCommands) Wait for tasks to finish".format(id))
         for threadWait in joinList:
@@ -160,7 +160,7 @@ class Worker:
                 command.Command
             )
         )
-        self.OngoingTreatments.IncrementOngoingTreatments()
+        self.OngoingTreatments.Increment()
         result = function(self.clientGandalf, self.major, command)
 
         if result == 0:
@@ -178,23 +178,23 @@ class Worker:
                 Options("", "")
             )
 
-        self.OngoingTreatments.DecrementOngoingTreatments()
+        self.OngoingTreatments.Decrement()
 
     def waitEvents(self, id: str, topicEvent: TopicEvent, function: Callable[[ClientGandalf, int, EventMessage], int]):
         print("[{}](waitEvents) Start wait".format(id))
 
         joinList: List[Thread] = []
 
-        while self.WorkerState.GetState() == 0:
+        while self.WorkerState.getState() == 0:
             print(
                 "[{}](waitEvents) Wait for {}".format(
                     id,
-                    topicEvent.Event
+                    topicEvent.event
                 )
             )
             event = self.clientGandalf.WaitEvent(
-                topicEvent.Topic,
-                topicEvent.Event,
+                topicEvent.topic,
+                topicEvent.event,
                 id
             )
             print(
@@ -209,8 +209,8 @@ class Worker:
             )
             joinList[len(joinList)-1].start()
 
-        while self.OngoingTreatments.GetIndex() > 0:
-            time.Sleep(2)
+        while self.OngoingTreatments.getIndex() > 0:
+            time.sleep(2)
 
         print("[{}](waitEvents) Wait for tasks to finish".format(id))
         for threadWait in joinList:
@@ -219,7 +219,7 @@ class Worker:
 
     def executeEvents(self, event: EventMessage, function: Callable[[ClientGandalf, int, EventMessage], int]):
         print("[{}](executeEvents) Execute event : {}".format(id, event.Event))
-        self.OngoingTreatments.IncrementOngoingTreatments()
+        self.OngoingTreatments.Increment()
         result = function(self.clientGandalf, self.major, event)
 
         if result == 0:
@@ -237,4 +237,4 @@ class Worker:
                 Options("", "")
             )
 
-        self.OngoingTreatments.DecrementOngoingTreatments()
+        self.OngoingTreatments.Decrement()
