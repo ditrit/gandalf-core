@@ -15,7 +15,7 @@ connectorcommands:
     "$ref": "#/definitions/RunTest1",
     "definitions": {
       "RunTest1": {
-        "required": ["TestValue1"],
+        "required": [],
         "properties": {
           "TestValue1": {
             "type": "string",
@@ -36,7 +36,7 @@ connectorcommands:
     "$ref": "#/definitions/RunTest2",
     "definitions": {
       "RunTest1": {
-        "required": ["TestValue2"],
+        "required": [],
         "properties": {
           "TestValue2": {
             "type": "string",
