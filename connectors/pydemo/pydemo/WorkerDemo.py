@@ -23,3 +23,10 @@ class WorkerDemo(WorkerInterface):
         print("PAYLOAD\n{}".format(command.Payload))
 
         return 0
+
+    def runTest2(self, clientGandalf: ClientGandalf, major: int, command: CommandMessage) -> int:
+        print("EXECUTE RUN_TEST_2")
+        print("COMMAND\n{}".format(command))
+        print("PAYLOAD\n{}".format(command.Payload))
+
+        return 0

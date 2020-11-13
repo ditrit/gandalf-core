@@ -16,7 +16,8 @@ if __name__ == "__main__":
     workerDemo = WorkerDemo(major, minor, config)
 
     commands = {
-        "RUN_TEST_1": workerDemo.runTest1
+        "RUN_TEST_1": workerDemo.runTest1,
+        "RUN_TEST_2": workerDemo.runTest2
     }
 
     for k, v in commands:

@@ -28,17 +28,37 @@ connectorcommands:
   }'
   actions:
     - model:
-      name: runTest
-
-# Events
+      name: runTest1
 - model:
   name: RUN_TEST_2
   schema: '{
-    "type": "string"  
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/RunTest2",
+    "definitions": {
+      "RunTest1": {
+        "required": ["TestValue2"],
+        "properties": {
+          "TestValue2": {
+            "type": "string",
+          }
+        },
+        "additionalProperties": false,
+        "type": "object"
+      }
+    }
   }'
   actions:
     - model:
-      name: runTest
+      name: runTest2
+# Events
+# - model:
+#   name: RUN_TEST_2
+#   schema: '{
+#     "type": "string"  
+#   }'
+#   actions:
+#     - model:
+#       name: runTest
 
 # Resources
 # resources:
