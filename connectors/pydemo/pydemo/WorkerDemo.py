@@ -1,22 +1,25 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from .WorkerInterface import WorkerInterface
-from .workers.WorkerTest import WorkerTest
+from typing import Dict
 
-from typing import List, Dict
-from threading import Thread
+from pyclient.ClientGandalf import ClientGandalf
+from pyclient.grpc.connectorCommand_pb2 import CommandMessage
+
+from .WorkerInterface import WorkerInterface
+
 
 class WorkerDemo(WorkerInterface):
     config: Dict
 
-    def __init__(self, version: int, commandes: List[str], config):
-        super().__init__(version, commandes)
+    def __init__(self, major: int, minor: int, config):
+        super().__init__(major, minor)
 
         self.config = config
-    
-    def Execute(self, clientGandalf, version):
-        workerTest = WorkerTest(clientGandalf, version, self.config)
-        threadWorkerTest = Thread(target=workerTest.Run())
-        threadWorkerTest.start()
-        threadWorkerTest.join()
+
+    def runTest1(self, clientGandalf: ClientGandalf, major: int, command: CommandMessage) -> int:
+        print("EXECUTE RUN_TEST_1")
+        print("COMMAND\n{}".format(command))
+        print("PAYLOAD\n{}".format(command.Payload))
+
+        return 0
