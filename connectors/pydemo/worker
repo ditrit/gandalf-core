@@ -31,4 +31,5 @@ pip3 install -e .
 
 module="$(detectModule)"
 
+echo "Starting ${module[0]::-1}..."
 python3 -m ${module[0]::-1}
