@@ -1,12 +1,12 @@
 TARGET_DIR=pydemoconfig/Demo/1/0
 
-config: dist/pydemo
+config: dist/worker
 	# zip -9 -r $(TARGET_DIR)/worker.zip pydemo setup.py worker
-	zip -9 -r $(TARGET_DIR)/worker.zip dist/pydemo
+	zip -9 -r $(TARGET_DIR)/worker.zip dist/worker
 
-dist/pydemo:
-	pyinstaller pydemo.py --onefile
-	chmod +x dist/pydemo
+dist/worker:
+	pyinstaller pydemo.py --onefile --name worker
+	chmod +x dist/worker
 
 clean:
-	rm -rf build/* dist/* pydemo.spec $(TARGET_DIR)/worker.zip
+	rm -rf build/* dist/* *.spec $(TARGET_DIR)/worker.zip
