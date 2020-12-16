@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from os.path import dirname, join
+from os.path import dirname, abspath, join
 
 setup(
     name="pydemo",
@@ -10,8 +10,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "pyworker@git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyworker&subdirectory=connectors/py",
-        "pyclient@git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyclient&subdirectory=libraries/pyclient",
+        f"pyworker @ file://localhost{dirname(abspath(__file__))}/../py",
+        f"pyclient @ file://localhost{dirname(abspath(__file__))}/../../libraries/pyclient",
     ],
     entry_points={
         "console_scripts": [

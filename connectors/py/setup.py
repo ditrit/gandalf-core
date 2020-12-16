@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from os.path import dirname, abspath
 
 setup(
     name='pyworker',
@@ -6,6 +7,6 @@ setup(
     description = 'Base worker for Python gandalf connectors',
     packages=find_packages(),
     install_requires = [
-        'pyclient@git+https://github.com/ditrit/gandalf.git@pyaws-connector#egg=pyclient&subdirectory=libraries/pyclient'
+        f'pyclient @ file://localhost{dirname(abspath(__file__))}/../../libraries/pyclient'
     ]
 )
