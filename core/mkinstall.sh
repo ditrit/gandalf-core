@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 COCKROACH_VERSION=v20.1.6
 COCKROACH_PKG=cockroach-$COCKROACH_VERSION.linux-amd64
@@ -14,9 +14,9 @@ mkdir $TMPDIR
 # Get makeself
 wget $MKSELF_RELURL/release-$MKSELF_VERSION/$MKSELF_NAME.run -O /tmp/$MKSELF_NAME.run
 chmod a+x /tmp/$MKSELF_NAME.run
-pushd /tmp
+cd /tmp
 ./$MKSELF_NAME.run
-popd
+cd -
 
 # Download cockroach
 wget https://binaries.cockroachdb.com/$COCKROACH_TGZ -O /tmp/$COCKROACH_TGZ

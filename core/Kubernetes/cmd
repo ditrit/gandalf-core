@@ -1,0 +1,400 @@
+    1  microk8s status --wait-ready
+    2  sudo chown -f -R edgaunt ~/.kube
+    3  microk8s status --wait-ready
+    4  ls
+    5  ls -l
+    6  ls- la
+    7  ls -la
+    8  history | less
+    9  microk8s dashboard-proxy
+   10  ls
+   11  history 
+   12  cd Bureau/
+   13  ls
+   14  mkctl status
+   15  cd gandalf/
+   16  ls
+   17  cd core
+   18  ls
+   19  microk8s status --wait-ready
+   20  microk8s enable dashboard dns registry istio
+   21  microk8s kubectl get all --all-namespaces
+   22  alias mkctl="microk8s kubectl"
+   23  mkctl describe pod -n gandalf pod/test-image-privee-1
+   24  mkctl describe pod -n gandalf test-image-privee-1
+   25  #mkctl describe pod -n gandalf test-image-privee-1
+   26  mkctl get pods -n gandalf
+   27  #mkctl describe pod -n gandalf test-image-privee-1
+   28  mkctl describe pod -n gandalf test-image-privee-1
+   29  mkctl get pods -n gandalf
+   30  mkctl delete pods -n gandalf test-image-privee-1
+   31  mkctl get pods -n gandalf
+   32  ls
+   33  cd Kubernetes/
+   34  ls
+   35  mkctl get pods -A
+   36  ls
+   37  vim gandalf.yaml 
+   38  ls
+   39  cd ..
+   40  ls
+   41  vim Dockerfile 
+   42  docker login
+   43  sudo docker login
+   44  ls
+   45  cd ..
+   46  ls
+   47  cd core
+   48  cat Dockerfile 
+   49  ls
+   50  cd Kubernetes/
+   51  cat > pour_apres.yaml
+   52  ls
+   53  cat Dockerfile 
+   54  rm kubectl.sha256 
+   55  cat gandalf.yaml 
+   56  ls
+   57  cat gandalf.yaml 
+   58  cd ..
+   59  ls
+   60  cat Dockerfile 
+   61  sudo docker pull node
+   62  sudo docker images
+   63  sudo docker rm images edgaunt/gandalf gandalf
+   64  sudo docker image rm edgaunt/gandalf gandalf
+   65  sudo docker images
+   66  vim Dockerfile 
+   67  docker build -t edgaunt/gandalf .
+   68  sudo docker build -t edgaunt/gandalf .
+   69  sudo docker images
+   70  docker push edgaunt/gandalf
+   71  sudo docker push edgaunt/gandalf
+   72  ls
+   73  cd Kubernetes/
+   74  vim gandalf.yaml 
+   75  mkclt create -f gandalf.yaml 
+   76  mkctl create -f gandalf.yaml 
+   77  mkclt get pods
+   78  mkctl get pods
+   79  mkctl get pods -n gandalf
+   80  ubectl get pods/test-gandalf
+   81  mkctl get pods/test-gandalf
+   82  mkctl get pods/test-gandalf -n gandalf
+   83  mkctl describe pods/test-gandalf -n gandalf
+   84  mkctl get pods/test-gandalf -n gandalf
+   85  mkctl logs pods/test-gandalf -n gandalf
+   86  ls
+   87  vim gandalf.yaml 
+   88  cd ..
+   89  ls
+   90  vim Dockerfile 
+   91  go build -o gandalf
+   92  vim Dockerfile 
+   93  sudo snap install go
+   94  sudo apt  install golang-go
+   95  go 
+   96  go build -o gandalf
+   97  ls
+   98  vim Dockerfile 
+   99  ./gandalf cluster --offset 1 -l Cluster
+  100  echo 'Cluster' 
+  101  echo 'Init ClusterMember' 
+  102  ./gandalf cluster --offset 1 -l Cluster
+  103  vim Dockerfile 
+  104  GANDALF_TYPE="CC"
+  105  docker push edgaunt/gandalf
+  106  sudo docker push edgaunt/gandalf
+  107  ls
+  108  cd Kubernetes/
+  109  ls
+  110  vim DOc
+  111  vim Dockerfile 
+  112  vim gandalf.yaml 
+  113  mkclt create -f gandalf.yaml 
+  114  mkctl create -f gandalf.yaml 
+  115  mkctl get pods -n gandalf
+  116  mkctl delete pods -n gandalf test-gandalf
+  117  mkctl get pods -n gandalf
+  118  mkctl create -f gandalf.yaml 
+  119  watch mkctl get pods -n gandalf
+  120  mkctl get pods -n gandalf
+  121  mkctl describe pods -n gandalf test-gandalf
+  122  mkctl logs pods -n gandalf test-gandalf
+  123  mkctl log pods -n gandalf test-gandalf
+  124  mkctl logs -n gandalf test-gandalf
+  125  cat Dockerfile 
+  126  mv Dockerfile DD
+  127  ls
+  128  cd ,,
+  129  cat gandalf.yaml 
+  130  cd ..
+  131  l
+  132  cat Dockerfile 
+  133  vim Dockerfile 
+  134  sudo docker push edgaunt/gandalf
+  135  ls
+  136  cd Kubernetes/
+  137  ls
+  138  mkctl delete pods -n gandalf test-gandalf
+  139  mkctl create -f gandalf.yaml 
+  140  mkctl get pods
+  141  mkctl get pods -n gandalf
+  142  mkctl describe pods -n gandalf test-gandalf
+  143  mkctl logs -n gandalf test-gandalf
+  144  cd ..
+  145  ls
+  146  cat Dockerfile 
+  147  sudo docker push edgaunt/gandalf
+  148  sudo docker login
+  149  sudo docker push edgaunt/gandalf
+  150  history | grep "docker build"
+  151  sudo docker build -t edgaunt/gandalf .
+  152  vim Dockerfile 
+  153  vim Dockerfile 
+  154  alias
+  155  alias mkctl="microk8s kubectl"
+  156  clear
+  157  ls
+  158  sudo docker images
+  159  sudo docker build -t edgaunt/gandalf .
+  160  vim Dockerfile 
+  161  sudo docker build -t edgaunt/gandalf .
+  162  vim Dockerfile 
+  163  sudo docker build -t edgaunt/gandalf .
+  164  lsblk
+  165  pvs
+  166  sudo apt install lvm2
+  167  pvs
+  168  sudo pvs
+  169  lsblk
+  170  alias mkctl="microk8s kubectl"
+  171  mkctl get pods -n gandalf
+  172  mkctl delete pods test-gandalf -n gandalf
+  173  cd Bureau/
+  174  cd gandalf/
+  175  cd core
+  176  ls
+  177  cd Kubernetes/
+  178  mkctl create -f gandalf.yaml 
+  179  clear
+  180  mkctl get pods -n gandalf
+  181  mkctl describe pods -n gandalf test-gandalf
+  182  mkctl logs -n gandalf test-gandalf
+  183  mkctl log -n gandalf test-gandalf
+  184  mkctl get log -n gandalf test-gandalf
+  185  mkctl get logs -n gandalf test-gandalf
+  186  mkctl logs -n gandalf test-gandalf
+  187  mkctl get pods -n gandalf
+  188  mkctl describe pods -n gandalf test-gandalf
+  189  mkctl get pods -n gandalf
+  190  mkctl describe pods -n gandalf test-gandalf
+  191  mkctl logs -n gandalf test-gandalf
+  192  mkctl describe pods -n gandalf test-gandalf
+  193  vim gandalf.yaml 
+  194  mkctl create -f gandalf.yaml 
+  195  mkctl apply -f gandalf.yaml 
+  196  mkctl delete pod -n gandalf test-gandalf
+  197  mkctl apply -f gandalf.yaml 
+  198  mkctl describe pods -n gandalf test-gandalf
+  199  vim gandalf.yaml 
+  200  systemctl cat docker
+  201  ls
+  202  cd ..
+  203  vim Dockerfile 
+  204  ls
+  205  ./gandalf 
+  206  ls
+  207  cd Kubernetes/
+  208  ls
+  209  vim gandalf.yaml 
+  210  mkctl apply -f gandalf.yaml 
+  211  mkctl delete pod -n gandalf test-gandalf
+  212  mkctl apply -f gandalf.yaml 
+  213  mkctl get pods
+  214  mkctl get pods -n gandalf
+  215  mkctl exec -it test-gandalf -- /bin/sh
+  216  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  217  cd ..
+  218  lws
+  219  ls
+  220  ./gandalf aggregator
+  221  cd ..
+  222  ls
+  223  cd core
+  224  ls
+  225  cd demo/
+  226  ls
+  227  cat demo.sh 
+  228  cd ..
+  229  ./gandalf aggregator -l Aggregator1 -t tenant1 --port 10000 --cluster 127.0.0.1:9099 --secret hesQi342rysAuj4LwuLs54L7-G70lG31-RuN3ZeKVZ9Kbk-IlrTcfesboicD_8Xc77ZQxUxgvI2YskEaXCGR8Q==
+  230  cd ..
+  231  ./gandalf cluster -l Cluster --offset 1
+  232  cd -
+  233  ./gandalf cluster -l Cluster --offset 1
+  234  ls
+  235  cd configuration/
+  236  ls
+  237  cat config/
+  238  ls
+  239  ccd config/
+  240  ls
+  241  cd config/
+  242  ls
+  243  cat config.go 
+  244  cd ..
+  245  ls
+  246  cd ..
+  247  ls
+  248  cat mkinstall.sh 
+  249  ./mkinstall.sh 
+  250  ls
+  251  vim Dockerfile 
+  252  fg
+  253  vim Dockerfile 
+  254  vim mkinstall.setup.sh 
+  255  history | less
+  256  sudo docker build -t edgaunt/gandalf .
+  257  sudo docker push edgaunt/gandalf
+  258  sudo docker images
+  259  sudo docker rm images 2117ae743529
+  260  sudo docker rm image 2117ae743529
+  261  sudo docker image rm 2117ae743529
+  262  sudo docker images
+  263  mkctl get nodes
+  264  mkctl get nodes -n gandalf
+  265  mkctl get pods -n gandalf
+  266  history | grep "delete"
+  267  mkctl delete pod -n gandalf test-gandalf
+  268  mkctl get pods -n gandalf
+  269  cd ..
+  270  cd core
+  271  cd Kubernetes/
+  272  ls
+  273  history | grep ".yaml"
+  274  mkctl apply -f gandalf.yaml
+  275  mkctl get pods -n gandalf
+  276  mkctl get logs -n gandalf test-gandalf
+  277  mkctl get log -n gandalf test-gandalf
+  278  mkctl logs -n gandalf test-gandalf
+  279  history | grep "/bin"
+  280  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  281  mkctl exec -it test-gandalf -n gandalf -- /bin/bash
+  282  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  283  cd ..
+  284  ./mkinstall.sh 
+  285  vim mkinstall.sh 
+  286  ./mkinstall.sh 
+  287  which pushd
+  288  pushd
+  289  ls
+  290  vim gandalf.sh 
+  291  ./gandalf.sh 
+  292  ./gandalf.sh aggregator
+  293  systemctl enable gandalf
+  294  systemctl list
+  295  systemctl 
+  296  systemctl | grep "gandalf"
+  297  systemctl start gandalf
+  298  systemctl status gandalf
+  299  systemctl stop gandalf
+  300  clear
+  301  ls
+  302  ./gandalf
+  303  ./gandalf aggregator
+  304  cat demo/demo.sh 
+  305  ./gandalf cluster -l Cluster --offset 1
+  306  mkctl get pods
+  307  mkctl get pods -n gandalf
+  308  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  309  ls
+  310  ./mkinstall.sh 
+  311  sudo docker images
+  312  history | grep "docker"
+  313  sudo docker image rm c45bbfd392b9
+  314  cd ..
+  315  ls
+  316  cd connectors/
+  317  ls
+  318  cd ..
+  319  ls
+  320  vim Makefile 
+  321  make
+  322  sudo apt install make
+  323  make
+  324  cd core
+  325  ls
+  326  make
+  327  sudo docker build -t edgaunt/gandalf .
+  328  sudo docker push edgaunt/gandalf
+  329  history | grep "apply"
+  330  l
+  331  mkctl get pods
+  332  mkctl get pods -n gandalf
+  333  ls
+  334  cd Kubernetes/
+  335  ls
+  336  vim gandalf.yaml 
+  337  mkctl delete pods -n gandalf test-gandalf
+  338  kubectl apply -f gandalf.yaml 
+  339  mkctl apply -f gandalf.yaml 
+  340  mkctl get pods
+  341  mkctl get pods -n gandalf
+  342  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  343  vim ../mkinstall.sh 
+  344  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  345  vim gandalf.yaml 
+  346  cd ..
+  347  vim Dockerfile 
+  348  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  349  apt upgrade
+  350  sudo apt upgrade
+  351  vim Dockerfile 
+  352  apt-get install tar
+  353  sudo apt-get install tar
+  354  vim Dockerfile 
+  355  sudo docker images
+  356  sudo docker image rm 5a26351c5cab
+  357  sudo docker build -t edgaunt/gandalf .
+  358  /bin/sh -c apt-get update
+  359  vim Dockerfile 
+  360  sudo docker image rm 5a26351c5cab
+  361  sudo docker build -t edgaunt/gandalf .
+  362  sudo docker push edgaunt/gandalf
+  363  ls
+  364  cd Kubernetes/
+  365  mkctl get pods -n gandalf
+  366  mkctl delete pods -n gandalf test-gandalf
+  367  mkctl apply -f gandalf.yaml 
+  368  mkctl get pods -n gandalf
+  369  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  370  ls
+  371  cd ..
+  372  ./gandalf.sh 
+  373  ./gandalf.sh aggregator
+  374  cd Kubernetes/
+  375  vim ../Dockerfile 
+  376  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  377  history | grep "./gandalsh"
+  378  history | grep "agere"
+  379  history | grep "agre"
+  380  history | grep "aggre"
+  381  mkctl exec -it test-gandalf -n gandalf -- /bin/sh
+  382  ls
+  383  cat DD
+  384  rm DD
+  385  cat pour_apres.yaml 
+  386  ls -l
+  387  cd ..
+  388  ls
+  389  vim gandalf
+  390  vim gandalf.log 
+  391  cd ..
+  392  ls
+  393  ls -la
+  394  git branch
+  395  ls
+  396  cd core
+  397  ls
+  398  cd Kubernetes/
+  399  ls
+  400  history > cmd

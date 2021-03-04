@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: aggregator2-gandalf
+    namespace: gandalf
+spec:
+    containers:
+        - name: gandalf01
+          image: edgaunt/gandalf:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-ec", "sleep 1000"] #["/app/./gandalf", "start", "cluster", "-l", "Testy"]
+          envFrom:
+          - configMapRef:
+              name: gandalf-config
+      #restartPolicy: Never
