@@ -42,6 +42,7 @@ Installation et utilisation de Docker:
 Pour nos besoins nous allons aussi installer Docker pour cree notre propre image qui contient ce que l'on desire.
 ```
 sudo apt-get update
+sudo apt-get upgrade
 sudo apt-get install \
     apt-transport-https \
     ca-certificates \
