@@ -9,13 +9,13 @@ sudo snap install microk8s --classic
 Regarder le status de Kubernetes:
 ```
 microk8s status --wait-ready
-
+```
 Activer les services voulu
 ```
-# Replace SERVICES by your service
-# Par exemple pour avoir le dashboard en proxy remplacer par dashboard dns registry istio 
 microk8s enable SERVICES
 ```
+(Remplacer SERVICES par les services kubernetes à activer :
+par exemple pour avoir le dashboard en proxy remplacer par *dashboard dns registry istio*)
 
 Alias si on utilise aussi les service de Kuectl:
 ```
