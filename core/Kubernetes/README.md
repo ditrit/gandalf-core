@@ -12,9 +12,9 @@ microk8s status --wait-ready
 
 Activer les services voulu
 ```
-# Replace <service> by your service
+# Replace SERVICES by your service
 # Par exemple pour avoir le dashboard en proxy remplacer par dashboard dns registry istio 
-microk8s enable <service>
+microk8s enable SERVICES
 ```
 
 Alias si on utilise aussi les service de Kuectl:
