@@ -371,12 +371,34 @@ func runDeleteTenant(cfg *verdeter.ConfigCmd, args []string) {
 }
 
 func runCreateRole(cfg *verdeter.ConfigCmd, args []string) {
+
 	name := args[0]
+
 	fmt.Printf("gandalf cli create role called with role=%s\n", name)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	role := models.NewRole(name)
+	err := cliClient.RoleService.Create(configurationCli.GetToken(), role)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func runListRoles(cfg *verdeter.ConfigCmd, args []string) {
 	fmt.Printf("gandalf cli list roles\n")
+
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	roles, err := cliClient.RoleService.List(configurationCli.GetToken())
+	if err == nil {
+		for _, role := range roles {
+			fmt.Println(role)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 func runUpdateRole(cfg *verdeter.ConfigCmd, args []string) {
