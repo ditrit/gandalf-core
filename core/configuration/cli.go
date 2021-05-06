@@ -378,7 +378,7 @@ func runCreateRole(cfg *verdeter.ConfigCmd, args []string) {
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	role := models.NewRole(name)
+	role := models.Role{Name: name}
 	err := cliClient.RoleService.Create(configurationCli.GetToken(), role)
 	if err != nil {
 		fmt.Println(err)
@@ -387,7 +387,6 @@ func runCreateRole(cfg *verdeter.ConfigCmd, args []string) {
 
 func runListRoles(cfg *verdeter.ConfigCmd, args []string) {
 	fmt.Printf("gandalf cli list roles\n")
-
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
@@ -404,12 +403,39 @@ func runListRoles(cfg *verdeter.ConfigCmd, args []string) {
 func runUpdateRole(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	newName := viper.GetString("name")
-	fmt.Printf("gandalf cli update role called with role=%s, newName=%s\n", name, newName)
+	password := viper.GetViper().GetString("password")
+	fmt.Printf("gandalf cli update role called with role=%s, newName=%s\n, password=%s\n", name, newName, password)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldRole, err := cliClient.RoleService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		role := models.Role{Name: newName}
+		err = cliClient.RoleService.Update(configurationCli.GetToken(), int(oldRole.ID), role)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 func runDeleteRole(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	fmt.Printf("gandalf cli delete role called with role=%s\n", name)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldRole, err := cliClient.RoleService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.RoleService.Delete(configurationCli.GetToken(), int(oldRole.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
+
 }
 
 func runCreateDomain(cfg *verdeter.ConfigCmd, args []string) {
