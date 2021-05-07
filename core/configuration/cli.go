@@ -8,6 +8,7 @@ package configuration
 
 import (
 	"fmt"
+	"gandalf/core/models"
 	"strconv"
 
 	"github.com/ditrit/gandalf/verdeter"
@@ -482,8 +483,16 @@ func runDeleteDomain(cfg *verdeter.ConfigCmd, args []string) {
 
 func runCreateResource(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
-
 	fmt.Printf("gandalf cli create resource called with resource=%s", name)
+
+	configurationCli := cmodels.NewResourceCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+	resource := models.Resource{Name: name}
+	err := cliClient.ResourceService.Create(configurationCli.GetToken(), resource)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 }
 
 func runListResources(cfg *verdeter.ConfigCmd, args []string) {
@@ -507,11 +516,37 @@ func runUpdateResource(cfg *verdeter.ConfigCmd, args []string) {
 	newName := viper.GetString("name")
 	parent := viper.GetString("parent")
 	fmt.Printf("gandalf cli update resource called with resource=%s, newName=%s, parent=%s\n", name, newName, parent)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldResource, err := cliClient.ResourceService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		resource := models.Role{Name: newName}
+		err = cliClient.ResourceService.Update(configurationCli.GetToken(), int(oldResource.ID), resource)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
+
 }
 
 func runDeleteResource(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	fmt.Printf("gandalf cli delete resource called with resource=%s\n", name)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldResource, err := cliClient.ResourceService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.ResourceService.Delete(configurationCli.GetToken(), int(oldResource.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 func runCreateEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
