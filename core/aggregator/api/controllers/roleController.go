@@ -98,6 +98,26 @@ func (rc RoleController) Read(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ReadByName :
+func (rc RoleController) ReadByName(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	name := vars["name"]
+
+	var role models.Role
+	var err error
+	if role, err = dao.ReadRoleByName(rc.databaseConnection.GetTenantDatabaseClient(), name); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			utils.RespondWithError(w, http.StatusNotFound, "Product not found")
+		default:
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, role)
+}
+
 // Update :
 func (rc RoleController) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

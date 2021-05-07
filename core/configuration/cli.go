@@ -402,9 +402,8 @@ func runListRoles(cfg *verdeter.ConfigCmd, args []string) {
 
 func runUpdateRole(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
-	newName := viper.GetString("name")
-	password := viper.GetViper().GetString("password")
-	fmt.Printf("gandalf cli update role called with role=%s, newName=%s\n, password=%s\n", name, newName, password)
+	newName := viper.GetString("rolename")
+	fmt.Printf("gandalf cli update role called with role=%s, newName=%s\n", name, newName)
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 

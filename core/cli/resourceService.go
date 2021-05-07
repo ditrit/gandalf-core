@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"strconv"
+
 	"github.com/ditrit/gandalf/core/models"
 )
 
@@ -32,7 +34,7 @@ func (as *ResourceService) Create(token string, resource models.Resource) error 
 
 // Read :
 func (as *ResourceService) Read(token string, id int) (*models.Resource, error) {
-	req, err := as.client.newRequest("GET", "/auth/gandalf/resources/"+string(id), token, nil)
+	req, err := as.client.newRequest("GET", "/auth/gandalf/resources/"+strconv.Itoa(id), token, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +56,7 @@ func (as *ResourceService) ReadByName(token string, name string) (*models.Resour
 
 // Update :
 func (as *ResourceService) Update(token string, id int, resource models.Resource) error {
-	req, err := as.client.newRequest("PUT", "/auth/gandalf/resources/"+string(id), token, resource)
+	req, err := as.client.newRequest("PUT", "/auth/gandalf/resources/"+strconv.Itoa(id), token, resource)
 	if err != nil {
 		return err
 	}
@@ -64,7 +66,7 @@ func (as *ResourceService) Update(token string, id int, resource models.Resource
 
 // Delete :
 func (as *ResourceService) Delete(token string, id int) error {
-	req, err := as.client.newRequest("DELETE", "/auth/gandalf/resources/"+string(id), token, nil)
+	req, err := as.client.newRequest("DELETE", "/auth/gandalf/resources/"+strconv.Itoa(id), token, nil)
 	if err != nil {
 		return err
 	}

@@ -15,6 +15,7 @@ type Urls struct {
 	ROLE_PATH_LIST                      string
 	ROLE_PATH_CREATE                    string
 	ROLE_PATH_READ                      string
+	ROLE_PATH_READ_BY_NAME              string
 	ROLE_PATH_UPDATE                    string
 	ROLE_PATH_DELETE                    string
 	USER_PATH                           string
@@ -85,6 +86,7 @@ func ReturnURLS() *Urls {
 	apiurls.ROLE_PATH_LIST = apiurls.ROLE_PATH + "/"
 	apiurls.ROLE_PATH_CREATE = apiurls.ROLE_PATH + "/"
 	apiurls.ROLE_PATH_READ = apiurls.ROLE_PATH + "/{id:[0-9]+}"
+	apiurls.ROLE_PATH_READ_BY_NAME = apiurls.ROLE_PATH + "/{name}"
 	apiurls.ROLE_PATH_UPDATE = apiurls.ROLE_PATH + "/{id:[0-9]+}"
 	apiurls.ROLE_PATH_DELETE = apiurls.ROLE_PATH + "/{id:[0-9]+}"
 

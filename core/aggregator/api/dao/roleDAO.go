@@ -2,6 +2,7 @@ package dao
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ditrit/gandalf/core/aggregator/api/utils"
 
@@ -31,6 +32,14 @@ func CreateRole(database *gorm.DB, role models.Role) (err error) {
 func ReadRole(database *gorm.DB, id int) (role models.Role, err error) {
 	err = database.First(&role, id).Error
 
+	return
+}
+
+func ReadRoleByName(database *gorm.DB, name string) (role models.Role, err error) {
+	fmt.Println("DAO")
+	err = database.Where("name = ?", name).First(&role).Error
+	fmt.Println(err)
+	fmt.Println(role)
 	return
 }
 

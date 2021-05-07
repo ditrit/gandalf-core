@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/ditrit/gandalf/core/models"
 )
 
@@ -32,7 +35,18 @@ func (as *RoleService) Create(token string, role models.Role) error {
 
 // Read :
 func (as *RoleService) Read(token string, id int) (*models.Role, error) {
-	req, err := as.client.newRequest("GET", "/auth/gandalf/roles/"+string(id), token, nil)
+	req, err := as.client.newRequest("GET", "/auth/gandalf/roles/"+strconv.Itoa(id), token, nil)
+	if err != nil {
+		return nil, err
+	}
+	var role models.Role
+	err = as.client.do(req, &role)
+	return &role, err
+}
+
+// ReadByName :
+func (as *RoleService) ReadByName(token string, name string) (*models.Role, error) {
+	req, err := as.client.newRequest("GET", "/auth/gandalf/roles/"+name, token, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -43,17 +57,21 @@ func (as *RoleService) Read(token string, id int) (*models.Role, error) {
 
 // Update :
 func (as *RoleService) Update(token string, id int, role models.Role) error {
-	req, err := as.client.newRequest("PUT", "/auth/gandalf/roles/"+string(id), token, role)
+	req, err := as.client.newRequest("PUT", "/auth/gandalf/roles/"+strconv.Itoa(id), token, role)
 	if err != nil {
+		fmt.Println("Error 1")
+		fmt.Println(err)
 		return err
 	}
 	err = as.client.do(req, nil)
+	fmt.Println("Error 2")
+	fmt.Println(err)
 	return err
 }
 
 // Delete :
 func (as *RoleService) Delete(token string, id int) error {
-	req, err := as.client.newRequest("DELETE", "/auth/gandalf/roles/"+string(id), token, nil)
+	req, err := as.client.newRequest("DELETE", "/auth/gandalf/roles/"+strconv.Itoa(id), token, nil)
 	if err != nil {
 		return err
 	}

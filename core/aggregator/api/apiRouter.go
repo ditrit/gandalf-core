@@ -36,6 +36,7 @@ func GetRouter(databaseConnection *database.DatabaseConnection, shoset *net.Shos
 	subt.HandleFunc(urls.ROLE_PATH_LIST, controllers.RoleController.List).Methods("GET")
 	subt.HandleFunc(urls.ROLE_PATH_CREATE, controllers.RoleController.Create).Methods("POST")
 	subt.HandleFunc(urls.ROLE_PATH_READ, controllers.RoleController.Read).Methods("GET")
+	subt.HandleFunc(urls.ROLE_PATH_READ_BY_NAME, controllers.RoleController.ReadByName).Methods("GET")
 	subt.HandleFunc(urls.ROLE_PATH_UPDATE, controllers.RoleController.Update).Methods("PUT")
 	subt.HandleFunc(urls.ROLE_PATH_DELETE, controllers.RoleController.Delete).Methods("DELETE")
 
