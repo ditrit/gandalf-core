@@ -8,7 +8,6 @@ package configuration
 
 import (
 	"fmt"
-	"gandalf/core/models"
 	"strconv"
 
 	"github.com/ditrit/gandalf/verdeter"
@@ -450,7 +449,6 @@ func runCreateDomain(cfg *verdeter.ConfigCmd, args []string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func runListDomains(cfg *verdeter.ConfigCmd, args []string) {
@@ -474,18 +472,44 @@ func runUpdateDomain(cfg *verdeter.ConfigCmd, args []string) {
 	newName := viper.GetString("name")
 	parent := viper.GetString("parent")
 	fmt.Printf("gandalf cli update domain called with domain=%s, newName=%s, parent=%s\n", name, newName, parent)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldDomain, err := cliClient.DomainService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		domain := models.Domain{Name: newName}
+		err = cliClient.DomainService.Update(configurationCli.GetToken(), int(oldDomain.ID), domain)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 func runDeleteDomain(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	fmt.Printf("gandalf cli delete domain called with domain=%s\n", name)
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldDomain, err := cliClient.DomainService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.DomainService.Delete(configurationCli.GetToken(), int(oldDomain.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
+
 }
 
 func runCreateResource(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	fmt.Printf("gandalf cli create resource called with resource=%s", name)
 
-	configurationCli := cmodels.NewResourceCli()
+	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 	resource := models.Resource{Name: name}
 	err := cliClient.ResourceService.Create(configurationCli.GetToken(), resource)
@@ -521,7 +545,7 @@ func runUpdateResource(cfg *verdeter.ConfigCmd, args []string) {
 
 	oldResource, err := cliClient.ResourceService.ReadByName(configurationCli.GetToken(), name)
 	if err == nil {
-		resource := models.Role{Name: newName}
+		resource := models.Resource{Name: newName}
 		err = cliClient.ResourceService.Update(configurationCli.GetToken(), int(oldResource.ID), resource)
 		if err != nil {
 			fmt.Println(err)
