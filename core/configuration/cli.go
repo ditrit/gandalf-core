@@ -610,14 +610,45 @@ func runListEventTypeToPolls(cfg *verdeter.ConfigCmd, args []string) {
 
 func runUpdateEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
+	resourceName := args[1]
+	eventTypeName := args[2]
 	newName := viper.GetString("name")
 	parent := viper.GetString("parent")
 	fmt.Printf("gandalf cli update eventtypetopoll called with eventtypetopoll=%s, newName=%s, parent=%s\n", name, newName, parent)
+
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldEventTypeToPoll, err := cliClient.EventTypeToPollService.ReadByName(configurationCli.GetToken(), name)
+	
+	if err == nil {
+		role := models.EventTypeToPoll{Name: newName}
+		err = cliClient.RoleService.Update(configurationCli.GetToken(), int(oldEventTypeToPoll.ID), eventTypeToPoll)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
+}
 }
 
 func runDeleteEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	fmt.Printf("gandalf cli delete eventtypetopoll called with eventtypetopoll=%s\n", name)
+
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	oldEventTypeToPoll, err := cliClient.EventTypeToPollService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.EventTypeToPollService.Delete(configurationCli.GetToken(), int(oldEventTypeToPoll.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {

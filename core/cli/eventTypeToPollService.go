@@ -54,6 +54,17 @@ func (as *EventTypeToPollService) Read(token string, id int) (*models.EventTypeT
 	return &eventTypeToPoll, err
 }
 
+// ReadByName :
+func (as *EventTypeToPollService) ReadByName(token string, name string) (*models.EventTypeToPoll, error) {
+	req, err := as.client.newRequest("GET", "/auth/gandalf/eventTypeToPoll/"+name, token, nil)
+	if err != nil {
+		return nil, err
+	}
+	var eventTypeToPoll models.EventTypeToPoll
+	err = as.client.do(req, &eventTypeToPoll)
+	return &eventTypeToPoll, err
+}
+
 // Update :
 func (as *EventTypeToPollService) Update(token string, id int, eventTypeToPoll models.EventTypeToPoll) error {
 	req, err := as.client.newRequest("PUT", "/auth/gandalf/eventtypetopolls/"+strconv.Itoa(id), token, eventTypeToPoll)

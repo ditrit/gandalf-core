@@ -2,6 +2,7 @@ package dao
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ditrit/gandalf/core/aggregator/api/utils"
 
@@ -31,6 +32,14 @@ func CreateEventTypeToPoll(database *gorm.DB, eventTypeToPoll models.EventTypeTo
 func ReadEventTypeToPoll(database *gorm.DB, id int) (eventTypeToPoll models.EventTypeToPoll, err error) {
 	err = database.First(&eventTypeToPoll, id).Error
 
+	return
+}
+
+func ReadEventTypeToPollByName(database *gorm.DB, name string) (eventTypeToPoll models.EventTypeToPoll, err error) {
+	fmt.Println("DAO")
+	err = database.Where("name = ?", name).First(&eventTypeToPoll).Error
+	fmt.Println(err)
+	fmt.Println(eventTypeToPoll)
 	return
 }
 
