@@ -43,7 +43,7 @@ func (as *ResourceService) Read(token string, id int) (*models.Resource, error) 
 	return &resource, err
 }
 
-// Read :
+// ReadByName :
 func (as *ResourceService) ReadByName(token string, name string) (*models.Resource, error) {
 	req, err := as.client.newRequest("GET", "/auth/gandalf/resources/"+name, token, nil)
 	if err != nil {

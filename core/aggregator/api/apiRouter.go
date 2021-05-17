@@ -56,6 +56,7 @@ func GetRouter(databaseConnection *database.DatabaseConnection, shoset *net.Shos
 	subt.HandleFunc(urls.TENANT_PATH_LIST, controllers.TenantController.List).Methods("GET")
 	subt.HandleFunc(urls.TENANT_PATH_CREATE, controllers.TenantController.Create).Methods("POST")
 	subt.HandleFunc(urls.TENANT_PATH_READ, controllers.TenantController.Read).Methods("GET")
+	subt.HandleFunc(urls.TENANT_PATH_READ_BY_NAME, controllers.TenantController.ReadByName).Methods("GET")
 	subt.HandleFunc(urls.TENANT_PATH_UPDATE, controllers.TenantController.Update).Methods("PUT")
 	subt.HandleFunc(urls.TENANT_PATH_DELETE, controllers.TenantController.Delete).Methods("DELETE")
 

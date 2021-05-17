@@ -29,6 +29,7 @@ type Urls struct {
 	TENANT_PATH_LIST                     string
 	TENANT_PATH_CREATE                   string
 	TENANT_PATH_READ                     string
+	TENANT_PATH_READ_BY_NAME             string
 	TENANT_PATH_UPDATE                   string
 	TENANT_PATH_DELETE                   string
 	SECRET_PATH                          string

@@ -49,6 +49,17 @@ func (as *TenantService) Read(token string, id int) (*models.Tenant, error) {
 	return &tenant, err
 }
 
+// ReadByName :
+func (as *TenantService) ReadByName(token string, name string) (*models.Tenant, error) {
+	req, err := as.client.newRequest("GET", "/auth/gandalf/tenants/"+name, token, nil)
+	if err != nil {
+		return nil, err
+	}
+	var tenant models.Tenant
+	err = as.client.do(req, &tenant)
+	return &tenant, err
+}
+
 // Update :
 func (as *TenantService) Update(token string, id int, tenant models.Tenant) error {
 	req, err := as.client.newRequest("PUT", "/auth/gandalf/tenants/"+strconv.Itoa(id), token, tenant)
