@@ -28,6 +28,7 @@ type Client struct {
 	EventTypeToPollService   *EventTypeToPollService
 	ResourceTypeService      *ResourceTypeService
 	EventTypeService         *EventTypeService
+	LogicalComponentService  *LogicalComponentService
 }
 
 // NewClient :
@@ -59,6 +60,7 @@ func NewClient(bindAddress string) (client *Client) {
 	client.EventTypeToPollService = &EventTypeToPollService{client: client}
 	client.ResourceTypeService = &ResourceTypeService{client: client}
 	client.EventTypeService = &EventTypeService{client: client}
+	client.LogicalComponentService = &LogicalComponentService{client: client}
 
 	return
 

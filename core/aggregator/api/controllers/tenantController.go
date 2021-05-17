@@ -232,6 +232,26 @@ func (tc TenantController) Read(w http.ResponseWriter, r *http.Request) {
 	utils.RespondWithJSON(w, http.StatusOK, tenant)
 }
 
+// ReadByName :
+func (tc TenantController) ReadByName(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	name := vars["name"]
+
+	var tenant models.Tenant
+	var err error
+	if tenant, err = dao.ReadTenantByName(tc.databaseConnection.GetTenantDatabaseClient(), name); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			utils.RespondWithError(w, http.StatusNotFound, "Product not found")
+		default:
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, tenant)
+}
+
 // Update :
 func (tc TenantController) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

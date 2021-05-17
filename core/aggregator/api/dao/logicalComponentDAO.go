@@ -27,7 +27,7 @@ func ListLogicalComponentAggregator(database *gorm.DB) (logicalComponent []model
 
 func ReadLogicalComponentByName(database *gorm.DB, name string) (logicalComponent models.LogicalComponent, err error) {
 	fmt.Println("DAO")
-	err = database.Where("name = ?", name).First(&logicalComponent).Error
+	err = database.Where("logical_name = ?", name).First(&logicalComponent).Error
 	fmt.Println(err)
 	fmt.Println(logicalComponent)
 	return

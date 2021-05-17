@@ -35,7 +35,7 @@ func ReadTenant(database *gorm.DB, id int) (tenant models.Tenant, err error) {
 	return
 }
 
-func ReadTenantByName(database *gorm.DB, name string) (tenant models.tenant, err error) {
+func ReadTenantByName(database *gorm.DB, name string) (tenant models.Tenant, err error) {
 	fmt.Println("DAO")
 	err = database.Where("name = ?", name).First(&tenant).Error
 	fmt.Println(err)

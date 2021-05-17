@@ -9,6 +9,7 @@ type Urls struct {
 	LOGIN_PATH                           string
 	CLI_PATH                             string
 	LOGICAL_COMPONENT_PATH               string
+	LOGICAL_COMPONENT_PATH_LIST          string
 	LOGICAL_COMPONENT_PATH_UPLOAD        string
 	LOGICAL_COMPONENT_PATH_READ_BY_NAME  string
 	ROLE_PATH                            string
@@ -100,7 +101,8 @@ func ReturnURLS() *Urls {
 	apiurls.USER_PATH_UPDATE = apiurls.USER_PATH + "/{id:[0-9]+}"
 	apiurls.USER_PATH_DELETE = apiurls.USER_PATH + "/{id:[0-9]+}"
 
-	apiurls.LOGICAL_COMPONENT_PATH = apiurls.PATH + "/logicalcomponent"
+	apiurls.LOGICAL_COMPONENT_PATH = apiurls.PATH + "/logicalcomponents"
+	apiurls.LOGICAL_COMPONENT_PATH_LIST = apiurls.LOGICAL_COMPONENT_PATH + "/"
 	apiurls.LOGICAL_COMPONENT_PATH_UPLOAD = apiurls.LOGICAL_COMPONENT_PATH + "/upload/{tenant}/{type}"
 	apiurls.LOGICAL_COMPONENT_PATH_READ_BY_NAME = apiurls.LOGICAL_COMPONENT_PATH + "/{name}"
 
@@ -112,6 +114,7 @@ func ReturnURLS() *Urls {
 	apiurls.TENANT_PATH_LIST = apiurls.TENANT_PATH + "/"
 	apiurls.TENANT_PATH_CREATE = apiurls.TENANT_PATH + "/"
 	apiurls.TENANT_PATH_READ = apiurls.TENANT_PATH + "/{id:[0-9]+}"
+	apiurls.TENANT_PATH_READ_BY_NAME = apiurls.TENANT_PATH + "/{name}"
 	apiurls.TENANT_PATH_UPDATE = apiurls.TENANT_PATH + "/{id:[0-9]+}"
 	apiurls.TENANT_PATH_DELETE = apiurls.TENANT_PATH + "/{id:[0-9]+}"
 

@@ -29,8 +29,9 @@ func GetRouter(databaseConnection *database.DatabaseConnection, shoset *net.Shos
 	subt.Use(TenantsJwtVerify)
 
 	//LOGICAL COMPONENT
-	subt.HandleFunc(urls.LOGICAL_COMPONENT_PATH_UPLOAD, controllers.LogicalComponentController.Upload).Methods("POST")
+	subt.HandleFunc(urls.LOGICAL_COMPONENT_PATH_LIST, controllers.LogicalComponentController.List).Methods("GET")
 	subt.HandleFunc(urls.LOGICAL_COMPONENT_PATH_READ_BY_NAME, controllers.LogicalComponentController.ReadByName).Methods("GET")
+	subt.HandleFunc(urls.LOGICAL_COMPONENT_PATH_UPLOAD, controllers.LogicalComponentController.Upload).Methods("POST")
 
 	//ROLE
 	subt.HandleFunc(urls.ROLE_PATH_LIST, controllers.RoleController.List).Methods("GET")

@@ -33,6 +33,23 @@ func NewLogicalComponentController(databaseConnection *database.DatabaseConnecti
 	return
 }
 
+// List :
+func (lc LogicalComponentController) List(w http.ResponseWriter, r *http.Request) {
+	database := lc.databaseConnection.GetTenantDatabaseClient()
+	if database != nil {
+		logicalComponents, err := dao.ListLogicalComponent(database)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, logicalComponents)
+	} else {
+		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
+		return
+	}
+}
+
 // ReadByName :
 func (lc LogicalComponentController) ReadByName(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
