@@ -2,6 +2,7 @@ package dao
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ditrit/gandalf/core/aggregator/api/utils"
 
@@ -31,6 +32,14 @@ func CreateTenant(database *gorm.DB, tenant models.Tenant) (err error) {
 func ReadTenant(database *gorm.DB, id int) (tenant models.Tenant, err error) {
 	err = database.First(&tenant, id).Error
 
+	return
+}
+
+func ReadTenantByName(database *gorm.DB, name string) (tenant models.tenant, err error) {
+	fmt.Println("DAO")
+	err = database.Where("name = ?", name).First(&tenant).Error
+	fmt.Println(err)
+	fmt.Println(tenant)
 	return
 }
 
