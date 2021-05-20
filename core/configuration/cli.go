@@ -648,18 +648,13 @@ func runCreateEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
-	fmt.Println("0")
 	resource, err := cliClient.ResourceService.ReadByName(configurationCli.GetToken(), resourceName)
-	fmt.Println("1 %s", err)
-	if err != nil {
-		fmt.Println("2 %s", err)
+	if err == nil {
 		eventType, err := cliClient.EventTypeService.ReadByName(configurationCli.GetToken(), eventTypeName)
-		if err != nil {
-			fmt.Println("3 %s", err)
+		if err == nil {
 			eventTypeToPoll := models.EventTypeToPoll{Resource: *resource, EventType: *eventType}
 			err := cliClient.EventTypeToPollService.Create(configurationCli.GetToken(), eventTypeToPoll)
-			fmt.Println("4 %s", err)
-			if err == nil {
+			if err != nil {
 				fmt.Println(err)
 			}
 		} else {
@@ -729,7 +724,7 @@ func runDeleteEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 
 // CWIP_R
 func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
-	name := args[0]
+	/* name := args[0]
 	pivotName := args[1]
 	connectorProductName := args[2]
 
@@ -753,7 +748,7 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 	} else {
 		fmt.Println(err)
-	}
+	} */
 
 }
 

@@ -22,6 +22,7 @@ type Controllers struct {
 	ResourceTypeController      *controllers.ResourceTypeController
 	EventTypeController         *controllers.EventTypeController
 	PivotController             *controllers.PivotController
+	ConnectorProductController  *controllers.ConnectorProductController
 }
 
 // ReturnControllers :
@@ -43,6 +44,7 @@ func ReturnControllers(databaseConnection *database.DatabaseConnection, shoset *
 	aggregatorControllers.ResourceTypeController = controllers.NewResourceTypeController(databaseConnection)
 	aggregatorControllers.EventTypeController = controllers.NewEventTypeController(databaseConnection)
 	aggregatorControllers.PivotController = controllers.NewPivotController(databaseConnection)
+	aggregatorControllers.ConnectorProductController = controllers.NewConnectorProductController(databaseConnection)
 
 	return aggregatorControllers
 }

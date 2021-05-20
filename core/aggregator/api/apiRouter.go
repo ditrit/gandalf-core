@@ -105,5 +105,13 @@ func GetRouter(databaseConnection *database.DatabaseConnection, shoset *net.Shos
 	subt.HandleFunc(urls.PIVOT_TYPE_PATH_READ, controllers.PivotController.Read).Methods("GET")
 	subt.HandleFunc(urls.PIVOT_TYPE_PATH_READ_BY_NAME, controllers.PivotController.ReadByName).Methods("GET")
 
+	//CONNECTOR PRODUCT
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_LIST, controllers.ConnectorProductController.List).Methods("GET")
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_CREATE, controllers.ConnectorProductController.Create).Methods("POST")
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_READ, controllers.ConnectorProductController.Read).Methods("GET")
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_READ_BY_NAME, controllers.ConnectorProductController.ReadByName).Methods("GET")
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_UPDATE, controllers.ConnectorProductController.Update).Methods("PUT")
+	subt.HandleFunc(urls.CONNECTOR_PRODUCT_PATH_DELETE, controllers.ConnectorProductController.Delete).Methods("DELETE")
+
 	return mux
 }
