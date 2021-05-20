@@ -71,6 +71,10 @@ type Urls struct {
 	EVENT_TYPE_PATH_READ_BY_NAME         string
 	EVENT_TYPE_PATH_UPDATE               string
 	EVENT_TYPE_PATH_DELETE               string
+	PIVOT_TYPE_PATH                      string
+	PIVOT_TYPE_PATH_LIST                 string
+	PIVOT_TYPE_PATH_READ                 string
+	PIVOT_TYPE_PATH_READ_BY_NAME         string
 }
 
 // ReturnURLS :
@@ -156,6 +160,11 @@ func ReturnURLS() *Urls {
 	apiurls.EVENT_TYPE_PATH_READ_BY_NAME = apiurls.EVENT_TYPE_PATH + "/{name}"
 	apiurls.EVENT_TYPE_PATH_UPDATE = apiurls.EVENT_TYPE_PATH + "/{id:[0-9]+}"
 	apiurls.EVENT_TYPE_PATH_DELETE = apiurls.EVENT_TYPE_PATH + "/{id:[0-9]+}"
+
+	apiurls.PIVOT_TYPE_PATH = apiurls.PATH + "/pivots"
+	apiurls.PIVOT_TYPE_PATH_LIST = apiurls.PIVOT_TYPE_PATH + "/"
+	apiurls.PIVOT_TYPE_PATH_READ = apiurls.PIVOT_TYPE_PATH + "/{id:[0-9]+}"
+	apiurls.PIVOT_TYPE_PATH_READ_BY_NAME = apiurls.PIVOT_TYPE_PATH + "/{name}"
 
 	/*
 		apiurls.CONNECTOR_PATH = apiurls.PATH + "/connectors"

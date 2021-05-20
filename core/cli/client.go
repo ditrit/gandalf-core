@@ -29,6 +29,7 @@ type Client struct {
 	ResourceTypeService      *ResourceTypeService
 	EventTypeService         *EventTypeService
 	LogicalComponentService  *LogicalComponentService
+	PivotService             *PivotService
 }
 
 // NewClient :
@@ -61,6 +62,7 @@ func NewClient(bindAddress string) (client *Client) {
 	client.ResourceTypeService = &ResourceTypeService{client: client}
 	client.EventTypeService = &EventTypeService{client: client}
 	client.LogicalComponentService = &LogicalComponentService{client: client}
+	client.PivotService = &PivotService{client: client}
 
 	return
 
