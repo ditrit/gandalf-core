@@ -699,7 +699,7 @@ func runListEventTypeToPolls(cfg *verdeter.ConfigCmd, args []string) {
 func runUpdateEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 	/* resourceName := args[0]
 	eventTypeName := args[1] */
-	fmt.Printf("gandalf cli update eventtypetopoll called with eventtypetopoll=%s, newName=%s, parent=%s\n")
+	//fmt.Printf("gandalf cli update eventtypetopoll called with eventtypetopoll=%s, newName=%s, parent=%s\n")
 
 }
 
@@ -809,7 +809,7 @@ func runDeleteResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 // CWIP_1
 func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
-	/* name := args[0]
+	name := args[0]
 	pivotName := args[1]
 	connectorProductName := args[2]
 
@@ -818,17 +818,17 @@ func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	pivot, err := cliClient.EventTypeService.ReadByName(configurationCli.GetToken(), pivotName)
+	pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotName)
 	if err != nil {
-		connectorProduct, err := cliClient.EventTypeService.ReadByName(configurationCli.GetToken(), connectorProductName)
+		connectorProduct, err := cliClient.ConnectorProductService.ReadByName(configurationCli.GetToken(), connectorProductName)
 		if err != nil {
-			eventType := models.EventType{Name: name, Pivot: pivot, ConnectorProduct: connectorProduct}
+			eventType := models.EventType{Name: name, Pivot: *pivot, ConnectorProduct: *connectorProduct}
 			err := cliClient.EventTypeService.Create(configurationCli.GetToken(), eventType)
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
-	} */
+	}
 }
 
 func runListEventTypes(cfg *verdeter.ConfigCmd, args []string) {
