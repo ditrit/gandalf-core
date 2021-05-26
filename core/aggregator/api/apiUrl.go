@@ -75,13 +75,10 @@ type Urls struct {
 	PIVOT_TYPE_PATH_LIST                 string
 	PIVOT_TYPE_PATH_READ                 string
 	PIVOT_TYPE_PATH_READ_BY_NAME         string
-	CONNECTOR_PRODUCT_PATH               string
-	CONNECTOR_PRODUCT_PATH_LIST          string
-	CONNECTOR_PRODUCT_PATH_CREATE        string
-	CONNECTOR_PRODUCT_PATH_READ          string
-	CONNECTOR_PRODUCT_PATH_READ_BY_NAME  string
-	CONNECTOR_PRODUCT_PATH_UPDATE        string
-	CONNECTOR_PRODUCT_PATH_DELETE        string
+	PRODUCT_CONNECTOR_PATH               string
+	PRODUCT_CONNECTOR_PATH_LIST          string
+	PRODUCT_CONNECTOR_PATH_READ          string
+	PRODUCT_CONNECTOR_PATH_READ_BY_NAME  string
 }
 
 // ReturnURLS :
@@ -173,13 +170,10 @@ func ReturnURLS() *Urls {
 	apiurls.PIVOT_TYPE_PATH_READ = apiurls.PIVOT_TYPE_PATH + "/{id:[0-9]+}"
 	apiurls.PIVOT_TYPE_PATH_READ_BY_NAME = apiurls.PIVOT_TYPE_PATH + "/{name}"
 
-	apiurls.CONNECTOR_PRODUCT_PATH = apiurls.PATH + "/connectorproduct"
-	apiurls.CONNECTOR_PRODUCT_PATH_LIST = apiurls.CONNECTOR_PRODUCT_PATH + "/"
-	apiurls.CONNECTOR_PRODUCT_PATH_CREATE = apiurls.CONNECTOR_PRODUCT_PATH + "/{name}"
-	apiurls.CONNECTOR_PRODUCT_PATH_READ = apiurls.CONNECTOR_PRODUCT_PATH + "/{id:[0-9]+}"
-	apiurls.CONNECTOR_PRODUCT_PATH_READ_BY_NAME = apiurls.CONNECTOR_PRODUCT_PATH + "/{name}"
-	apiurls.CONNECTOR_PRODUCT_PATH_UPDATE = apiurls.CONNECTOR_PRODUCT_PATH + "/{id:[0-9]+}"
-	apiurls.CONNECTOR_PRODUCT_PATH_DELETE = apiurls.CONNECTOR_PRODUCT_PATH + "/{id:[0-9]+}"
+	apiurls.PRODUCT_CONNECTOR_PATH = apiurls.PATH + "/connectorproducts"
+	apiurls.PRODUCT_CONNECTOR_PATH_LIST = apiurls.PRODUCT_CONNECTOR_PATH + "/"
+	apiurls.PRODUCT_CONNECTOR_PATH_READ = apiurls.PRODUCT_CONNECTOR_PATH + "/{id:[0-9]+}"
+	apiurls.PRODUCT_CONNECTOR_PATH_READ_BY_NAME = apiurls.PRODUCT_CONNECTOR_PATH + "/{name}"
 
 	/*
 		apiurls.CONNECTOR_PATH = apiurls.PATH + "/connectors"

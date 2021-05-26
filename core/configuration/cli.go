@@ -736,8 +736,8 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 	if err == nil {
 		connectorProduct, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), connectorProductName)
 		if err == nil {
-			// It should be a ReadByName method-like for Pivot & ConnectorProduct
-			resourceType := models.ResourceType{Name: name, Pivot: pivot, ConnectorProduct: connectorProduct}
+			// It should be a ReadByName method-like for Pivot & ProductConnector
+			resourceType := models.ResourceType{Name: name, Pivot: pivot, ProductConnector: connectorProduct}
 			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
 			if err != nil {
 				fmt.Println(err)
@@ -809,26 +809,35 @@ func runDeleteResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 // CWIP_1
 func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
-	name := args[0]
-	pivotName := args[1]
-	connectorProductName := args[2]
+	/*
+		name := args[0]
+		pivotProductConnectorName := args[1]
+		typeName := args[2]
 
-	fmt.Printf("gandalf cli create eventtype called with name=%s, schema=%s\n", name, pivotName)
+		fmt.Printf("gandalf cli create eventtype called with name=%s, schema=%s\n", name, pivotName)
 
-	configurationCli := cmodels.NewConfigurationCli()
-	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+		configurationCli := cmodels.NewConfigurationCli()
+		cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotName)
-	if err != nil {
-		connectorProduct, err := cliClient.ConnectorProductService.ReadByName(configurationCli.GetToken(), connectorProductName)
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotName)
+		} else if typeName == "connectorProduct" {
+			connectorProduct, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), connectorProductName)
+		} else {
+			fmt.Println("Error: must be connectorProduct or pivot.")
+		}
+
 		if err != nil {
-			eventType := models.EventType{Name: name, Pivot: *pivot, ConnectorProduct: *connectorProduct}
-			err := cliClient.EventTypeService.Create(configurationCli.GetToken(), eventType)
+
 			if err != nil {
-				fmt.Println(err)
+				eventType := models.EventType{Name: name, Pivot: *pivot, ProductConnector: *connectorProduct}
+				err := cliClient.EventTypeService.Create(configurationCli.GetToken(), eventType)
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 		}
-	}
+	*/
 }
 
 func runListEventTypes(cfg *verdeter.ConfigCmd, args []string) {

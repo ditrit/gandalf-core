@@ -15,30 +15,30 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// ConnectorProductController :
-type ConnectorProductController struct {
+// ProductConnectorController :
+type ProductConnectorController struct {
 	databaseConncction *database.DatabaseConnection
 }
 
-// NewConnectorProductController :
-func NewConnectorProductController(databaseConncction *database.DatabaseConnection) (connectorProductController *ConnectorProductController) {
-	connectorProductController = new(ConnectorProductController)
-	connectorProductController.databaseConncction = databaseConncction
+// NewProductConnectorController :
+func NewProductConnectorController(databaseConncction *database.DatabaseConnection) (productConnectorController *ProductConnectorController) {
+	productConnectorController = new(ProductConnectorController)
+	productConnectorController.databaseConncction = databaseConncction
 
 	return
 }
 
 // List :
-func (cc ConnectorProductController) List(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) List(w http.ResponseWriter, r *http.Request) {
 	database := cc.databaseConncction.GetTenantDatabaseClient()
 	if database != nil {
-		connectorProducts, err := dao.ListConnectorProduct(database)
+		productConnectors, err := dao.ListProductConnector(database)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		utils.RespondWithJSON(w, http.StatusOK, connectorProducts)
+		utils.RespondWithJSON(w, http.StatusOK, productConnectors)
 	} else {
 		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
 		return
@@ -46,23 +46,23 @@ func (cc ConnectorProductController) List(w http.ResponseWriter, r *http.Request
 }
 
 // Create :
-func (cc ConnectorProductController) Create(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) Create(w http.ResponseWriter, r *http.Request) {
 	database := cc.databaseConncction.GetTenantDatabaseClient()
 	if database != nil {
-		var connectorProduct models.ConnectorProduct
+		var productConnector models.ProductConnector
 		dccoder := json.NewDecoder(r.Body)
-		if err := dccoder.Decode(&connectorProduct); err != nil {
+		if err := dccoder.Decode(&productConnector); err != nil {
 			utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 			return
 		}
 		defer r.Body.Close()
 
-		if err := dao.CreateConnectorProduct(database, connectorProduct); err != nil {
+		if err := dao.CreateProductConnector(database, productConnector); err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		utils.RespondWithJSON(w, http.StatusCreated, connectorProduct)
+		utils.RespondWithJSON(w, http.StatusCreated, productConnector)
 	} else {
 		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
 		return
@@ -70,7 +70,7 @@ func (cc ConnectorProductController) Create(w http.ResponseWriter, r *http.Reque
 }
 
 // Read :
-func (cc ConnectorProductController) Read(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) Read(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	database := cc.databaseConncction.GetTenantDatabaseClient()
 	if database != nil {
@@ -80,8 +80,8 @@ func (cc ConnectorProductController) Read(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		var connectorProduct models.ConnectorProduct
-		if connectorProduct, err = dao.ReadConnectorProduct(database, id); err != nil {
+		var productConnector models.ProductConnector
+		if productConnector, err = dao.ReadProductConnector(database, id); err != nil {
 			switch err {
 			case sql.ErrNoRows:
 				utils.RespondWithError(w, http.StatusNotFound, "Product not found")
@@ -91,7 +91,7 @@ func (cc ConnectorProductController) Read(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		utils.RespondWithJSON(w, http.StatusOK, connectorProduct)
+		utils.RespondWithJSON(w, http.StatusOK, productConnector)
 	} else {
 		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
 		return
@@ -99,13 +99,13 @@ func (cc ConnectorProductController) Read(w http.ResponseWriter, r *http.Request
 }
 
 // ReadByName :
-func (cc ConnectorProductController) ReadByName(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) ReadByName(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	name := vars["name"]
 
-	var connectorProduct models.ConnectorProduct
+	var productConnector models.ProductConnector
 	var err error
-	if connectorProduct, err = dao.ReadConnectorProductByName(cc.databaseConncction.GetTenantDatabaseClient(), name); err != nil {
+	if productConnector, err = dao.ReadProductConnectorByName(cc.databaseConncction.GetTenantDatabaseClient(), name); err != nil {
 		switch err {
 		case sql.ErrNoRows:
 			utils.RespondWithError(w, http.StatusNotFound, "Product not found")
@@ -115,11 +115,11 @@ func (cc ConnectorProductController) ReadByName(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, connectorProduct)
+	utils.RespondWithJSON(w, http.StatusOK, productConnector)
 }
 
 // Update :
-func (cc ConnectorProductController) Update(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	database := cc.databaseConncction.GetTenantDatabaseClient()
 	if database != nil {
@@ -129,21 +129,21 @@ func (cc ConnectorProductController) Update(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		var connectorProduct models.ConnectorProduct
+		var productConnector models.ProductConnector
 		dccoder := json.NewDecoder(r.Body)
-		if err := dccoder.Decode(&connectorProduct); err != nil {
+		if err := dccoder.Decode(&productConnector); err != nil {
 			utils.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
 			return
 		}
 		defer r.Body.Close()
-		connectorProduct.ID = uint(id)
+		productConnector.ID = uint(id)
 
-		if err := dao.UpdateConnectorProduct(database, connectorProduct); err != nil {
+		if err := dao.UpdateProductConnector(database, productConnector); err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		utils.RespondWithJSON(w, http.StatusOK, connectorProduct)
+		utils.RespondWithJSON(w, http.StatusOK, productConnector)
 	} else {
 		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
 		return
@@ -151,7 +151,7 @@ func (cc ConnectorProductController) Update(w http.ResponseWriter, r *http.Reque
 }
 
 // Delete :
-func (cc ConnectorProductController) Delete(w http.ResponseWriter, r *http.Request) {
+func (cc ProductConnectorController) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	database := cc.databaseConncction.GetTenantDatabaseClient()
 	if database != nil {
@@ -161,7 +161,7 @@ func (cc ConnectorProductController) Delete(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		if err := dao.DeleteConnectorProduct(database, id); err != nil {
+		if err := dao.DeleteProductConnector(database, id); err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
