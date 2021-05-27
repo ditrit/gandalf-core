@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -39,30 +38,6 @@ func (cc ProductConnectorController) List(w http.ResponseWriter, r *http.Request
 		}
 
 		utils.RespondWithJSON(w, http.StatusOK, productConnectors)
-	} else {
-		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
-		return
-	}
-}
-
-// Create :
-func (cc ProductConnectorController) Create(w http.ResponseWriter, r *http.Request) {
-	database := cc.databaseConncction.GetTenantDatabaseClient()
-	if database != nil {
-		var productConnector models.ProductConnector
-		dccoder := json.NewDecoder(r.Body)
-		if err := dccoder.Decode(&productConnector); err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			return
-		}
-		defer r.Body.Close()
-
-		if err := dao.CreateProductConnector(database, productConnector); err != nil {
-			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		utils.RespondWithJSON(w, http.StatusCreated, productConnector)
 	} else {
 		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
 		return
@@ -116,59 +91,4 @@ func (cc ProductConnectorController) ReadByName(w http.ResponseWriter, r *http.R
 	}
 
 	utils.RespondWithJSON(w, http.StatusOK, productConnector)
-}
-
-// Update :
-func (cc ProductConnectorController) Update(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	database := cc.databaseConncction.GetTenantDatabaseClient()
-	if database != nil {
-		id, err := strconv.Atoi(vars["id"])
-		if err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid product ID")
-			return
-		}
-
-		var productConnector models.ProductConnector
-		dccoder := json.NewDecoder(r.Body)
-		if err := dccoder.Decode(&productConnector); err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
-			return
-		}
-		defer r.Body.Close()
-		productConnector.ID = uint(id)
-
-		if err := dao.UpdateProductConnector(database, productConnector); err != nil {
-			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		utils.RespondWithJSON(w, http.StatusOK, productConnector)
-	} else {
-		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
-		return
-	}
-}
-
-// Delete :
-func (cc ProductConnectorController) Delete(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	database := cc.databaseConncction.GetTenantDatabaseClient()
-	if database != nil {
-		id, err := strconv.Atoi(vars["id"])
-		if err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product ID")
-			return
-		}
-
-		if err := dao.DeleteProductConnector(database, id); err != nil {
-			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
-	} else {
-		utils.RespondWithError(w, http.StatusInternalServerError, "tenant not found")
-		return
-	}
 }

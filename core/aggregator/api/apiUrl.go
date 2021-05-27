@@ -170,7 +170,7 @@ func ReturnURLS() *Urls {
 	apiurls.PIVOT_TYPE_PATH_READ = apiurls.PIVOT_TYPE_PATH + "/{id:[0-9]+}"
 	apiurls.PIVOT_TYPE_PATH_READ_BY_NAME = apiurls.PIVOT_TYPE_PATH + "/{name}"
 
-	apiurls.PRODUCT_CONNECTOR_PATH = apiurls.PATH + "/connectorproducts"
+	apiurls.PRODUCT_CONNECTOR_PATH = apiurls.PATH + "/productconnectors"
 	apiurls.PRODUCT_CONNECTOR_PATH_LIST = apiurls.PRODUCT_CONNECTOR_PATH + "/"
 	apiurls.PRODUCT_CONNECTOR_PATH_READ = apiurls.PRODUCT_CONNECTOR_PATH + "/{id:[0-9]+}"
 	apiurls.PRODUCT_CONNECTOR_PATH_READ_BY_NAME = apiurls.PRODUCT_CONNECTOR_PATH + "/{name}"

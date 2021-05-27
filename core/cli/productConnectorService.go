@@ -22,16 +22,6 @@ func (as *ConnectorProductService) List(token string) ([]models.ProductConnector
 	return productConnectors, err
 }
 
-// Create :
-func (as *ConnectorProductService) Create(token string, resource models.ProductConnector) error {
-	req, err := as.client.newRequest("POST", "/auth/gandalf/productconnectors/", token, resource)
-	if err != nil {
-		return err
-	}
-	err = as.client.do(req, nil)
-	return err
-}
-
 // Read :
 func (as *ConnectorProductService) Read(token string, id int) (*models.ProductConnector, error) {
 	req, err := as.client.newRequest("GET", "/auth/gandalf/productconnectors/"+strconv.Itoa(id), token, nil)
@@ -52,24 +42,4 @@ func (as *ConnectorProductService) ReadByName(token string, name string) (*model
 	var resource models.ProductConnector
 	err = as.client.do(req, &resource)
 	return &resource, err
-}
-
-// Update :
-func (as *ConnectorProductService) Update(token string, id int, resource models.ProductConnector) error {
-	req, err := as.client.newRequest("PUT", "/auth/gandalf/productconnectors/"+strconv.Itoa(id), token, resource)
-	if err != nil {
-		return err
-	}
-	err = as.client.do(req, nil)
-	return err
-}
-
-// Delete :
-func (as *ConnectorProductService) Delete(token string, id int) error {
-	req, err := as.client.newRequest("DELETE", "/auth/gandalf/productconnectors/"+strconv.Itoa(id), token, nil)
-	if err != nil {
-		return err
-	}
-	err = as.client.do(req, nil)
-	return err
 }
