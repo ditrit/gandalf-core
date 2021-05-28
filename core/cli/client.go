@@ -30,7 +30,7 @@ type Client struct {
 	EventTypeService         *EventTypeService
 	LogicalComponentService  *LogicalComponentService
 	PivotService             *PivotService
-	ConnectorProductService  *ConnectorProductService
+	ProductConnectorService  *ProductConnectorService
 }
 
 // NewClient :
@@ -64,7 +64,7 @@ func NewClient(bindAddress string) (client *Client) {
 	client.EventTypeService = &EventTypeService{client: client}
 	client.LogicalComponentService = &LogicalComponentService{client: client}
 	client.PivotService = &PivotService{client: client}
-	client.ConnectorProductService = &ConnectorProductService{client: client}
+	client.ProductConnectorService = &ProductConnectorService{client: client}
 
 	return
 

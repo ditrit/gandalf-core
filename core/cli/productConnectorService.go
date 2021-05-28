@@ -6,13 +6,13 @@ import (
 	"github.com/ditrit/gandalf/core/models"
 )
 
-// ConnectorProductService :
-type ConnectorProductService struct {
+// ProductConnectorService :
+type ProductConnectorService struct {
 	client *Client
 }
 
 // List :
-func (as *ConnectorProductService) List(token string) ([]models.ProductConnector, error) {
+func (as *ProductConnectorService) List(token string) ([]models.ProductConnector, error) {
 	req, err := as.client.newRequest("GET", "/auth/gandalf/productconnectors/", token, nil)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func (as *ConnectorProductService) List(token string) ([]models.ProductConnector
 }
 
 // Read :
-func (as *ConnectorProductService) Read(token string, id int) (*models.ProductConnector, error) {
+func (as *ProductConnectorService) Read(token string, id int) (*models.ProductConnector, error) {
 	req, err := as.client.newRequest("GET", "/auth/gandalf/productconnectors/"+strconv.Itoa(id), token, nil)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (as *ConnectorProductService) Read(token string, id int) (*models.ProductCo
 }
 
 // Read :
-func (as *ConnectorProductService) ReadByName(token string, name string) (*models.ProductConnector, error) {
+func (as *ProductConnectorService) ReadByName(token string, name string) (*models.ProductConnector, error) {
 	req, err := as.client.newRequest("GET", "/auth/gandalf/productconnectors/"+name, token, nil)
 	if err != nil {
 		return nil, err

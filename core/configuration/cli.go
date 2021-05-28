@@ -809,35 +809,39 @@ func runDeleteResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 // CWIP_1
 func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
-	/*
-		name := args[0]
-		pivotProductConnectorName := args[1]
-		typeName := args[2]
+	name := args[0]
+	pivotProductConnectorName := args[1]
+	typeName := args[2]
 
-		fmt.Printf("gandalf cli create eventtype called with name=%s, schema=%s\n", name, pivotName)
+	fmt.Printf("gandalf cli create eventtype called with name=%s, schema=%s\n", name, pivotProductConnectorName)
 
-		configurationCli := cmodels.NewConfigurationCli()
-		cliClient := cli.NewClient(configurationCli.GetEndpoint())
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-		if typeName == "pivot" {
-			pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotName)
-		} else if typeName == "connectorProduct" {
-			connectorProduct, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), connectorProductName)
-		} else {
-			fmt.Println("Error: must be connectorProduct or pivot.")
-		}
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
 
 		if err != nil {
-
 			if err != nil {
-				eventType := models.EventType{Name: name, Pivot: *pivot, ProductConnector: *connectorProduct}
+				eventType := models.EventType{Name: name, Pivot: *pivot}
 				err := cliClient.EventTypeService.Create(configurationCli.GetToken(), eventType)
 				if err != nil {
 					fmt.Println(err)
 				}
 			}
 		}
-	*/
+	} else if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+		if err != nil {
+			eventType := models.EventType{Name: name, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Create(configurationCli.GetToken(), eventType)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	} else {
+		fmt.Println("Error: must be connectorProduct or pivot.")
+	}
 }
 
 func runListEventTypes(cfg *verdeter.ConfigCmd, args []string) {
