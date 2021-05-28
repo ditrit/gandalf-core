@@ -882,21 +882,21 @@ func runUpdateEventType(cfg *verdeter.ConfigCmd, args []string) {
 }
 
 func runDeleteEventType(cfg *verdeter.ConfigCmd, args []string) {
-	/* 	name := args[0]
-	   	fmt.Printf("gandalf cli delete eventtypetopoll called with eventtypetopoll=%s\n", name)
+	name := args[0]
+	fmt.Printf("gandalf cli delete eventtypetopoll called with eventtypetopoll=%s\n", name)
 
-	   	configurationCli := cmodels.NewConfigurationCli()
-	   	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	   	oldEventType, err := cliClient.EventType.ReadByName(configurationCli.GetToken(), name)
-	   	if err == nil {
-	   		err = cliClient.EventType.Delete(configurationCli.GetToken(), int(oldEventType.ID))
-	   		if err != nil {
-	   			fmt.Println(err)
-	   		}
-	   	} else {
-	   		fmt.Println(err)
-	   	} */
+	oldEventType, err := cliClient.EventTypeService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.EventTypeService.Delete(configurationCli.GetToken(), int(oldEventType.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 /*
