@@ -726,7 +726,7 @@ func runDeleteEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 	/* name := args[0]
 	pivotName := args[1]
-	connectorProductName := args[2]
+	productConnectorName := args[2]
 
 	fmt.Printf("gandalf cli create resourcetype called with name=%s", name)
 	configurationCli := cmodels.NewConfigurationCli()
@@ -734,10 +734,10 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 	pivot, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), pivotName)
 	if err == nil {
-		connectorProduct, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), connectorProductName)
+		productConnector, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), productConnectorName)
 		if err == nil {
 			// It should be a ReadByName method-like for Pivot & ProductConnector
-			resourceType := models.ResourceType{Name: name, Pivot: pivot, ProductConnector: connectorProduct}
+			resourceType := models.ResourceType{Name: name, Pivot: *pivot, ProductConnector: *productConnector}
 			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
 			if err != nil {
 				fmt.Println(err)
@@ -748,8 +748,8 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 
 	} else {
 		fmt.Println(err)
-	} */
-
+	}
+	*/
 }
 
 func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
@@ -757,10 +757,10 @@ func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	eventTypeToPolls, err := cliClient.EventTypeToPollService.List(configurationCli.GetToken())
+	resourceTypes, err := cliClient.ResourceTypeService.List(configurationCli.GetToken())
 	if err == nil {
-		for _, eventTypeToPoll := range eventTypeToPolls {
-			fmt.Println(eventTypeToPoll)
+		for _, resourceTypes := range resourceTypes {
+			fmt.Println(resourceTypes)
 		}
 	} else {
 		fmt.Println(err)
