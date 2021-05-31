@@ -790,21 +790,21 @@ func runUpdateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 }
 
 func runDeleteResourceType(cfg *verdeter.ConfigCmd, args []string) {
-	/* 	name := args[0]
-	   	fmt.Printf("gandalf cli delete eventtypetopoll called with eventtypetopoll=%s\n", name)
+	name := args[0]
+	fmt.Printf("gandalf cli delete eventtypetopoll called with eventtypetopoll=%s\n", name)
 
-	   	configurationCli := cmodels.NewConfigurationCli()
-	   	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+	configurationCli := cmodels.NewConfigurationCli()
+	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	   	ResourceType, err := cliClient.ResourceType.ReadByName(configurationCli.GetToken(), name)
-	   	if err == nil {
-	   		err = cliClient.ResourceType.Delete(configurationCli.GetToken(), int(ResourceType.ID))
-	   		if err != nil {
-	   			fmt.Println(err)
-	   		}
-	   	} else {
-	   		fmt.Println(err)
-	   	} */
+	ResourceType, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), name)
+	if err == nil {
+		err = cliClient.ResourceTypeService.Delete(configurationCli.GetToken(), int(ResourceType.ID))
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
 
 // CWIP_1
