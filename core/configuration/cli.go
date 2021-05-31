@@ -770,7 +770,7 @@ func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
 
 // WAIT - PRIO 3 - PROBLEM
 func runUpdateResourceType(cfg *verdeter.ConfigCmd, args []string) {
-	/* name := args[0]
+	name := args[0]
 	newName := args[1]
 	fmt.Printf("gandalf cli update resourcetype called with name=%s, newName=%s", name, newName)
 	configurationCli := cmodels.NewConfigurationCli()
@@ -785,7 +785,7 @@ func runUpdateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 		}
 	} else {
 		fmt.Println(err)
-	} */
+	}
 
 }
 
