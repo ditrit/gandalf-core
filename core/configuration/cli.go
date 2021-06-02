@@ -176,7 +176,7 @@ func init() {
 	cliDeleteEventTypeToPoll.SetNbArgs(1)
 	cliUpdateEventTypeToPoll.LKey("eventtypetopollname", verdeter.IsStr, "r", "name of the EventTypeToPoll")
 
-	cliCreateResourceType.SetNbArgs(2)
+	cliCreateResourceType.SetNbArgs(3)
 	cliListResourceTypes.SetNbArgs(0)
 	cliUpdateResourceType.SetNbArgs(1)
 	cliDeleteResourceType.SetNbArgs(1)
@@ -535,6 +535,7 @@ func runDeleteDomain(cfg *verdeter.ConfigCmd, args []string) {
 
 }
 
+// NEW
 func runCreateResource(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	logicalComponentName := args[1]
@@ -640,7 +641,6 @@ func runDeleteResource(cfg *verdeter.ConfigCmd, args []string) {
 	}
 }
 
-// CWIP
 func runCreateEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 	resourceName := args[0]
 	eventTypeName := args[1]
@@ -734,22 +734,22 @@ func runDeleteEventTypeToPoll(cfg *verdeter.ConfigCmd, args []string) {
 	}
 }
 
-// CWIP_R
 func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
-	/*name := args[0]
-	pivotName := args[1]
-	productConnectorName := args[2]
 
-	fmt.Printf("gandalf cli create resourcetype called with name=%s", name)
+	name := args[0]
+	pivotProductConnectorName := args[1]
+	typeName := args[2]
+
+	fmt.Printf("gandalf cli create eventtype called with name=%s, pivotProductConnectorName=%s", name, pivotProductConnectorName)
+
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
-	pivot, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), pivotName)
-	if err == nil {
-		productConnector, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), productConnectorName)
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+
 		if err == nil {
-			// It should be a ReadByName method-like for Pivot & ProductConnector
-			resourceType := models.ResourceType{Name: name, Pivot: *pivot, ProductConnector: *productConnector}
+			resourceType := models.ResourceType{Name: name, Pivot: *pivot}
 			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
 			if err != nil {
 				fmt.Println(err)
@@ -757,10 +757,47 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 		} else {
 			fmt.Println(err)
 		}
+	} else if typeName == "productConnector" {
 
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+		if err == nil {
+			resourceType := models.ResourceType{Name: name, ProductConnector: *productConnector}
+			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println(err)
+		}
 	} else {
-		fmt.Println(err)
-	}*/
+		fmt.Println("Error: must be connectorProduct or pivot.")
+	}
+
+	/* 	name := args[0]
+	   	pivotName := args[1]
+	   	productConnectorName := args[2]
+
+	   	fmt.Printf("gandalf cli create resourcetype called with name=%s", name)
+	   	configurationCli := cmodels.NewConfigurationCli()
+	   	cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+	   	pivot, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), pivotName)
+	   	if err == nil {
+	   		productConnector, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), productConnectorName)
+	   		if err == nil {
+	   			// It should be a ReadByName method-like for Pivot & ProductConnector
+	   			resourceType := models.ResourceType{Name: name, Pivot: pivot, ProductConnector: productConnector}
+	   			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
+	   			if err != nil {
+	   				fmt.Println(err)
+	   			}
+	   		} else {
+	   			fmt.Println(err)
+	   		}
+
+	   	} else {
+	   		fmt.Println(err)
+	   	} */
 }
 
 func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
@@ -818,7 +855,6 @@ func runDeleteResourceType(cfg *verdeter.ConfigCmd, args []string) {
 	}
 }
 
-// CWIP_1
 func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	schema := args[1]
@@ -841,7 +877,6 @@ func runCreateEventType(cfg *verdeter.ConfigCmd, args []string) {
 			}
 		} else {
 			fmt.Println(err)
-			fmt.Println("toto")
 		}
 	} else if typeName == "productConnector" {
 

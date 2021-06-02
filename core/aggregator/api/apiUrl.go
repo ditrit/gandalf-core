@@ -151,7 +151,7 @@ func ReturnURLS() *Urls {
 
 	apiurls.RESOURCE_TYPE_PATH = apiurls.PATH + "/resourcetypes"
 	apiurls.RESOURCE_TYPE_PATH_LIST = apiurls.RESOURCE_TYPE_PATH + "/"
-	apiurls.RESOURCE_TYPE_PATH_CREATE = apiurls.RESOURCE_TYPE_PATH + "/{name}"
+	apiurls.RESOURCE_TYPE_PATH_CREATE = apiurls.RESOURCE_TYPE_PATH + "/"
 	apiurls.RESOURCE_TYPE_PATH_READ = apiurls.RESOURCE_TYPE_PATH + "/{id:[0-9]+}"
 	apiurls.RESOURCE_TYPE_PATH_READ_BY_NAME = apiurls.RESOURCE_TYPE_PATH + "/{name}"
 	apiurls.RESOURCE_TYPE_PATH_UPDATE = apiurls.RESOURCE_TYPE_PATH + "/{id:[0-9]+}"
@@ -159,7 +159,7 @@ func ReturnURLS() *Urls {
 
 	apiurls.EVENT_TYPE_PATH = apiurls.PATH + "/eventtypes"
 	apiurls.EVENT_TYPE_PATH_LIST = apiurls.EVENT_TYPE_PATH + "/"
-	apiurls.EVENT_TYPE_PATH_CREATE = apiurls.EVENT_TYPE_PATH + "/{name}"
+	apiurls.EVENT_TYPE_PATH_CREATE = apiurls.EVENT_TYPE_PATH + "/"
 	apiurls.EVENT_TYPE_PATH_READ = apiurls.EVENT_TYPE_PATH + "/{id:[0-9]+}"
 	apiurls.EVENT_TYPE_PATH_READ_BY_NAME = apiurls.EVENT_TYPE_PATH + "/{name}"
 	apiurls.EVENT_TYPE_PATH_UPDATE = apiurls.EVENT_TYPE_PATH + "/{id:[0-9]+}"
