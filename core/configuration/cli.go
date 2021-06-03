@@ -184,7 +184,7 @@ func init() {
 
 	cliCreateEventType.SetNbArgs(4)
 	cliListEventTypes.SetNbArgs(0)
-	cliUpdateEventType.SetNbArgs(2)
+	cliUpdateEventType.SetNbArgs(5)
 	cliDeleteEventType.SetNbArgs(1)
 	cliUpdateEventType.LKey("eventypename", verdeter.IsStr, "r", "name of the EventType")
 }
@@ -908,15 +908,40 @@ func runListEventTypes(cfg *verdeter.ConfigCmd, args []string) {
 func runUpdateEventType(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	newName := args[1]
+	schema := args[2]
+	pivotProductConnectorName := args[3]
+	typeName := args[4]
+
 	fmt.Printf("gandalf cli update eventtypetopoll called with eventtypetopoll=%s, newName=%s\n", name, newName)
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
 	oldEventType, err := cliClient.EventTypeService.ReadByName(configurationCli.GetToken(), name)
 	if err == nil {
-		resourceType := models.EventType{Name: newName}
-		err = cliClient.EventTypeService.Update(configurationCli.GetToken(), int(oldEventType.ID), resourceType)
-		if err != nil {
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, Pivot: *pivot}
+				err := cliClient.EventTypeService.Update(configurationCli.GetToken(), int(oldEventType.ID), eventType)
+				if err != nil {
+					fmt.Println(err)
+				}
+			} else {
+				fmt.Println(err)
+			}
+
+		} else if typeName == "productConnetor" {
+			productConnector, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}
+				err := cliClient.EventTypeService.Update(configurationCli.GetToken(), int(oldEventType.ID), eventType)
+				if err != nil {
+					fmt.Println(err)
+				}
+			} else {
+				fmt.Println(err)
+			}
+		} else {
 			fmt.Println(err)
 		}
 	} else {
