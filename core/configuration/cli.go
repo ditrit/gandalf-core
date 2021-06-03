@@ -178,7 +178,7 @@ func init() {
 
 	cliCreateResourceType.SetNbArgs(3)
 	cliListResourceTypes.SetNbArgs(0)
-	cliUpdateResourceType.SetNbArgs(1)
+	cliUpdateResourceType.SetNbArgs(4)
 	cliDeleteResourceType.SetNbArgs(1)
 	cliUpdateResourceType.LKey("resourcetypename", verdeter.IsStr, "r", "name of the ResourceType")
 
@@ -772,32 +772,6 @@ func runCreateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 	} else {
 		fmt.Println("Error: must be connectorProduct or pivot.")
 	}
-
-	/* 	name := args[0]
-	   	pivotName := args[1]
-	   	productConnectorName := args[2]
-
-	   	fmt.Printf("gandalf cli create resourcetype called with name=%s", name)
-	   	configurationCli := cmodels.NewConfigurationCli()
-	   	cliClient := cli.NewClient(configurationCli.GetEndpoint())
-
-	   	pivot, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), pivotName)
-	   	if err == nil {
-	   		productConnector, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), productConnectorName)
-	   		if err == nil {
-	   			// It should be a ReadByName method-like for Pivot & ProductConnector
-	   			resourceType := models.ResourceType{Name: name, Pivot: pivot, ProductConnector: productConnector}
-	   			err := cliClient.ResourceTypeService.Create(configurationCli.GetToken(), resourceType)
-	   			if err != nil {
-	   				fmt.Println(err)
-	   			}
-	   		} else {
-	   			fmt.Println(err)
-	   		}
-
-	   	} else {
-	   		fmt.Println(err)
-	   	} */
 }
 
 func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
@@ -820,16 +794,36 @@ func runListResourceTypes(cfg *verdeter.ConfigCmd, args []string) {
 func runUpdateResourceType(cfg *verdeter.ConfigCmd, args []string) {
 	name := args[0]
 	newName := args[1]
+	pivotProductConnectorName := args[2]
+	typeName := args[3]
 	fmt.Printf("gandalf cli update resourcetype called with name=%s, newName=%s", name, newName)
 	configurationCli := cmodels.NewConfigurationCli()
 	cliClient := cli.NewClient(configurationCli.GetEndpoint())
 
 	oldResourceType, err := cliClient.ResourceTypeService.ReadByName(configurationCli.GetToken(), name)
 	if err == nil {
-		resourceType := models.ResourceType{Name: newName}
-		err = cliClient.ResourceTypeService.Update(configurationCli.GetToken(), int(oldResourceType.ID), resourceType)
-		if err != nil {
+
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+			if err == nil {
+				resourceType := models.ResourceType{Name: newName, Pivot: *pivot}
+				err = cliClient.ResourceTypeService.Update(configurationCli.GetToken(), int(oldResourceType.ID), resourceType)
+				fmt.Println(err)
+			} else {
+				fmt.Println(err)
+				fmt.Println("ERROR 404: CANNOT FIND SPECIFIED PIVOT")
+			}
+
+		} else if typeName == "productConnector" {
+			productConnector, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
+			if err == nil {
+				resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
+				err = cliClient.ResourceTypeService.Update(configurationCli.GetToken(), int(oldResourceType.ID), resourceType)
+				fmt.Println(err)
+			}
+		} else {
 			fmt.Println(err)
+			fmt.Println("ERROR 404: CANNOT FIND SPECIFIED PRODUCTCONNECTOR")
 		}
 	} else {
 		fmt.Println(err)
