@@ -1,13 +1,14 @@
 package cli
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ditrit/gandalf/core/cli"
 	"github.com/ditrit/gandalf/core/models"
 )
 
-func TestDomain(t *testing.T) {
+func TestCreateDomain(t *testing.T) {
 	const (
 		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
 	)
@@ -29,7 +30,7 @@ func TestDomain(t *testing.T) {
 	t.Log(err)
 }
 
-func TestResourceTypePivot(t *testing.T) {
+func TestCreateResourceType__Pivot(t *testing.T) {
 	const (
 		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
 	)
@@ -95,7 +96,7 @@ func TestResourceTypePivot(t *testing.T) {
 		t.Log("Error: must be connectorProduct or pivot.")
 	}
 }
-func TestResourceTypeProductConnector(t *testing.T) {
+func TestCreateResourceType__ProductConnector(t *testing.T) {
 	const (
 		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
 	)
@@ -107,7 +108,7 @@ func TestResourceTypeProductConnector(t *testing.T) {
 	t.Log("PRODUCT_CONNECTOR.TEST >> SUCCESS")
 	// Product Connector - Correct
 	name := "productConnectorTest"
-	pivotProductConnectorName := "utils"
+	pivotProductConnectorName := "UtilsCustom1.0"
 	typeName := "productConnector"
 	if typeName == "productConnector" {
 
@@ -144,7 +145,7 @@ func TestResourceTypeProductConnector(t *testing.T) {
 		t.Log("Error: must be connectorProduct or pivot.")
 	}
 
-	t.Log("PRODUCT_CONNECTOR.TEST >> INCORRECT TYPE NAME (== CONNECTOR_PRODUCT && CONNECTOR_PRODUCT.NAME != utils)")
+	t.Log("PRODUCT_CONNECTOR.TEST >> INCORRECT TYPE NAME (== CONNECTOR_PRODUCT && CONNECTOR_PRODUCT.NAME != UtilsCustom1.0)")
 	typeName = "productConnector"
 	pivotProductConnectorName = "not_utils"
 	if typeName == "productConnector" {
@@ -161,5 +162,196 @@ func TestResourceTypeProductConnector(t *testing.T) {
 		}
 	} else {
 		t.Log("Error: must be connectorProduct or pivot.")
+	}
+}
+
+func TestUpdateResourceType__Pivot(t *testing.T) {
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PIVOT.TEST >> UPDATE - SUCCESS")
+	name := "pivotTest"
+	newName := "neoPivotTest"
+	typeName := "pivot"
+	pivotProductConnectorName := "utils"
+
+	oldResourceType, err := cliClient.ResourceTypeService.ReadByName(token, name)
+	if err == nil {
+
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				resourceType := models.ResourceType{Name: newName, Pivot: *pivot}
+				err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+				fmt.Println(err)
+			} else {
+				t.Log(err)
+				fmt.Println("ERROR: CANNOT FIND SPECIFIED PIVOT")
+			}
+
+		} else {
+			t.Log(err)
+		}
+	}
+
+	pivotProductConnectorName = "not_utils"
+	t.Log("PIVOT.TEST - INCORRECT PIVOT.NAME")
+	if err == nil {
+
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				resourceType := models.ResourceType{Name: newName, Pivot: *pivot}
+				err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+				fmt.Println(err)
+			} else {
+				t.Log(err)
+				fmt.Println("ERROR: CANNOT FIND SPECIFIED PIVOT")
+			}
+
+		} else {
+			t.Log(err)
+		}
+	}
+
+	t.Log("PIVOT.TEST >> UPDATE - BASE NAME DOES NOT EXISTS")
+	name = "unknown"
+	pivotProductConnectorName = "utils"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
+			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+			fmt.Println(err)
+		}
+	} else {
+		t.Log(err)
+		fmt.Println("ERROR: CANNOT FIND SPECIFIED PRODUCTCONNECTOR")
+	}
+}
+func TestUpdateResourceType__ProductConnector(t *testing.T) {
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> UPDATE - SUCCESS")
+
+	name := "productConnectorName"
+	newName := "neoProductConnectorTest"
+	typeName := "productConnector"
+	pivotProductConnectorName := "UtilsCustom1.0"
+
+	oldResourceType, err := cliClient.ResourceTypeService.ReadByName(token, name)
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
+			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+			fmt.Println(err)
+		}
+	} else {
+		t.Log(err)
+		fmt.Println("ERROR: CANNOT FIND SPECIFIED PRODUCTCONNECTOR")
+	}
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> UPDATE - INCORRECT PRODUCT_CONNECTOR.NAME")
+	pivotProductConnectorName = "not_correct"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
+			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+			fmt.Println(err)
+		}
+	} else {
+		t.Log(err)
+		fmt.Println("ERROR: CANNOT FIND SPECIFIED PRODUCTCONNECTOR")
+	}
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> UPDATE - BASE NAME DOES NOT EXISTS")
+	name = "unknown"
+	pivotProductConnectorName = "UtilsCustom1.0"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
+			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
+			fmt.Println(err)
+		}
+	} else {
+		t.Log(err)
+		fmt.Println("ERROR: CANNOT FIND SPECIFIED PRODUCTCONNECTOR")
+	}
+}
+
+func TestDeleteResourceType__ProductConnector(t *testing.T) {
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> DELETE - SUCCESS")
+
+	name := "neoProductConnectorTest"
+
+	ResourceType, err := cliClient.ResourceTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.ResourceTypeService.Delete(token, int(ResourceType.ID))
+		t.Log(err)
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> DELETE - FAIL")
+
+	name = "productConnectorNameThatDoNotExists"
+
+	ResourceType, err = cliClient.ResourceTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.ResourceTypeService.Delete(token, int(ResourceType.ID))
+		t.Log(err)
+	} else {
+		t.Log(err)
+	}
+}
+
+func TestDeleteResourceType__Pivot(t *testing.T) {
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PIVOT.TEST >> DELETE - SUCCESS")
+
+	name := "neoPivotTest"
+
+	ResourceType, err := cliClient.ResourceTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.ResourceTypeService.Delete(token, int(ResourceType.ID))
+		t.Log(err)
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("PIVOT.TEST >> DELETE - FAIL")
+
+	name = "pivotNameThatDoNotExists"
+
+	ResourceType, err = cliClient.ResourceTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.ResourceTypeService.Delete(token, int(ResourceType.ID))
+		t.Log(err)
+	} else {
+		t.Log(err)
 	}
 }
