@@ -355,3 +355,135 @@ func TestDeleteResourceType__Pivot(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestCreateEventType_Pivot(t *testing.T) {
+	name := "created_eventType_pivot"
+	schema := "test"
+	pivotProductConnectorName := "utils"
+	typeName := "pivot"
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PIVOT.TEST >> CREATE - SUCCESS")
+
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+	t.Log("PIVOT.TEST >> CREATE - FAIL: LOGICAL COMPONENT NAME")
+
+	pivotProductConnectorName = "no_utils"
+
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+	typeName = "nothing"
+	pivotProductConnectorName = "utils"
+
+	t.Log("PIVOT.TEST >> CREATE - FAIL: INCORRECT TYPENAME")
+
+	pivotProductConnectorName = "no_UtilsCustom1.0"
+
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+
+}
+
+func TestCreateEventType_ProductConnector(t *testing.T) {
+	name := "created_eventType_productConnector"
+	schema := "test"
+	pivotProductConnectorName := "UtilsCustom1.0"
+	typeName := "productConnector"
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> CREATE - SUCCESS")
+
+	if typeName == "productConnector" {
+
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> CREATE - FAIL: LOGICAL COMPONENT NAME")
+
+	pivotProductConnectorName = "no_UtilsCustom1.0"
+
+	if typeName == "productConnector" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+	typeName = "nothing"
+	pivotProductConnectorName = "UtilsCustom1.0"
+
+	t.Log("PRODUCT_CONNECTOR.TEST >> CREATE - FAIL: INCORRECT TYPENAME")
+
+	pivotProductConnectorName = "no_UtilsCustom1.0"
+
+	if typeName == "productConnector" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: name, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	}
+}
