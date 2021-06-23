@@ -930,7 +930,7 @@ func runUpdateEventType(cfg *verdeter.ConfigCmd, args []string) {
 				fmt.Println(err)
 			}
 
-		} else if typeName == "productConnetor" {
+		} else if typeName == "productConnector" {
 			productConnector, err := cliClient.ProductConnectorService.ReadByName(configurationCli.GetToken(), pivotProductConnectorName)
 			if err == nil {
 				eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}

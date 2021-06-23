@@ -487,3 +487,250 @@ func TestCreateEventType_ProductConnector(t *testing.T) {
 		}
 	}
 }
+func TestUpdateEventType_Pivot(t *testing.T) {
+	name := "created_eventType_pivot"
+	newName := "updated_eventType_pivot"
+	schema := "test"
+	pivotProductConnectorName := "utils"
+	typeName := "pivot"
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("PIVOT.TEST >> UPDATE - SUCCESS")
+	oldEventType, err := cliClient.EventTypeService.ReadByName(token, name)
+	if err == nil {
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, Pivot: *pivot}
+				err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+				if err != nil {
+					t.Log(err)
+				}
+			} else {
+				t.Log(err)
+			}
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PIVOT.UPDATE - INCORRECT PRODUCT_CONNECTOR.NAME")
+	pivotProductConnectorName = "not_utils"
+	if err == nil {
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, Pivot: *pivot}
+				err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+				if err != nil {
+					t.Log(err)
+				}
+			} else {
+				t.Log(err)
+			}
+		}
+	} else {
+		t.Log(err)
+	}
+	t.Log("EVENTTYPE >> PIVOT.TEST >> UPDATE - BASE NAME DOES NOT EXISTS")
+	name = "DoesNotExists"
+	pivotProductConnectorName = "utils"
+	if err == nil {
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, Pivot: *pivot}
+				err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+				if err != nil {
+					t.Log(err)
+				}
+			} else {
+				t.Log(err)
+			}
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PIVOT.TEST >> UPDATE - TYPENAME INCORRECT")
+	name = "created_eventType_pivot"
+	pivotProductConnectorName = "utils"
+	typeName = "undefined"
+
+	if err == nil {
+		if typeName == "pivot" {
+			pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+			if err == nil {
+				eventType := models.EventType{Name: newName, Schema: schema, Pivot: *pivot}
+				err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+				if err != nil {
+					t.Log(err)
+				}
+			} else {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
+
+func TestUpdateEventType_ProductConnector(t *testing.T) {
+	name := "created_eventType_productConnector"
+	newName := "updated_eventType_productConnector"
+	schema := "test"
+	pivotProductConnectorName := "UtilsCustom1.0"
+	typeName := "productConnector"
+
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> UPDATE - SUCCESS")
+	oldEventType, err := cliClient.EventTypeService.ReadByName(token, name)
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> UPDATE - INCORRECT PRODUCT_CONNECTOR.NAME")
+	pivotProductConnectorName = "not_utils"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> UPDATE - BASE NAME DOES NOT EXISTS")
+	name = "DoesNotExists"
+	pivotProductConnectorName = "UtilsCustom1.0"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> UPDATE - TYPENAME INCORRECT")
+	name = "created_eventType_productConnector"
+	pivotProductConnectorName = "UtilsCustom1.0"
+	typeName = "undefined"
+
+	if typeName == "productConnector" {
+		productConnector, err := cliClient.ProductConnectorService.ReadByName(token, pivotProductConnectorName)
+		if err == nil {
+			eventType := models.EventType{Name: newName, Schema: schema, ProductConnector: *productConnector}
+			err := cliClient.EventTypeService.Update(token, int(oldEventType.ID), eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
+
+func TestDeleteEventType__Pivot(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "update_eventType_pivot"
+
+	t.Log("EVENTTYPE >> PIVOT.TEST >> DELETE - SUCCESS")
+
+	oldEventType, err := cliClient.EventTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.EventTypeService.Delete(token, int(oldEventType.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPE >> PIVOT.TEST >> DELETE - FAIL")
+
+	name = "DoNotExists"
+	if err == nil {
+		err = cliClient.EventTypeService.Delete(token, int(oldEventType.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
+
+func TestDeleteEventType__ProductConnector(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "update_eventType_productConnector"
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> DELETE - SUCCESS")
+
+	oldEventType, err := cliClient.EventTypeService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.EventTypeService.Delete(token, int(oldEventType.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	name = "DoNotExists"
+
+	t.Log("EVENTTYPE >> PRODUCT_CONNECTOR.TEST >> DELETE - FAIL")
+
+	if err == nil {
+		err = cliClient.EventTypeService.Delete(token, int(oldEventType.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
