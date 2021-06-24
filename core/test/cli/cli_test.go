@@ -734,3 +734,169 @@ func TestDeleteEventType__ProductConnector(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestCreateResource__Pivot(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "testResource"
+	logicalComponentName := "utils"
+	domainName := "test"
+	resourceTypeName := "pivot"
+
+	t.Log("RESOURCE >> PIVOT.TEST >> CREATE - SUCCESS")
+
+	logicalComponent, err := cliClient.LogicalComponentService.ReadByName(token, logicalComponentName)
+	fmt.Println("err")
+	fmt.Println(err)
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+
+	logicalComponentName = "not_utils"
+
+	t.Log("RESOURCE >> PIVOT.TEST >> CREATE - FAIL: WRONG logicalComponentName")
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+	logicalComponentName = "utils"
+	resourceTypeName = "failed_pivot"
+
+	t.Log("RESOURCE >> PIVOT.TEST >> CREATE - FAIL: WRONG resourceTypeName")
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+}
+
+func TestCreateResource__ProductConnector(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "testResource"
+	logicalComponentName := "UtilsCustom1.0"
+	domainName := "test"
+	resourceTypeName := "productConnector"
+
+	t.Log("RESOURCE >> PRODUCT_CONNECTOR.TEST >> CREATE - SUCCESS")
+
+	logicalComponent, err := cliClient.LogicalComponentService.ReadByName(token, logicalComponentName)
+	fmt.Println("err")
+	fmt.Println(err)
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+
+	logicalComponentName = "not_UtilsCustom1.0"
+
+	t.Log("RESOURCE >> PRODUCT_CONNECTOR.TEST >> CREATE - FAIL: WRONG logicalComponentName")
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+	logicalComponentName = "UtilsCustom1.0"
+	resourceTypeName = "failed_pivot"
+
+	t.Log("RESOURCE >> PRODUCT_CONNECTOR.TEST >> CREATE - FAIL: WRONG resourceTypeName")
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			} else {
+				t.Log((err))
+			}
+		} else {
+			t.Log((err))
+		}
+	} else {
+		t.Log((err))
+	}
+}
