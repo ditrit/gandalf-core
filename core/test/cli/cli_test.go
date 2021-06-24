@@ -900,3 +900,100 @@ func TestCreateResource__ProductConnector(t *testing.T) {
 		t.Log((err))
 	}
 }
+func TestCreateRole(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+	name := "testRole"
+
+	t.Log("ROLE >> TEST 1/2 >> CREATE - SUCCESS")
+	role := models.Role{Name: name}
+	err := cliClient.RoleService.Create(token, role)
+	if err != nil {
+		t.Log(err)
+	}
+
+	t.Log("ROLE >> TEST 2/2 >> CREATE - FAIL: DOUBLE SAME NAME")
+	role = models.Role{Name: name}
+	err = cliClient.RoleService.Create(token, role)
+	if err != nil {
+		t.Log(err)
+	}
+}
+
+func TestUpdateRole(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+	name := "testRole"
+	newName := "newTestRole"
+
+	t.Log("ROLE >> TEST >> UPDATE - SUCCESS")
+	oldRole, err := cliClient.RoleService.ReadByName(token, name)
+	if err == nil {
+		role := models.Role{Name: newName}
+		err = cliClient.RoleService.Update(token, int(oldRole.ID), role)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("ROLE >> TEST >> UPDATE - FAIL: NAME DO NOT EXISTS")
+	name = "DONOTEXIST"
+
+	if err == nil {
+		role := models.Role{Name: newName}
+		err = cliClient.RoleService.Update(token, int(oldRole.ID), role)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("ROLE >> TEST >> UPDATE - FAIL: SAME NAME THAN BASE NAME")
+	name = "newTestRole"
+
+	if err == nil {
+		role := models.Role{Name: newName}
+		err = cliClient.RoleService.Update(token, int(oldRole.ID), role)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
+func TestDeleteRole(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("ROLE >> TEST >> UPDATE - SUCCESS")
+	name := "testRole"
+	oldRole, err := cliClient.RoleService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.RoleService.Delete(token, int(oldRole.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("ROLE >> TEST >> UPDATE - FAIL: NAME DOES NOT EXISTS")
+	name = "DONOTEXIST"
+	if err == nil {
+		err = cliClient.RoleService.Delete(token, int(oldRole.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
