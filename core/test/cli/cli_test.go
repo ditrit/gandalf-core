@@ -1076,6 +1076,59 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+func TestUpdateUser(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "user"
+	newName := "newUser"
+	email := "email.test@test.net"
+	password := "password"
+
+	t.Log("USER >> TEST >> UPDATE - SUCCESS")
+	oldUser, err := cliClient.UserService.ReadByName(token, name)
+	if err == nil {
+		user := models.NewUser(newName, email, password)
+		err = cliClient.UserService.Update(token, int(oldUser.ID), user)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	name = "notExists"
+
+	t.Log("USER >> TEST >> UPDATE - FAIL: WRONG NAME")
+	oldUser, err = cliClient.UserService.ReadByName(token, name)
+	if err == nil {
+		user := models.NewUser(newName, email, password)
+		err = cliClient.UserService.Update(token, int(oldUser.ID), user)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	name = "user"
+	password = "notExists"
+
+	t.Log("USER >> TEST >> UPDATE - FAIL: WRONG PASSWORD")
+	oldUser, err = cliClient.UserService.ReadByName(token, name)
+	if err == nil {
+		user := models.NewUser(newName, email, password)
+		err = cliClient.UserService.Update(token, int(oldUser.ID), user)
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
+
 func TestDeleteUser(t *testing.T) {
 	const (
 		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
