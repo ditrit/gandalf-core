@@ -1074,6 +1074,13 @@ func TestCreateUser(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	t.Log("USER >> TEST >> CREATE - FAIL: SAME NAME ALREADY EXISTS")
+	user = models.NewUser(name, email, password)
+	err = cliClient.UserService.Create(token, user)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -1169,5 +1176,48 @@ func TestDeleteUser(t *testing.T) {
 		}
 	} else {
 		t.Log((err))
+	}
+}
+func TestCreateEventTypeToPoll(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	resourceName := "resource"
+	eventTypeName := "eventType"
+
+	t.Log("EVENTTYPETOPOLL >> TEST >> CREATE - SUCCESS")
+	resource, err := cliClient.ResourceService.ReadByName(token, resourceName)
+	if err == nil {
+		eventType, err := cliClient.EventTypeService.ReadByName(token, eventTypeName)
+		if err == nil {
+			eventTypeToPoll := models.EventTypeToPoll{Resource: *resource, EventType: *eventType}
+			err := cliClient.EventTypeToPollService.Create(token, eventTypeToPoll)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("EVENTTYPETOPOLL >> TEST >> CREATE - FAIL: ALREADY EXISTS (SAME NAME)")
+	resource, err = cliClient.ResourceService.ReadByName(token, resourceName)
+	if err == nil {
+		eventType, err := cliClient.EventTypeService.ReadByName(token, eventTypeName)
+		if err == nil {
+			eventTypeToPoll := models.EventTypeToPoll{Resource: *resource, EventType: *eventType}
+			err := cliClient.EventTypeToPollService.Create(token, eventTypeToPoll)
+			if err != nil {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
 	}
 }

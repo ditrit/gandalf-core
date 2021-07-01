@@ -362,8 +362,7 @@ func runListTenants(cfg *verdeter.ConfigCmd, args []string) {
 }
 
 func runUpdateTenant(cfg *verdeter.ConfigCmd, args []string) {
-	/* name := args[0]
-	password := args[1]
+	name := args[0]
 	newName := viper.GetString("name")
 	fmt.Printf("gandalf cli update tenant called with tenant=%s, newName=%s\n", name, newName)
 	configurationCli := cmodels.NewConfigurationCli()
@@ -378,7 +377,7 @@ func runUpdateTenant(cfg *verdeter.ConfigCmd, args []string) {
 		}
 	} else {
 		fmt.Println(err)
-	} */
+	}
 }
 
 func runDeleteTenant(cfg *verdeter.ConfigCmd, args []string) {
