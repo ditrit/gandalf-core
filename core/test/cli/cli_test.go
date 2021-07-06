@@ -1214,8 +1214,44 @@ func TestCreateEventTypeToPoll(t *testing.T) {
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
-	resourceName := "resource"
+	resourceName := "testResource"
+	logicalComponentName := "utils"
+	domainName := "test"
+	resourceTypeName := "pivot"
+
+	// Create Resource
+	logicalComponent, err := cliClient.LogicalComponentService.ReadByName(token, logicalComponentName)
+	if err == nil {
+		domain, err := cliClient.DomainService.ReadByName(token, domainName)
+		if err == nil {
+			resourceType, err := cliClient.ResourceTypeService.ReadByName(token, resourceTypeName)
+			if err == nil {
+				resource := models.Resource{Name: resourceName, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
+				err = cliClient.ResourceService.Create(token, resource)
+				if err != nil {
+					t.Log((err))
+				}
+			}
+		}
+	}
+
 	eventTypeName := "eventType"
+	typeName := ""
+	pivotProductConnectorName := ""
+	schema := ""
+
+	// Create EventType
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			eventType := models.EventType{Name: eventTypeName, Schema: schema, Pivot: *pivot}
+			err := cliClient.EventTypeService.Create(token, eventType)
+			if err != nil {
+				t.Log(err)
+			}
+		}
+	}
 
 	t.Log("EVENTTYPETOPOLL >> TEST >> CREATE - SUCCESS")
 	resource, err := cliClient.ResourceService.ReadByName(token, resourceName)
