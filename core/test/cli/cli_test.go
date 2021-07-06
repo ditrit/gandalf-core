@@ -16,7 +16,7 @@ func TestCreateDomain(t *testing.T) {
 
 	t.Log("DOMAIN.TEST >> SUCCESS")
 	name := "test"
-	parentName := "testDomain"
+	parentName := "root"
 
 	// Good Scheme
 	domain := models.Domain{Name: name}
@@ -87,6 +87,36 @@ func TestUpdateDomain(t *testing.T) {
 		}
 	} else {
 		fmt.Println(err)
+	}
+}
+
+func TestDeleteDomain(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("DOMAIN.TEST >> SUCCESS")
+	name := "test"
+	oldDomain, err := cliClient.DomainService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.DomainService.Delete(token, int(oldDomain.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
+	t.Log("DOMAIN.TEST >> FAIL: REMOVE ALREADY REMOVED DOAMIN OR A DOMAIN THAT DO NOT EXISTS")
+	oldDomain, err = cliClient.DomainService.ReadByName(token, name)
+	if err == nil {
+		err = cliClient.DomainService.Delete(token, int(oldDomain.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
 	}
 }
 
