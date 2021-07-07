@@ -34,7 +34,7 @@ func HashAndSaltPassword(password string) (hashedPassword string) {
 	}
 	hashedPassword = string(hashedPasswordByte)
 
-	fmt.Println(hashedPassword)
+	//fmt.Println(hashedPassword)
 	return
 }
 

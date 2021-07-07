@@ -10,7 +10,7 @@ import (
 
 func TestCreateDomain(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -23,6 +23,7 @@ func TestCreateDomain(t *testing.T) {
 	err := cliClient.DomainService.Create(token, domain, parentName)
 	t.Log(err)
 
+	// Same Name
 	t.Log("DOMAIN.TEST >> FAIL - DOMAIN NAME ALREADY EXISTS")
 	domain = models.Domain{Name: name}
 	err = cliClient.DomainService.Create(token, domain, parentName)
@@ -45,7 +46,7 @@ func TestCreateDomain(t *testing.T) {
 }
 func TestUpdateDomain(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -92,7 +93,7 @@ func TestUpdateDomain(t *testing.T) {
 
 func TestDeleteDomain(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -122,7 +123,7 @@ func TestDeleteDomain(t *testing.T) {
 
 func TestCreateResourceType__Pivot(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -188,7 +189,7 @@ func TestCreateResourceType__Pivot(t *testing.T) {
 }
 func TestCreateResourceType__ProductConnector(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -258,7 +259,7 @@ func TestCreateResourceType__ProductConnector(t *testing.T) {
 func TestUpdateResourceType__Pivot(t *testing.T) {
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -326,7 +327,7 @@ func TestUpdateResourceType__Pivot(t *testing.T) {
 func TestUpdateResourceType__ProductConnector(t *testing.T) {
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -343,7 +344,9 @@ func TestUpdateResourceType__ProductConnector(t *testing.T) {
 		if err == nil {
 			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
 			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
-			fmt.Println(err)
+			t.Log(err)
+		} else {
+			t.Log(err)
 		}
 	} else {
 		t.Log(err)
@@ -358,7 +361,9 @@ func TestUpdateResourceType__ProductConnector(t *testing.T) {
 		if err == nil {
 			resourceType := models.ResourceType{Name: newName, ProductConnector: *productConnector}
 			err = cliClient.ResourceTypeService.Update(token, int(oldResourceType.ID), resourceType)
-			fmt.Println(err)
+			t.Log(err)
+		} else {
+			t.Log(err)
 		}
 	} else {
 		t.Log(err)
@@ -385,7 +390,7 @@ func TestUpdateResourceType__ProductConnector(t *testing.T) {
 func TestDeleteResourceType__ProductConnector(t *testing.T) {
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -417,7 +422,7 @@ func TestDeleteResourceType__ProductConnector(t *testing.T) {
 func TestDeleteResourceType__Pivot(t *testing.T) {
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -453,7 +458,7 @@ func TestCreateEventType_Pivot(t *testing.T) {
 	typeName := "pivot"
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -519,7 +524,7 @@ func TestCreateEventType_ProductConnector(t *testing.T) {
 	typeName := "productConnector"
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -585,7 +590,7 @@ func TestUpdateEventType_Pivot(t *testing.T) {
 	typeName := "pivot"
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -679,7 +684,7 @@ func TestUpdateEventType_ProductConnector(t *testing.T) {
 	typeName := "productConnector"
 
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -760,7 +765,7 @@ func TestUpdateEventType_ProductConnector(t *testing.T) {
 
 func TestDeleteEventType__Pivot(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -793,7 +798,7 @@ func TestDeleteEventType__Pivot(t *testing.T) {
 
 func TestDeleteEventType__ProductConnector(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -827,7 +832,7 @@ func TestDeleteEventType__ProductConnector(t *testing.T) {
 
 func TestCreateResource__Pivot(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -849,16 +854,16 @@ func TestCreateResource__Pivot(t *testing.T) {
 				resource := models.Resource{Name: name, LogicalComponent: *logicalComponent, Domain: *domain, ResourceType: *resourceType}
 				err = cliClient.ResourceService.Create(token, resource)
 				if err != nil {
-					t.Log((err))
+					t.Log(err)
 				}
 			} else {
-				t.Log((err))
+				t.Log(err)
 			}
 		} else {
-			t.Log((err))
+			t.Log(err)
 		}
 	} else {
-		t.Log((err))
+		t.Log(err)
 	}
 
 	logicalComponentName = "not_utils"
@@ -910,7 +915,7 @@ func TestCreateResource__Pivot(t *testing.T) {
 
 func TestCreateResource__ProductConnector(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -992,7 +997,7 @@ func TestCreateResource__ProductConnector(t *testing.T) {
 }
 func TestCreateRole(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 	name := "testRole"
@@ -1014,7 +1019,7 @@ func TestCreateRole(t *testing.T) {
 
 func TestUpdateRole(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 	name := "testRole"
@@ -1060,7 +1065,7 @@ func TestUpdateRole(t *testing.T) {
 }
 func TestDeleteRole(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -1089,12 +1094,12 @@ func TestDeleteRole(t *testing.T) {
 }
 func TestCreateUser(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
 	name := "newUser"
-	email := "machin@truc.com"
+	email := "testEmail"
 	password := "password"
 
 	t.Log("USER >> TEST >> CREATE - SUCCESS")
@@ -1115,13 +1120,13 @@ func TestCreateUser(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
 	name := "user"
 	newName := "newUser"
-	email := "email.test@test.net"
+	email := "testEmail_2"
 	password := "password"
 
 	t.Log("USER >> TEST >> UPDATE - SUCCESS")
@@ -1168,7 +1173,7 @@ func TestUpdateUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
@@ -1210,16 +1215,43 @@ func TestDeleteUser(t *testing.T) {
 }
 func TestCreateEventTypeToPoll(t *testing.T) {
 	const (
-		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY2NDA1MDg1MTM4OTQ0MDAwMSwiTmFtZSI6IkFkbWluaXN0cmF0b3IyIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMiIsIlRlbmFudCI6IiIsImV4cCI6MTYyODcyMjk3Mn0.6KTRZr9xl6rUqToWv_SUZypOVmwdRM4_sJhjRiEDpMU"
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
-	resourceName := "testResource"
-	logicalComponentName := "utils"
-	domainName := "test"
-	resourceTypeName := "pivot"
+	domainName := "testDomain"
+	parentName := "root"
+
+	//Create Domain
+	domain := models.Domain{Name: domainName}
+	err := cliClient.DomainService.Create(token, domain, parentName)
+	if err != nil {
+		t.Log((err))
+	}
+
+	// Create ResourceType
+	typeName := "pivot"
+	pivotProductConnectorName := "utils"
+	resourceTypeName := "testResourceType"
+
+	if typeName == "pivot" {
+		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
+
+		if err == nil {
+			resourceType := models.ResourceType{Name: resourceTypeName, Pivot: *pivot}
+			err := cliClient.ResourceTypeService.Create(token, resourceType)
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println(err)
+		}
+	}
 
 	// Create Resource
+	resourceName := "testResource"
+	logicalComponentName := "connector5"
+
 	logicalComponent, err := cliClient.LogicalComponentService.ReadByName(token, logicalComponentName)
 	if err == nil {
 		domain, err := cliClient.DomainService.ReadByName(token, domainName)
@@ -1230,17 +1262,23 @@ func TestCreateEventTypeToPoll(t *testing.T) {
 				err = cliClient.ResourceService.Create(token, resource)
 				if err != nil {
 					t.Log((err))
+				} else {
+					t.Log((err))
 				}
+			} else {
+				t.Log((err))
 			}
+		} else {
+			t.Log((err))
 		}
+	} else {
+		t.Log((err))
 	}
 
-	eventTypeName := "eventType"
-	typeName := ""
-	pivotProductConnectorName := ""
-	schema := ""
-
 	// Create EventType
+	eventTypeName := "testEventType"
+	schema := "testSchema"
+
 	if typeName == "pivot" {
 		pivot, err := cliClient.PivotService.ReadByName(token, pivotProductConnectorName)
 
@@ -1250,9 +1288,14 @@ func TestCreateEventTypeToPoll(t *testing.T) {
 			if err != nil {
 				t.Log(err)
 			}
+		} else {
+			t.Log(err)
 		}
+	} else {
+		t.Log(err)
 	}
 
+	// Create normal EventTypeToPoll
 	t.Log("EVENTTYPETOPOLL >> TEST >> CREATE - SUCCESS")
 	resource, err := cliClient.ResourceService.ReadByName(token, resourceName)
 	if err == nil {
@@ -1270,6 +1313,7 @@ func TestCreateEventTypeToPoll(t *testing.T) {
 		t.Log(err)
 	}
 
+	// Recreate the normal EventTypeToPoll
 	t.Log("EVENTTYPETOPOLL >> TEST >> CREATE - FAIL: ALREADY EXISTS (SAME NAME)")
 	resource, err = cliClient.ResourceService.ReadByName(token, resourceName)
 	if err == nil {
