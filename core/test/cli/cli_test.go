@@ -150,6 +150,7 @@ func TestCreateResourceType__Pivot(t *testing.T) {
 	} else {
 		t.Log("Error: must be connectorProduct or pivot.")
 	}
+
 	t.Log("PIVOT.TEST >> INCORRECT TYPE")
 	// Pivot - TRY 2 INCORRECT TYPE
 	typeName = "incorrect"
@@ -585,7 +586,7 @@ func TestCreateEventType_ProductConnector(t *testing.T) {
 func TestUpdateEventType_Pivot(t *testing.T) {
 	name := "created_eventType_pivot"
 	newName := "updated_eventType_pivot"
-	schema := "test"
+	schema := "testSchema"
 	pivotProductConnectorName := "utils"
 	typeName := "pivot"
 
@@ -1330,4 +1331,37 @@ func TestCreateEventTypeToPoll(t *testing.T) {
 	} else {
 		t.Log(err)
 	}
+}
+
+func TestUpdateEventTypeToPoll(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	t.Log("EVENTTYPETOPOLL - UPDATE: SUCCESS")
+	resourceName := "testResource"
+	eventTypeName := "testEventType"
+
+	oldEventTypeToPoll, err := cliClient.EventTypeToPollService.ReadByName(token, eventTypeName)
+	if err == nil {
+		resource, err := cliClient.ResourceService.ReadByName(token, resourceName)
+		if err == nil {
+			eventType, err := cliClient.EventTypeService.ReadByName(token, eventTypeName)
+			if err == nil {
+				eventTypeToPoll := models.EventTypeToPoll{Resource: *resource, EventType: *eventType}
+				err = cliClient.EventTypeToPollService.Update(token, int(oldEventTypeToPoll.ID), eventTypeToPoll)
+				if err != nil {
+					t.Log(err)
+				}
+			} else {
+				t.Log(err)
+			}
+		} else {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+
 }
