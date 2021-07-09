@@ -1365,3 +1365,21 @@ func TestUpdateEventTypeToPoll(t *testing.T) {
 	}
 
 }
+func TestDeleteEventTypeToPoll(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	resourceName := "testResource"
+
+	oldEventTypeToPoll, err := cliClient.EventTypeToPollService.ReadByName(token, resourceName)
+	if err == nil {
+		err = cliClient.EventTypeToPollService.Delete(token, int(oldEventTypeToPoll.ID))
+		if err != nil {
+			t.Log(err)
+		}
+	} else {
+		t.Log(err)
+	}
+}
