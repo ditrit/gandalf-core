@@ -831,6 +831,7 @@ func TestDeleteEventType__ProductConnector(t *testing.T) {
 	}
 }
 
+// WIP
 func TestCreateResource__Pivot(t *testing.T) {
 	const (
 		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
@@ -838,15 +839,21 @@ func TestCreateResource__Pivot(t *testing.T) {
 	cliClient := cli.NewClient("http://localhost:9203")
 
 	name := "testResource"
-	logicalComponentName := "utils"
-	domainName := "test"
+	logicalComponentName := "connector5"
+	domainName := "testDomain1"
 	resourceTypeName := "pivot"
+	parentName := "root"
+
+	// Create new domain
+	domain := models.Domain{Name: domainName}
+	err := cliClient.DomainService.Create(token, domain, parentName)
+	t.Log(err)
 
 	t.Log("RESOURCE >> PIVOT.TEST >> CREATE - SUCCESS")
 
+	// Create new resource by pivot, using new domain
 	logicalComponent, err := cliClient.LogicalComponentService.ReadByName(token, logicalComponentName)
-	fmt.Println("err")
-	fmt.Println(err)
+	t.Log(err)
 	if err == nil {
 		domain, err := cliClient.DomainService.ReadByName(token, domainName)
 		if err == nil {
@@ -1381,5 +1388,31 @@ func TestDeleteEventTypeToPoll(t *testing.T) {
 		}
 	} else {
 		t.Log(err)
+	}
+}
+
+func TestCreateTenant(t *testing.T) {
+	const (
+		token string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjY3MzQyMTg1MTUwODg2NzA3MywiTmFtZSI6IkFkbWluaXN0cmF0b3IxIiwiRW1haWwiOiJBZG1pbmlzdHJhdG9yMSIsIlRlbmFudCI6IiIsImV4cCI6MTYzMTU4MjUwMX0.dYSuQzl27yE4wJFrP3H-Ck6ZOKEGxQE66nGX4UVStLA"
+	)
+	cliClient := cli.NewClient("http://localhost:9203")
+
+	name := "testTenant"
+
+	result, err := cliClient.CliService.Cli()
+	if err == nil {
+		if result == "cluster" {
+			tenant := models.Tenant{Name: name}
+			login, password, err := cliClient.TenantService.Create(token, tenant)
+			if err == nil {
+				t.Log("login : " + login)
+				t.Log("password : " + password)
+			} else {
+				t.Log(err)
+			}
+		} else if result == "aggregator" {
+			fmt.Println("Error: Not allowed")
+			t.Log(err)
+		}
 	}
 }
