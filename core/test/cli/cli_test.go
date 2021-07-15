@@ -109,6 +109,23 @@ func TestDeleteDomain(t *testing.T) {
 		t.Log(err)
 	}
 
+	/*
+		name := args[0]
+		fmt.Printf("gandalf cli delete domain called with domain=%s\n", name)
+		configurationCli := cmodels.NewConfigurationCli()
+		cliClient := cli.NewClient(configurationCli.GetEndpoint())
+
+		oldDomain, err := cliClient.DomainService.ReadByName(configurationCli.GetToken(), name)
+		if err == nil {
+			err = cliClient.DomainService.Delete(configurationCli.GetToken(), int(oldDomain.ID))
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println(err)
+		}
+	*/
+
 	t.Log("DOMAIN.TEST >> FAIL: REMOVE ALREADY REMOVED DOAMIN OR A DOMAIN THAT DO NOT EXISTS")
 	oldDomain, err = cliClient.DomainService.ReadByName(token, name)
 	if err == nil {
@@ -840,8 +857,8 @@ func TestCreateResource__Pivot(t *testing.T) {
 
 	name := "testResource"
 	logicalComponentName := "connector5"
-	domainName := "testDomain1"
-	resourceTypeName := "pivot"
+	domainName := "testDomain2"
+	resourceTypeName := "tutu"
 	parentName := "root"
 
 	// Create new domain
@@ -1106,8 +1123,8 @@ func TestCreateUser(t *testing.T) {
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
-	name := "newUser"
-	email := "testEmail"
+	name := "neo"
+	email := "testEmail4"
 	password := "password"
 
 	t.Log("USER >> TEST >> CREATE - SUCCESS")
@@ -1132,9 +1149,9 @@ func TestUpdateUser(t *testing.T) {
 	)
 	cliClient := cli.NewClient("http://localhost:9203")
 
-	name := "user"
-	newName := "newUser"
-	email := "testEmail_2"
+	name := "neo"
+	newName := "neo2"
+	email := "testEmail4"
 	password := "password"
 
 	t.Log("USER >> TEST >> UPDATE - SUCCESS")
@@ -1196,7 +1213,7 @@ func TestDeleteUser(t *testing.T) {
 	} else {
 		t.Log((err))
 	}
-	name = "newUser"
+	name = "neo2"
 	t.Log("USER >> TEST >> DELETE - SUCCESS")
 
 	oldUser, err = cliClient.UserService.ReadByName(token, name)
@@ -1399,20 +1416,12 @@ func TestCreateTenant(t *testing.T) {
 
 	name := "testTenant"
 
-	result, err := cliClient.CliService.Cli()
+	tenant := models.Tenant{Name: name}
+	login, password, err := cliClient.TenantService.Create(token, tenant)
 	if err == nil {
-		if result == "cluster" {
-			tenant := models.Tenant{Name: name}
-			login, password, err := cliClient.TenantService.Create(token, tenant)
-			if err == nil {
-				t.Log("login : " + login)
-				t.Log("password : " + password)
-			} else {
-				t.Log(err)
-			}
-		} else if result == "aggregator" {
-			fmt.Println("Error: Not allowed")
-			t.Log(err)
-		}
+		t.Log("login : " + login)
+		t.Log("password : " + password)
+	} else {
+		t.Log(err)
 	}
 }

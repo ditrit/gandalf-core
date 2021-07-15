@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -27,14 +29,17 @@ func InsertDomainRoot(database *gorm.DB, domain Domain) (err error) {
 
 		if err := tx.Save(&domain).Error; err != nil {
 			// return any error will rollback
+			fmt.Println("Error 1")
 			return err
 		}
 		if err := tx.Where("name = ?", domain.Name).First(&domain).Error; err != nil {
 			// return any error will rollback
+			fmt.Println("Error 2")
 			return err
 		}
 		if err := tx.Exec("INSERT INTO domain_closures (ancestor_id, descendant_id, depth) SELECT ?,?,0;", domain.ID, domain.ID).Error; err != nil {
 			// return any error will rollback
+			fmt.Println("Error 3")
 			return err
 		}
 		return nil
@@ -71,11 +76,13 @@ func DeleteDomainChild(database *gorm.DB, domain Domain) (err error) {
 
 		if err := tx.Delete(&domain).Error; err != nil {
 			// return any error will rollback
+			fmt.Println("Error.Delete 1")
 			return err
 		}
 		var domainClosure DomainClosure
-		if err := tx.Where("descendant = ?", domain.ID).Delete(&domainClosure).Error; err != nil {
+		if err := tx.Where("descendant_id = ?", domain.ID).Delete(&domainClosure).Error; err != nil {
 			// return any error will rollback
+			fmt.Println("Error.Delete 2")
 			return err
 		}
 		return nil
